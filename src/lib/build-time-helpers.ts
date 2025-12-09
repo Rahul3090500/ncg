@@ -20,12 +20,23 @@ export function isBuildTime(): boolean {
   // During Vercel builds, VERCEL=1 is always set
   // During runtime requests, NEXT_RUNTIME=nodejs is set
   if (process.env.VERCEL === '1' || process.env.VERCEL === 'true') {
-    // If NEXT_RUNTIME is not set, we're in build phase (not runtime)
-    if (process.env.NEXT_RUNTIME !== 'nodejs') {
+    // Vercel sets NEXT_RUNTIME only for some runtimes; in production requests VERCEL_URL is present.
+    // Treat presence of either NEXT_RUNTIME or VERCEL_URL as a runtime hint.
+    const hasRuntimeHints = Boolean(process.env.NEXT_RUNTIME) || Boolean(process.env.VERCEL_URL)
+    // Consider edge/node runtimes as valid runtime contexts
+    const isRuntime =
+      process.env.NEXT_RUNTIME === 'nodejs' ||
+      process.env.NEXT_RUNTIME === 'edge' ||
+      process.env.NEXT_RUNTIME === 'experimental-edge' ||
+      Boolean(process.env.VERCEL_URL)
+
+    // If we have no runtime hints, we're in the build phase
+    if (!hasRuntimeHints) {
       return true
     }
-    // Also check if VERCEL_URL is missing (build phase)
-    if (!process.env.VERCEL_URL) {
+
+    // If we can't confirm runtime, assume build
+    if (!isRuntime) {
       return true
     }
   }

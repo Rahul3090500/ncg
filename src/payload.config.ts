@@ -48,6 +48,24 @@ import { PrivacyPolicySection } from './globals/PrivacyPolicySection'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+// Log missing critical env vars once at startup (helps prod/dev visibility)
+let envWarned = false
+function warnMissingEnv() {
+  if (envWarned) return
+  const required = ['DATABASE_URI', 'PAYLOAD_SECRET']
+  const missing = required.filter((key) => !process.env[key]?.trim())
+
+  if (missing.length) {
+    console.warn(
+      '[env] Missing required environment variables:',
+      missing.join(', ')
+    )
+  }
+  envWarned = true
+}
+warnMissingEnv()
+
 function stripSslParams(uri?: string) {
   if (!uri) return uri
   try {

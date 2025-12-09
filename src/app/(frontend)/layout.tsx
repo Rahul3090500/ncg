@@ -5,6 +5,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { PerformanceMonitor } from './components/PerformanceMonitor';
 import { ResourceHints } from './components/ResourceHints';
+import { DebugConsole } from './components/DebugConsole';
 
 export const metadata = {
   description: 'NCG - Next Generation Cybersecurity Solutions',
@@ -28,6 +29,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
       </head>
       <body>
         <PerformanceMonitor />
+        <DebugConsole />
         <Header />
         <main>{children}</main>
         {!shouldHideFooter && <Footer />}
