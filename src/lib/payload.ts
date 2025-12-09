@@ -8,6 +8,22 @@ async function getPayloadClient() {
 }
 
 export async function getHomepageData() {
+  // CRITICAL: Check build time FIRST - return empty data immediately during build
+  const { isBuildTime, getBuildTimeGlobalFallback } = await import('./build-time-helpers')
+  if (isBuildTime()) {
+    return {
+      heroSection: null,
+      servicesSection: null,
+      trustedBySection: null,
+      caseStudiesHeroSection: null,
+      caseStudiesGridSection: null,
+      testimonialsSection: null,
+      approachSection: null,
+      contactSection: null,
+      ...getBuildTimeGlobalFallback(),
+    }
+  }
+
   return getCachedAPIResponse(
     'homepage-data',
     async () => {
@@ -22,12 +38,17 @@ export async function getHomepageData() {
             return cached
           }
 
+          // Add timeout to fetch to prevent hanging during build
+          const controller = new AbortController()
+          const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+          
           const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/homepage-read`, {
             next: { revalidate: 3600 }, // Revalidate every hour
             headers: {
               'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
             },
-          })
+            signal: controller.signal,
+          }).finally(() => clearTimeout(timeoutId))
           
           if (response.ok) {
             const result = await response.json()
@@ -123,11 +144,28 @@ export async function getFooterData() {
 }
 
 export async function getCaseStudiesPageData() {
+  // CRITICAL: Check build time FIRST - return empty data immediately during build
+  const { isBuildTime, getBuildTimeGlobalFallback, getBuildTimeCollectionFallback } = await import('./build-time-helpers')
+  if (isBuildTime()) {
+    return {
+      caseStudiesAll: [],
+      caseStudiesPageGridSection: null,
+      caseStudiesPageHeroSection: null,
+      contactSection: null,
+      ...getBuildTimeGlobalFallback(),
+    }
+  }
+
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
+      // Add timeout to fetch to prevent hanging during build
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+      
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/case-studies-read`, {
         next: { revalidate: 3600 }, // Cache for 1 hour (ISR)
-      })
+        signal: controller.signal,
+      }).finally(() => clearTimeout(timeoutId))
       if (response.ok) {
         const result = await response.json()
         return {
@@ -367,11 +405,22 @@ export async function getPrivacyPolicyPageData() {
 
 // Services data fetching functions
 export async function getServicesData() {
+  // CRITICAL: Check build time FIRST - return empty data immediately during build
+  const { isBuildTime } = await import('./build-time-helpers')
+  if (isBuildTime()) {
+    return []
+  }
+
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
+      // Add timeout to fetch to prevent hanging during build
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+      
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/services-read`, {
         next: { revalidate: 3600 }, // Cache for 1 hour (ISR)
-      })
+        signal: controller.signal,
+      }).finally(() => clearTimeout(timeoutId))
       if (response.ok) {
         const result = await response.json()
         return Array.isArray(result?.docs) ? result.docs : []
