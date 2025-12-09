@@ -2,11 +2,30 @@ import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { getCacheManager } from '@/lib/cache-manager'
+import { isBuildTime, getBuildTimeGlobalFallback, getBuildTimeCollectionFallback } from '@/lib/build-time-helpers'
 
 export const runtime = 'nodejs' // Required for ioredis compatibility
 export const revalidate = 3600 // Revalidate every hour
 
 export async function GET() {
+  // CRITICAL: Check build time FIRST before any database operations
+  if (isBuildTime()) {
+    return NextResponse.json(
+      {
+        blogsPageHeroSection: null,
+        blogsAll: getBuildTimeCollectionFallback(),
+        ...getBuildTimeGlobalFallback(),
+      },
+      { 
+        status: 200,
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+          'X-Build-Time-Fallback': 'true'
+        }
+      }
+    )
+  }
+
   try {
     const cache = getCacheManager()
     const cacheKey = 'api-blogs-read'
@@ -54,7 +73,30 @@ export async function GET() {
     response.headers.set('ETag', `"${Date.now()}"`)
     response.headers.set('X-Cache', 'MISS')
     return response
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch blogs data' }, { status: 500 })
+  } catch (error: any) {
+    console.error('Error fetching blogs:', error)
+    
+    // Check if it's a database connection error
+    const isDatabaseError = 
+      error?.message?.toLowerCase().includes('timeout') ||
+      error?.message?.toLowerCase().includes('connection') ||
+      error?.cause?.message?.toLowerCase().includes('timeout') ||
+      error?.code === '53300'
+    
+    if (isDatabaseError) {
+      return NextResponse.json(
+        { 
+          error: 'Database connection timeout',
+          errorType: 'DATABASE_CONNECTION_ERROR',
+          message: 'The database query timed out. Please try again later.'
+        },
+        { status: 503 } // Service Unavailable
+      )
+    }
+    
+    return NextResponse.json(
+      { error: 'Failed to fetch blogs data' },
+      { status: 500 }
+    )
   }
 }

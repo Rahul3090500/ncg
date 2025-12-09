@@ -10,6 +10,21 @@ export const runtime = 'nodejs' // Required for ioredis compatibility
 export const revalidate = 3600
 
 export async function GET() {
+  // CRITICAL: Check build time FIRST before any database operations
+  // During build, return fallback immediately to prevent 60+ second timeouts
+  if (isBuildTime()) {
+    return NextResponse.json(
+      getBuildTimeCollectionFallback(),
+      { 
+        status: 200,
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+          'X-Build-Time-Fallback': 'true'
+        }
+      }
+    )
+  }
+
   try {
     const cache = getCacheManager()
     const cacheKey = 'api-services-read'

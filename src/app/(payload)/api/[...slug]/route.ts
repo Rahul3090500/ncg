@@ -11,19 +11,20 @@ import {
   REST_PUT,
 } from '@payloadcms/next/routes'
 import { NextRequest, NextResponse } from 'next/server'
-import { isDatabaseConnectionError } from '@/lib/build-time-helpers'
+import { isDatabaseConnectionError, isPayloadGenericError } from '@/lib/build-time-helpers'
 
 // Wrap Payload handlers with error handling for database connection errors
 function wrapHandler(handler: (req: NextRequest, context: any) => Promise<Response>) {
   return async (req: NextRequest, context: any) => {
     try {
-      // Add timeout for database operations (20 seconds)
+      // Add timeout for database operations (60 seconds to match connection timeout)
       // This prevents requests from hanging indefinitely when the pool is exhausted
+      // Increased to 60s to match serverless connection timeout for cross-continental latency
       let timeoutId: NodeJS.Timeout | null = null
       const timeoutPromise = new Promise<never>((_, reject) => {
         timeoutId = setTimeout(() => {
           reject(new Error('Database operation timeout - connection pool may be exhausted'))
-        }, 20000) // 20 seconds timeout
+        }, 60000) // 60 seconds timeout (matches connection timeout)
       })
       
       try {
@@ -51,6 +52,7 @@ function wrapHandler(handler: (req: NextRequest, context: any) => Promise<Respon
           path: req.nextUrl.pathname,
           error: error?.message,
           code: error?.code,
+          cause: error?.cause?.message,
         })
         
         // Return proper error response
@@ -63,6 +65,27 @@ function wrapHandler(handler: (req: NextRequest, context: any) => Promise<Respon
             }],
             errorType: 'DATABASE_CONNECTION_ERROR',
             code: error?.code || '53300'
+          },
+          { status: 503 } // Service Unavailable
+        )
+      }
+      
+      // Check for Payload's generic "Something went wrong" error
+      // This usually indicates a database connection issue that Payload couldn't handle
+      if (isPayloadGenericError(error)) {
+        console.error('Payload generic error (likely database connection issue):', {
+          path: req.nextUrl.pathname,
+          error: errorMessage,
+          response: errorResponse,
+        })
+        
+        return NextResponse.json(
+          { 
+            errors: [{
+              message: 'Database connection error. Please try again later.',
+            }],
+            errorType: 'DATABASE_CONNECTION_ERROR',
+            code: '53300'
           },
           { status: 503 } // Service Unavailable
         )

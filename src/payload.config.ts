@@ -250,14 +250,14 @@ export default buildConfig({
         max: isProduction && !isPreview && !isDev
           ? 1  // PRODUCTION: Exactly 1 connection for RDS
           : 2, // Local/Dev/Preview: 2 connections
-        // In serverless, keep min: 0 to allow connections to close when idle
-        // This prevents connection leaks but may cause cold starts
-        // For production RDS with cross-continental latency, consider keeping 1 connection alive
+        // In serverless, keep min: 1 to maintain connection within Lambda execution context
+        // This reduces cold start overhead while still allowing connections to close when Lambda ends
+        // Lambda execution context can last up to 15 minutes, so keeping 1 connection alive helps
         min: isServerless && isProduction && !isPreview && !isDev
-          ? 0  // Serverless: Allow connections to close (prevents leaks)
+          ? 1  // Serverless: Keep 1 connection alive within Lambda execution context (reduces cold starts)
           : 0, // Default: Don't keep idle connections
         idleTimeoutMillis: isServerless && isProduction && !isPreview && !isDev
-          ? 60000  // Serverless production: 60 seconds (keep connection alive longer to reduce cold starts)
+          ? 300000  // Serverless production: 5 minutes (Lambda execution context can last up to 15 min)
           : 30000, // Default: 30 seconds - close idle connections quickly
         // Increase timeout for build-time operations to allow more time for connection
         // Also increase timeout for serverless runtime to handle RDS connection latency
@@ -269,7 +269,11 @@ export default buildConfig({
           : isServerless
           ? 60000  // Serverless runtime: 60 seconds (increased for extreme cross-continental latency - Mumbai/India ↔ Stockholm/Sweden)
           : 30000, // RDS: 30 seconds (longer timeout for network latency)
-        allowExitOnIdle: true, // Allow pool to close when idle to free connections
+        // In serverless, don't allow exit on idle - keep connection alive within execution context
+        // This reduces cold start overhead for subsequent requests in the same Lambda
+        allowExitOnIdle: isServerless && isProduction && !isPreview && !isDev
+          ? false  // Serverless: Keep connection alive within Lambda execution context
+          : true,  // Default: Allow pool to close when idle to free connections
         // In serverless, add a queue timeout to fail fast when pool is exhausted
         // This prevents requests from waiting indefinitely when the single connection is busy
         ...(isServerless && isProduction && !isPreview && !isDev

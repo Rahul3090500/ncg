@@ -2,11 +2,32 @@ import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { getCacheManager } from '@/lib/cache-manager'
+import { isBuildTime, getBuildTimeGlobalFallback, getBuildTimeCollectionFallback } from '@/lib/build-time-helpers'
 
 export const runtime = 'nodejs' // Required for ioredis compatibility
 export const revalidate = 3600 // Revalidate every hour
 
 export async function GET() {
+  // CRITICAL: Check build time FIRST before any database operations
+  if (isBuildTime()) {
+    return NextResponse.json(
+      {
+        caseStudiesAll: getBuildTimeCollectionFallback(),
+        caseStudiesPageHeroSection: null,
+        caseStudiesPageGridSection: null,
+        contactSection: null,
+        ...getBuildTimeGlobalFallback(),
+      },
+      { 
+        status: 200,
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+          'X-Build-Time-Fallback': 'true'
+        }
+      }
+    )
+  }
+
   try {
     const cache = getCacheManager()
     const cacheKey = 'api-case-studies-read'

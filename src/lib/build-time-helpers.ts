@@ -8,7 +8,7 @@
  * During build, database connections may timeout, so we return empty data gracefully
  */
 export function isBuildTime(): boolean {
-  // Check for Next.js build phase
+  // Check for Next.js build phase (most reliable indicator)
   if (
     process.env.NEXT_PHASE === 'phase-production-build' ||
     process.env.NEXT_PHASE === 'phase-production-compile'
@@ -17,7 +17,14 @@ export function isBuildTime(): boolean {
   }
   
   // Check for Vercel build environment
-  // During Vercel builds, VERCEL is set but we're still in build phase
+  // During Vercel builds, VERCEL is always set
+  // VERCEL_URL is NOT set during build, only at runtime
+  if (process.env.VERCEL && !process.env.VERCEL_URL) {
+    // VERCEL is set but VERCEL_URL is not = we're in build phase
+    return true
+  }
+  
+  // Check for Vercel CI environment
   if (process.env.VERCEL && process.env.CI) {
     // CI=true indicates build environment on Vercel
     return true
@@ -107,5 +114,21 @@ export function getBuildTimeGlobalFallback() {
   return {
     _buildTimeFallback: true, // Flag to indicate this is build-time fallback
   }
+}
+
+/**
+ * Check if error is Payload's generic "Something went wrong" error
+ * This usually indicates a database connection issue
+ */
+export function isPayloadGenericError(error: any): boolean {
+  const errorMessage = error?.message || ''
+  const errorResponse = error?.response || error?.data || {}
+  
+  return (
+    errorMessage.includes('Something went wrong') ||
+    errorResponse?.errors?.some((e: any) => e?.message?.includes('Something went wrong')) ||
+    errorResponse?.message?.includes('Something went wrong') ||
+    (typeof errorResponse === 'string' && errorResponse.includes('Something went wrong'))
+  )
 }
 

@@ -9,6 +9,30 @@ export const runtime = 'nodejs'
 export const revalidate = 3600
 
 export async function GET() {
+  // CRITICAL: Check build time FIRST before any database operations
+  if (isBuildTime()) {
+    return NextResponse.json(
+      {
+        heroSection: null,
+        servicesSection: null,
+        trustedBySection: null,
+        caseStudiesHeroSection: null,
+        caseStudiesGridSection: null,
+        testimonialsSection: null,
+        approachSection: null,
+        contactSection: null,
+        ...getBuildTimeGlobalFallback(),
+      },
+      { 
+        status: 200,
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+          'X-Build-Time-Fallback': 'true'
+        }
+      }
+    )
+  }
+
   try {
     const cache = getCacheManager()
     const cacheKey = 'api-homepage-read'

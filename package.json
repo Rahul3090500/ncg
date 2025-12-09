@@ -34,6 +34,7 @@
     "cache:clear": "node -e \"import('./src/lib/cache-manager.mjs').then(m => m.getCacheManager().clear())\"",
     "cache:stats": "node -e \"import('./src/lib/cache-manager.mjs').then(m => m.getCacheManager().getStats().then(console.log))\"",
     "check:connections": "node scripts/fix-rds-connections.mjs",
+    "check:aws": "node scripts/check-aws-config.mjs",
     "migrate:rds-to-local": "npx tsx scripts/migrate-rds-to-local.mjs",
     "migrate:data": "npx tsx scripts/migrate-data-simple.mjs",
     "analyze": "ANALYZE=true next build",

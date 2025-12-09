@@ -55,9 +55,31 @@ export async function GET(
     response.headers.set('ETag', `"${Date.now()}"`)
     response.headers.set('X-Cache', 'MISS')
     return response
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching blog by slug:', error)
-    return NextResponse.json({ error: 'Failed to fetch blog' }, { status: 500 })
+    
+    // Check if it's a database connection error
+    const isDatabaseError = 
+      error?.message?.toLowerCase().includes('timeout') ||
+      error?.message?.toLowerCase().includes('connection') ||
+      error?.cause?.message?.toLowerCase().includes('timeout') ||
+      error?.code === '53300'
+    
+    if (isDatabaseError) {
+      return NextResponse.json(
+        { 
+          error: 'Database connection timeout',
+          errorType: 'DATABASE_CONNECTION_ERROR',
+          message: 'The database query timed out. Please try again later.'
+        },
+        { status: 503 } // Service Unavailable
+      )
+    }
+    
+    return NextResponse.json(
+      { error: 'Failed to fetch blog' },
+      { status: 500 }
+    )
   }
 }
 
