@@ -36,13 +36,30 @@ export function isBuildTime(): boolean {
     return true
   }
   
-  // Fallback: if in production mode but no runtime URL, likely build time
+  // Check for local build: if NODE_ENV is production but we're not in a runtime environment
+  // During local `next build`, NODE_ENV=production but no VERCEL_URL or NEXT_PUBLIC_SERVER_URL
   if (
     typeof window === 'undefined' && 
     process.env.NODE_ENV === 'production' && 
     !process.env.VERCEL &&
-    !process.env.VERCEL_ENV
+    !process.env.VERCEL_URL &&
+    !process.env.NEXT_PUBLIC_SERVER_URL &&
+    // Additional check: if we're in a build context (no request object available)
+    typeof process !== 'undefined' &&
+    process.env.NEXT_RUNTIME !== 'nodejs' // During build, NEXT_RUNTIME is not set
   ) {
+    return true
+  }
+  
+  // Additional check: if NEXT_PUBLIC_SERVER_URL is not set during production build
+  // This catches local builds where the server URL isn't configured
+  if (
+    typeof window === 'undefined' &&
+    process.env.NODE_ENV === 'production' &&
+    !process.env.NEXT_PUBLIC_SERVER_URL &&
+    !process.env.VERCEL_URL
+  ) {
+    // Likely a build-time environment
     return true
   }
   

@@ -284,6 +284,19 @@ export async function getCachedAPIResponse<T>(
   fetcher: () => Promise<T>,
   options: CacheOptions = {}
 ): Promise<T> {
+  // CRITICAL: Check build time FIRST - skip all cache operations during build
+  // During build, cache operations can be slow or fail, so we skip them entirely
+  try {
+    const { isBuildTime } = await import('./build-time-helpers')
+    if (isBuildTime()) {
+      // During build, return empty/fallback data immediately
+      // Don't try to fetch or cache anything
+      return {} as T
+    }
+  } catch {
+    // If build-time-helpers can't be imported, continue normally
+  }
+
   const cache = getAPICache()
 
   // Try to get from cache

@@ -10,7 +10,16 @@ async function getPayloadClient() {
 export async function getHomepageData() {
   // CRITICAL: Check build time FIRST - return empty data immediately during build
   const { isBuildTime, getBuildTimeGlobalFallback } = await import('./build-time-helpers')
-  if (isBuildTime()) {
+  
+  // Aggressive build-time detection: if in production but no server URL, assume build time
+  const isLikelyBuildTime = 
+    isBuildTime() ||
+    (process.env.NODE_ENV === 'production' && 
+     !process.env.NEXT_PUBLIC_SERVER_URL && 
+     !process.env.VERCEL_URL &&
+     typeof window === 'undefined')
+  
+  if (isLikelyBuildTime) {
     return {
       heroSection: null,
       servicesSection: null,
@@ -27,6 +36,22 @@ export async function getHomepageData() {
   return getCachedAPIResponse(
     'homepage-data',
     async () => {
+      // CRITICAL: Double-check build time inside fetcher (safety net)
+      const { isBuildTime, getBuildTimeGlobalFallback } = await import('./build-time-helpers')
+      if (isBuildTime()) {
+        return {
+          heroSection: null,
+          servicesSection: null,
+          trustedBySection: null,
+          caseStudiesHeroSection: null,
+          caseStudiesGridSection: null,
+          testimonialsSection: null,
+          approachSection: null,
+          contactSection: null,
+          ...getBuildTimeGlobalFallback(),
+        }
+      }
+
       try {
         // In production, use the custom API route with caching
         if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
@@ -60,6 +85,21 @@ export async function getHomepageData() {
           }
         } else {
           // In development, fetch all globals separately with caching
+          // CRITICAL: Skip database calls during build
+          if (isBuildTime()) {
+            return {
+              heroSection: null,
+              servicesSection: null,
+              trustedBySection: null,
+              caseStudiesHeroSection: null,
+              caseStudiesGridSection: null,
+              testimonialsSection: null,
+              approachSection: null,
+              contactSection: null,
+              ...getBuildTimeGlobalFallback(),
+            }
+          }
+
           const serverCache = getCacheManager()
           
           // Try server cache first
@@ -146,7 +186,16 @@ export async function getFooterData() {
 export async function getCaseStudiesPageData() {
   // CRITICAL: Check build time FIRST - return empty data immediately during build
   const { isBuildTime, getBuildTimeGlobalFallback, getBuildTimeCollectionFallback } = await import('./build-time-helpers')
-  if (isBuildTime()) {
+  
+  // Aggressive build-time detection: if in production but no server URL, assume build time
+  const isLikelyBuildTime = 
+    isBuildTime() ||
+    (process.env.NODE_ENV === 'production' && 
+     !process.env.NEXT_PUBLIC_SERVER_URL && 
+     !process.env.VERCEL_URL &&
+     typeof window === 'undefined')
+  
+  if (isLikelyBuildTime) {
     return {
       caseStudiesAll: [],
       caseStudiesPageGridSection: null,
@@ -407,7 +456,16 @@ export async function getPrivacyPolicyPageData() {
 export async function getServicesData() {
   // CRITICAL: Check build time FIRST - return empty data immediately during build
   const { isBuildTime } = await import('./build-time-helpers')
-  if (isBuildTime()) {
+  
+  // Aggressive build-time detection: if in production but no server URL, assume build time
+  const isLikelyBuildTime = 
+    isBuildTime() ||
+    (process.env.NODE_ENV === 'production' && 
+     !process.env.NEXT_PUBLIC_SERVER_URL && 
+     !process.env.VERCEL_URL &&
+     typeof window === 'undefined')
+  
+  if (isLikelyBuildTime) {
     return []
   }
 
