@@ -26,7 +26,7 @@ export async function getHomepageData() {
 
         if (process.env.NODE_ENV === 'production') {
           const serverCache = getCacheManager()
-          
+        
           // Try server cache first
           const cached = await serverCache.get('homepage-data', { ttl: 3600 })
           if (cached) {
