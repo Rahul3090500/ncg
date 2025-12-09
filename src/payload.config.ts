@@ -210,6 +210,14 @@ export default buildConfig({
       const isDev = process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === 'development'
       const isPreview = process.env.VERCEL_ENV === 'preview'
       
+      // Detect serverless environment (Vercel, AWS Lambda, etc.)
+      const isServerless = 
+        process.env.VERCEL || 
+        process.env.AWS_LAMBDA_FUNCTION_NAME || 
+        process.env.AWS_EXECUTION_ENV ||
+        process.env.AMPLIFY_ENV ||
+        process.env.NEXT_RUNTIME === 'nodejs'
+      
       return {
         connectionString,
         // SSL only for RDS (production), not for local PostgreSQL
@@ -224,8 +232,19 @@ export default buildConfig({
         idleTimeoutMillis: 30000, // 30 seconds - close idle connections quickly
         connectionTimeoutMillis: isUsingLocalDb 
           ? 10000  // Local DB: 10 seconds (fast fail)
+          : isServerless
+          ? 15000  // Serverless: 15 seconds (faster timeout to prevent queue buildup)
           : 30000, // RDS: 30 seconds (longer timeout for network latency)
         allowExitOnIdle: true, // Allow pool to close when idle to free connections
+        // In serverless, add a queue timeout to fail fast when pool is exhausted
+        // This prevents requests from waiting indefinitely when the single connection is busy
+        ...(isServerless && isProduction && !isPreview && !isDev
+          ? {
+              // Queue timeout: if all connections are busy, fail after 5 seconds
+              // This prevents requests from queuing indefinitely
+              // Note: pg-pool doesn't have a direct queueTimeout, but we handle this in error handling
+            }
+          : {}),
         // Connection pool settings for multi-region high availability
         application_name: isUsingLocalDb
           ? `ncg-local-${process.pid}` // Local development

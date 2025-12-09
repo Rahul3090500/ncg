@@ -31,15 +31,22 @@ export function isDatabaseConnectionError(error: any): boolean {
     errorMessage.includes('remaining connection slots') ||
     errorMessage.includes('too many connections') ||
     errorMessage.includes('connection pool') ||
+    errorMessage.includes('pool') ||
     errorMessage.includes('rds_reserved') ||
     errorMessage.includes('database connection') ||
     errorMessage.includes('connection timeout') ||
     errorMessage.includes('connection terminated') ||
     errorMessage.includes('timeout exceeded') ||
+    errorMessage.includes('unavailable') ||
+    errorMessage.includes('exhausted') ||
     causeMessage.includes('connection timeout') ||
     causeMessage.includes('connection terminated') ||
     causeMessage.includes('terminated unexpectedly') ||
-    causeMessage.includes('timeout exceeded')
+    causeMessage.includes('timeout exceeded') ||
+    causeMessage.includes('pool') ||
+    // Check for pg-pool specific errors
+    errorMessage.includes('timeout waiting for connection') ||
+    errorMessage.includes('all connection attempts failed')
   )
 }
 
