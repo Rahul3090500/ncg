@@ -30,6 +30,30 @@ const DEFAULT_RETRY_OPTIONS: Required<RetryOptions> = {
 }
 
 async function initializePayload(): Promise<any> {
+  // CRITICAL: Check build time FIRST - prevent database initialization during build
+  try {
+    const { isBuildTime } = await import('./build-time-helpers')
+    const isLikelyBuildTime = 
+      isBuildTime() ||
+      (process.env.NODE_ENV === 'production' && 
+       !process.env.NEXT_PUBLIC_SERVER_URL && 
+       !process.env.VERCEL_URL &&
+       typeof window === 'undefined')
+    
+    if (isLikelyBuildTime) {
+      // During build, return a mock Payload instance that won't connect to database
+      console.log('Build time detected - skipping Payload initialization')
+      return {
+        config: { collections: {} },
+        find: () => Promise.resolve({ docs: [] }),
+        findGlobal: () => Promise.resolve(null),
+        // Mock methods to prevent errors
+      }
+    }
+  } catch {
+    // If build-time-helpers can't be imported, continue normally
+  }
+
   if (payloadInstance) {
     // Quick validation check
     try {
@@ -70,6 +94,29 @@ async function initializePayload(): Promise<any> {
 }
 
 async function getPayloadClientWithRetry(): Promise<any> {
+  // CRITICAL: Check build time FIRST - prevent any database operations during build
+  try {
+    const { isBuildTime } = await import('./build-time-helpers')
+    const isLikelyBuildTime = 
+      isBuildTime() ||
+      (process.env.NODE_ENV === 'production' && 
+       !process.env.NEXT_PUBLIC_SERVER_URL && 
+       !process.env.VERCEL_URL &&
+       typeof window === 'undefined')
+    
+    if (isLikelyBuildTime) {
+      // During build, return a mock Payload instance immediately
+      return {
+        config: { collections: {} },
+        find: () => Promise.resolve({ docs: [] }),
+        findGlobal: () => Promise.resolve(null),
+        // Mock methods to prevent errors
+      }
+    }
+  } catch {
+    // If build-time-helpers can't be imported, continue normally
+  }
+
   // If we have a valid instance, return it
   if (payloadInstance) {
     try {

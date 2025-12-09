@@ -16,12 +16,18 @@ export function isBuildTime(): boolean {
     return true
   }
   
-  // Check for Vercel build environment
-  // During Vercel builds, VERCEL is always set
-  // VERCEL_URL is NOT set during build, only at runtime
-  if (process.env.VERCEL && !process.env.VERCEL_URL) {
-    // VERCEL is set but VERCEL_URL is not = we're in build phase
-    return true
+  // CRITICAL: On Vercel, if VERCEL is set, check if we're in build vs runtime
+  // During Vercel builds, VERCEL=1 is always set
+  // During runtime requests, NEXT_RUNTIME=nodejs is set
+  if (process.env.VERCEL === '1' || process.env.VERCEL === 'true') {
+    // If NEXT_RUNTIME is not set, we're in build phase (not runtime)
+    if (process.env.NEXT_RUNTIME !== 'nodejs') {
+      return true
+    }
+    // Also check if VERCEL_URL is missing (build phase)
+    if (!process.env.VERCEL_URL) {
+      return true
+    }
   }
   
   // Check for Vercel CI environment
