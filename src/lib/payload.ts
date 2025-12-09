@@ -8,50 +8,9 @@ async function getPayloadClient() {
 }
 
 export async function getHomepageData() {
-  // CRITICAL: Check build time FIRST - return empty data immediately during build
-  const { isBuildTime, getBuildTimeGlobalFallback } = await import('./build-time-helpers')
-  
-  // Aggressive build-time detection: if in production but no server URL, assume build time
-  const isLikelyBuildTime = 
-    isBuildTime() ||
-    (process.env.NODE_ENV === 'production' && 
-     !process.env.NEXT_PUBLIC_SERVER_URL && 
-     !process.env.VERCEL_URL &&
-     typeof window === 'undefined')
-  
-  if (isLikelyBuildTime) {
-    return {
-      heroSection: null,
-      servicesSection: null,
-      trustedBySection: null,
-      caseStudiesHeroSection: null,
-      caseStudiesGridSection: null,
-      testimonialsSection: null,
-      approachSection: null,
-      contactSection: null,
-      ...getBuildTimeGlobalFallback(),
-    }
-  }
-
   return getCachedAPIResponse(
     'homepage-data',
     async () => {
-      // CRITICAL: Double-check build time inside fetcher (safety net)
-      const { isBuildTime, getBuildTimeGlobalFallback } = await import('./build-time-helpers')
-      if (isBuildTime()) {
-        return {
-          heroSection: null,
-          servicesSection: null,
-          trustedBySection: null,
-          caseStudiesHeroSection: null,
-          caseStudiesGridSection: null,
-          testimonialsSection: null,
-          approachSection: null,
-          contactSection: null,
-          ...getBuildTimeGlobalFallback(),
-        }
-      }
-
       try {
         // In production, ALWAYS use the API route (never direct database calls)
         // This ensures proper caching and avoids 60+ second timeouts
@@ -117,21 +76,6 @@ export async function getHomepageData() {
           }
         } else {
           // In development, fetch all globals separately with caching
-          // CRITICAL: Skip database calls during build
-          if (isBuildTime()) {
-            return {
-              heroSection: null,
-              servicesSection: null,
-              trustedBySection: null,
-              caseStudiesHeroSection: null,
-              caseStudiesGridSection: null,
-              testimonialsSection: null,
-              approachSection: null,
-              contactSection: null,
-              ...getBuildTimeGlobalFallback(),
-            }
-          }
-
           const serverCache = getCacheManager()
           
           // Try server cache first
@@ -180,7 +124,7 @@ export async function getHomepageData() {
 
         // Return empty data if no CMS data exists
         return {}
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching homepage data:', error)
         return {}
       }
@@ -209,34 +153,13 @@ export async function getFooterData() {
       return { footerSection }
     }
     return {}
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching footer data:', error)
     return {}
   }
 }
 
 export async function getCaseStudiesPageData() {
-  // CRITICAL: Check build time FIRST - return empty data immediately during build
-  const { isBuildTime, getBuildTimeGlobalFallback, getBuildTimeCollectionFallback } = await import('./build-time-helpers')
-  
-  // Aggressive build-time detection: if in production but no server URL, assume build time
-  const isLikelyBuildTime = 
-    isBuildTime() ||
-    (process.env.NODE_ENV === 'production' && 
-     !process.env.NEXT_PUBLIC_SERVER_URL && 
-     !process.env.VERCEL_URL &&
-     typeof window === 'undefined')
-  
-  if (isLikelyBuildTime) {
-    return {
-      caseStudiesAll: [],
-      caseStudiesPageGridSection: null,
-      caseStudiesPageHeroSection: null,
-      contactSection: null,
-      ...getBuildTimeGlobalFallback(),
-    }
-  }
-
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       // Add timeout to fetch to prevent hanging during build
@@ -271,7 +194,7 @@ export async function getCaseStudiesPageData() {
       }
     }
     return { caseStudiesAll: [], caseStudiesPageGridSection: null, caseStudiesPageHeroSection: null, contactSection: null }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching case studies page data:', error)
     return { caseStudiesAll: [], caseStudiesPageGridSection: null, caseStudiesPageHeroSection: null, contactSection: null }
   }
@@ -302,7 +225,7 @@ export async function getCaseStudyBySlug(slug: string) {
       return result?.docs?.[0] || null
     }
     return null
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error fetching case study by slug (${slug}):`, error)
     return null
   }
@@ -348,7 +271,7 @@ export async function getAboutPageData() {
       }
     }
     return {}
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching about page data:', error)
     return {}
   }
@@ -373,7 +296,7 @@ export async function getBlogsPageData() {
       return { blogsPageHeroSection, blogsAll }
     }
     return {}
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching blogs page data:', error)
     return {}
   }
@@ -404,7 +327,7 @@ export async function getBlogBySlug(slug: string) {
       return result?.docs?.[0] || null
     }
     return null
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error fetching blog by slug (${slug}):`, error)
     return null
   }
@@ -416,7 +339,7 @@ export async function getJobsPageData() {
     async () => {
       try {
         const serverCache = getCacheManager()
-        const cached = await serverCache.get('jobs-page-data', { ttl: 1800 }) // 30 min cache
+        const cached: any = await serverCache.get('jobs-page-data', { ttl: 1800 }) // 30 min cache
         if (cached) {
           // Ensure selectedJobs is always an array
           if (cached?.jobsSection && !Array.isArray(cached.jobsSection.selectedJobs)) {
@@ -431,7 +354,7 @@ export async function getJobsPageData() {
             headers: { 'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=3600' },
           })
           if (response.ok) {
-            const result = await response.json()
+            const result: any = await response.json()
             // Ensure jobsSection has selectedJobs array
             if (result?.jobsSection && !Array.isArray(result.jobsSection.selectedJobs)) {
               result.jobsSection.selectedJobs = []
@@ -453,7 +376,7 @@ export async function getJobsPageData() {
           return result
         }
         return { jobsSection: null }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching jobs page data:', error)
         return { jobsSection: null }
       }
@@ -478,7 +401,7 @@ export async function getPrivacyPolicyPageData() {
       return { privacyPolicySection }
     }
     return {}
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching privacy policy page data:', error)
     return {}
   }
@@ -486,21 +409,6 @@ export async function getPrivacyPolicyPageData() {
 
 // Services data fetching functions
 export async function getServicesData() {
-  // CRITICAL: Check build time FIRST - return empty data immediately during build
-  const { isBuildTime } = await import('./build-time-helpers')
-  
-  // Aggressive build-time detection: if in production but no server URL, assume build time
-  const isLikelyBuildTime = 
-    isBuildTime() ||
-    (process.env.NODE_ENV === 'production' && 
-     !process.env.NEXT_PUBLIC_SERVER_URL && 
-     !process.env.VERCEL_URL &&
-     typeof window === 'undefined')
-  
-  if (isLikelyBuildTime) {
-    return []
-  }
-
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       // Add timeout to fetch to prevent hanging during build
@@ -521,7 +429,7 @@ export async function getServicesData() {
       return Array.isArray(result?.docs) ? result.docs : []
     }
     return []
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching services data:', error)
     return []
   }
@@ -554,7 +462,7 @@ export async function getServiceBySlug(slug: string) {
         },
         limit: 1,
         depth: 2,
-      }).catch((error) => {
+      }).catch((error: any) => {
         // Only log actual errors, not null/undefined
         if (error) {
           console.error(`Error fetching service by slug (${slug}):`, error)
@@ -576,7 +484,7 @@ export async function getServiceBySlug(slug: string) {
       return service
     }
     return null
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error fetching service by slug (${slug}):`, error)
     return null
   }
@@ -612,7 +520,7 @@ export async function getSubServicesForService(serviceSlug: string) {
       return Array.isArray(result?.docs) ? result.docs : []
     }
     return []
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error fetching sub-services for service (${serviceSlug}):`, error)
     return []
   }
@@ -656,7 +564,7 @@ export async function getSubServiceBySlug(serviceSlug: string, subServiceSlug: s
       return result?.docs?.[0] || null
     }
     return null
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error fetching sub-service by slug (${serviceSlug}/${subServiceSlug}):`, error)
     return null
   }
@@ -687,7 +595,7 @@ export async function getJobBySlug(slug: string) {
       return result?.docs?.[0] || null
     }
     return null
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error fetching job by slug (${slug}):`, error)
     return null
   }
