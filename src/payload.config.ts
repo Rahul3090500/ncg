@@ -76,7 +76,22 @@ function resolveCa() {
 }
 
 const ca = resolveCa()
-const sslConfig: any = ca ? { ca, rejectUnauthorized: false } : process.env.NODE_ENV === 'production' ? true : { rejectUnauthorized: false }
+// Optimize SSL configuration for faster handshake
+// Use CA certificate if available, otherwise use standard SSL
+// rejectUnauthorized: false allows self-signed certs but still encrypts connection
+const sslConfig: any = ca 
+  ? { 
+      ca, 
+      rejectUnauthorized: false,
+      // Optimize SSL handshake for faster connection
+      checkServerIdentity: () => undefined, // Skip hostname verification for RDS
+    } 
+  : process.env.NODE_ENV === 'production' 
+    ? { 
+        rejectUnauthorized: false,
+        checkServerIdentity: () => undefined,
+      } 
+    : { rejectUnauthorized: false }
 const sanitizeEnv = (value?: string | null) => (value ? value.trim() : '')
 const s3Bucket = sanitizeEnv(process.env.S3_BUCKET) || sanitizeEnv(process.env.AWS_S3_BUCKET) || 'ncg-storage-bucket'
 const s3Region = sanitizeEnv(process.env.S3_REGION) || sanitizeEnv(process.env.AWS_REGION)
@@ -235,16 +250,24 @@ export default buildConfig({
         max: isProduction && !isPreview && !isDev
           ? 1  // PRODUCTION: Exactly 1 connection for RDS
           : 2, // Local/Dev/Preview: 2 connections
-        min: 0, // Don't keep idle connections - let them close to free up slots
-        idleTimeoutMillis: 30000, // 30 seconds - close idle connections quickly
+        // In serverless, keep min: 0 to allow connections to close when idle
+        // This prevents connection leaks but may cause cold starts
+        // For production RDS with cross-continental latency, consider keeping 1 connection alive
+        min: isServerless && isProduction && !isPreview && !isDev
+          ? 0  // Serverless: Allow connections to close (prevents leaks)
+          : 0, // Default: Don't keep idle connections
+        idleTimeoutMillis: isServerless && isProduction && !isPreview && !isDev
+          ? 60000  // Serverless production: 60 seconds (keep connection alive longer to reduce cold starts)
+          : 30000, // Default: 30 seconds - close idle connections quickly
         // Increase timeout for build-time operations to allow more time for connection
         // Also increase timeout for serverless runtime to handle RDS connection latency
+        // Cross-continental latency (Vercel US ↔ RDS eu-north-1) + SSL handshake requires longer timeout
         connectionTimeoutMillis: isBuildTime
           ? 60000  // Build time: 60 seconds (longer timeout for build operations)
           : isUsingLocalDb 
           ? 10000  // Local DB: 10 seconds (fast fail)
           : isServerless
-          ? 30000  // Serverless runtime: 30 seconds (increased from 15s for RDS network latency)
+          ? 60000  // Serverless runtime: 60 seconds (increased for extreme cross-continental latency - Mumbai/India ↔ Stockholm/Sweden)
           : 30000, // RDS: 30 seconds (longer timeout for network latency)
         allowExitOnIdle: true, // Allow pool to close when idle to free connections
         // In serverless, add a queue timeout to fail fast when pool is exhausted

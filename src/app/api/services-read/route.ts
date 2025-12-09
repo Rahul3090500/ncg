@@ -29,10 +29,11 @@ export async function GET() {
     // Cache miss - fetch from database with retry logic
     const payload = await getPayload({ config })
     
-    // Retry the query up to 2 times if it fails due to connection issues
+    // Retry the query up to 3 times if it fails due to connection issues
+    // Increased retries and delays for extreme cross-continental latency
     let result
     let lastError: any = null
-    const maxRetries = 2
+    const maxRetries = 3
     
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
@@ -48,7 +49,8 @@ export async function GET() {
         lastError = error
         // Only retry on connection/timeout errors
         if (isDatabaseConnectionError(error) && attempt < maxRetries) {
-          const delay = (attempt + 1) * 1000 // 1s, 2s delays
+          // Exponential backoff: 2s, 4s, 8s delays (max 10s)
+          const delay = Math.min(Math.pow(2, attempt + 1) * 1000, 10000)
           console.warn(`Database query failed (attempt ${attempt + 1}/${maxRetries + 1}), retrying in ${delay}ms...`)
           await new Promise(resolve => setTimeout(resolve, delay))
           continue
