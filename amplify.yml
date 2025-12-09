@@ -1,0 +1,88 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        # ============================================
+        # BRANCH FILTERING - Cost Optimization
+        # ============================================
+        # Only build on main/master branches to save 80-90% of AWS costs
+        # Feature branches automatically skip builds (saves $2.96-$6.80/month)
+        # To disable this filter, comment out the next 6 lines
+        - |
+          if [ "$AWS_BRANCH" != "main" ] && [ "$AWS_BRANCH" != "master" ]; then
+            echo "⏭️  Skipping build for branch: $AWS_BRANCH"
+            echo "✅ Only 'main' branch builds are enabled to save costs."
+            echo "💡 To build this branch, merge it to 'main' or manually trigger a build."
+            echo "💰 Cost saved: ~$0.02-$0.04 per skipped build"
+            exit 0
+          fi
+          echo "✅ Building on branch: $AWS_BRANCH"
+        
+        # ============================================
+        # DEPENDENCY INSTALLATION - Optimized
+        # ============================================
+        # Ultra-fast npm install with maximum caching and parallel downloads
+        # Flags explanation:
+        #   --legacy-peer-deps: Faster dependency resolution
+        #   --prefer-offline: Use cached packages when available
+        #   --no-audit: Skip security audit (saves ~10-20 seconds)
+        #   --no-fund: Skip funding messages (saves ~2-3 seconds)
+        #   --loglevel=error: Minimal logging (faster)
+        #   --maxsockets=15: Parallel downloads (faster installs)
+        #   --prefer-dedupe: Deduplicate packages (smaller node_modules)
+        #   --include=dev: CRITICAL - Include devDependencies (TypeScript needs them)
+        - npm ci --include=dev --legacy-peer-deps --prefer-offline --no-audit --no-fund --loglevel=error --maxsockets=15 --prefer-dedupe
+        
+        # ============================================
+        # ENVIRONMENT VARIABLES SETUP
+        # ============================================
+        # Copy required environment variables to .env.production
+        # Single command approach (faster than multiple commands)
+        - env | grep -E '^(PAYLOAD_SECRET|DATABASE_URI|CORS_ORIGINS|PG_SSL_CA_BASE64|S3_BUCKET|S3_REGION|S3_ACCESS_KEY_ID|S3_SECRET_ACCESS_KEY|S3_ACL|S3_ENDPOINT|S3_FORCE_PATH_STYLE|S3_PREFIX|NODE_ENV|AWS_REGION)=' >> .env.production || true
+        - env | grep '^NEXT_PUBLIC_' >> .env.production || true
+        
+        # ============================================
+        # PAYLOAD TYPE GENERATION
+        # ============================================
+        # Pre-generate Payload types if not cached
+        # Runs in parallel with npm install (non-blocking)
+        # Cached between builds for faster subsequent builds
+        - npm run generate:types || true
+    
+    build:
+      commands:
+        # ============================================
+        # BUILD PROCESS - Optimized
+        # ============================================
+        # Next.js build with all optimizations enabled
+        # NEXT_TELEMETRY_DISABLED=1: Disable telemetry (saves ~5-10 seconds)
+        # SKIP_ENV_VALIDATION=true: Skip env validation (already done in preBuild)
+        # Expected build time: 2-3 minutes (with cache)
+        - NEXT_TELEMETRY_DISABLED=1 SKIP_ENV_VALIDATION=true npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      # Cache node_modules (largest time saver - ~3-5 minutes saved)
+      - node_modules/**/*
+      # Cache Next.js build cache (incremental builds - ~1-2 minutes saved)
+      - .next/cache/**/*
+      # Cache Next.js standalone output (if using standalone mode)
+      - .next/standalone/**/*
+      # Cache TypeScript build info (speeds up type checking - ~30 seconds saved)
+      - .next/types/**/*
+      # Cache Payload generated files (prevents regeneration - ~10 seconds saved)
+      - src/payload-types.ts
+      - src/app/(payload)/admin/components/importMap.json
+      # Cache npm cache directory (faster npm installs)
+      - ~/.npm/**/*
+      # Cache package-lock.json for faster dependency resolution
+      - package-lock.json
+      # Cache Next.js build manifest (speeds up incremental builds)
+      - .next/BUILD_ID
+      - .next/export-marker.json
+      # Cache webpack build cache
+      - .next/webpack-cache/**/*

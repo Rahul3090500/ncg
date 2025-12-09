@@ -1,0 +1,95 @@
+{
+  "title": "Our Approach",
+  "steps": [
+    {
+      "id": "01",
+      "title": "Assess",
+      "description": "We begin by understanding your business, technology, and threat landscape — conducting in-depth risk assessments, audits, and compliance reviews tailored to your industry.",
+      "image": {
+        "url": "/home-images/fraud-assessment-1c8ffa.png",
+        "alt": "Assessment and analysis"
+      }
+    },
+    {
+      "id": "02",
+      "title": "Secure",
+      "description": "Based on insights, we build a strategy that fits your needs — combining policies, advanced technologies, and real-world experience to protect your digital environment.",
+      "image": {
+        "url": "/home-images/identity-security-hero-7df91e.png",
+        "alt": "Security implementation"
+      }
+    },
+    {
+      "id": "03",
+      "title": "Monitor",
+      "description": "We implement continuous monitoring systems to detect threats in real-time, ensuring your security posture remains strong against evolving cyber threats.",
+      "image": {
+        "url": "/home-images/identity-visibility-24fa7b.png",
+        "alt": "Continuous monitoring"
+      }
+    },
+    {
+      "id": "04",
+      "title": "Respond",
+      "description": "When incidents occur, our rapid response team activates immediately to contain threats, minimize damage, and restore normal operations quickly.",
+      "image": {
+        "url": "/home-images/reduce-attack-surface-1f7cdd.png",
+        "alt": "Incident response"
+      }
+    },
+    {
+      "id": "05",
+      "title": "Optimize",
+      "description": "We continuously refine and improve your security measures based on new threats, industry best practices, and lessons learned from incidents.",
+      "image": {
+        "url": "/home-images/service-am-699e30.png",
+        "alt": "Security optimization"
+      }
+    },
+    {
+      "id": "06",
+      "title": "Train",
+      "description": "We provide comprehensive security awareness training to your team, ensuring everyone understands their role in maintaining cybersecurity.",
+      "image": {
+        "url": "/home-images/executive-trust-4f1c8d.png",
+        "alt": "Security training"
+      }
+    },
+    {
+      "id": "07",
+      "title": "Comply",
+      "description": "We help you meet regulatory requirements and industry standards, ensuring your organization maintains compliance with relevant frameworks.",
+      "image": {
+        "url": "/home-images/regulatory-alignment-41c3d9.png",
+        "alt": "Compliance management"
+      }
+    },
+    {
+      "id": "08",
+      "title": "Scale",
+      "description": "As your business grows, we ensure your security infrastructure scales accordingly, maintaining protection without hindering growth.",
+      "image": {
+        "url": "/home-images/service-iga-74a521.png",
+        "alt": "Scalable security"
+      }
+    },
+    {
+      "id": "09",
+      "title": "Innovate",
+      "description": "We stay ahead of emerging threats by implementing cutting-edge security technologies and innovative approaches to cybersecurity.",
+      "image": {
+        "url": "/home-images/service-ciam-2197b8.png",
+        "alt": "Security innovation"
+      }
+    },
+    {
+      "id": "10",
+      "title": "Support",
+      "description": "Our dedicated support team provides 24/7 assistance, ensuring you have expert help whenever security questions or issues arise.",
+      "image": {
+        "url": "/home-images/service-pam-35ebb1.png",
+        "alt": "24/7 security support"
+      }
+    }
+  ]
+}
