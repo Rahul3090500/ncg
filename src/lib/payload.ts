@@ -53,8 +53,13 @@ export async function getHomepageData() {
       }
 
       try {
-        // In production, use the custom API route with caching
-        if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
+        // In production, ALWAYS use the API route (never direct database calls)
+        // This ensures proper caching and avoids 60+ second timeouts
+        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 
+                         (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
+                         'https://ncg-beta.vercel.app'
+        
+        if (process.env.NODE_ENV === 'production') {
           const serverCache = getCacheManager()
           
           // Try server cache first
@@ -63,24 +68,39 @@ export async function getHomepageData() {
             return cached
           }
 
-          // Add timeout to fetch to prevent hanging during build
+          // Add timeout to fetch - fail fast if API is slow
           const controller = new AbortController()
-          const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+          const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
           
-          const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/homepage-read`, {
-            next: { revalidate: 3600 }, // Revalidate every hour
-            headers: {
-              'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
-            },
-            signal: controller.signal,
-          }).finally(() => clearTimeout(timeoutId))
-          
-          if (response.ok) {
-            const result = await response.json()
-            if (result) {
-              // Store in server cache
-              await serverCache.set('homepage-data', result, { ttl: 3600 })
-              return result
+          try {
+            const response = await fetch(`${serverUrl}/api/homepage-read`, {
+              next: { revalidate: 3600 }, // Revalidate every hour
+              headers: {
+                'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+              },
+              signal: controller.signal,
+            }).finally(() => clearTimeout(timeoutId))
+            
+            if (response.ok) {
+              const result = await response.json()
+              if (result && !result._buildTimeFallback) {
+                // Store in server cache
+                await serverCache.set('homepage-data', result, { ttl: 3600 })
+                return result
+              }
+            }
+          } catch (fetchError: any) {
+            // If API fetch fails or times out, return empty data instead of blocking
+            console.warn('API fetch failed, returning empty data:', fetchError.message)
+            return {
+              heroSection: null,
+              servicesSection: null,
+              trustedBySection: null,
+              caseStudiesHeroSection: null,
+              caseStudiesGridSection: null,
+              testimonialsSection: null,
+              approachSection: null,
+              contactSection: null,
             }
           }
         } else {

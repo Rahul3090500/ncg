@@ -250,15 +250,14 @@ export default buildConfig({
         max: isProduction && !isPreview && !isDev
           ? 1  // PRODUCTION: Exactly 1 connection for RDS
           : 2, // Local/Dev/Preview: 2 connections
-        // In serverless, keep min: 1 to maintain connection within Lambda execution context
-        // This reduces cold start overhead while still allowing connections to close when Lambda ends
-        // Lambda execution context can last up to 15 minutes, so keeping 1 connection alive helps
-        min: isServerless && isProduction && !isPreview && !isDev
-          ? 1  // Serverless: Keep 1 connection alive within Lambda execution context (reduces cold starts)
-          : 0, // Default: Don't keep idle connections
+        // Optimized for clean connection management:
+        // - Vercel: min=0 to allow connections to close when idle (cleaner)
+        // - Local: min=0 to keep it clean
+        // Connections will close quickly when idle, reducing connection pool clutter
+        min: 0, // Don't keep idle connections - close them when not in use
         idleTimeoutMillis: isServerless && isProduction && !isPreview && !isDev
-          ? 300000  // Serverless production: 5 minutes (Lambda execution context can last up to 15 min)
-          : 30000, // Default: 30 seconds - close idle connections quickly
+          ? 60000  // Serverless production: 1 minute (close idle connections quickly for cleaner pool)
+          : 30000, // Local: 30 seconds - close idle connections quickly
         // Increase timeout for build-time operations to allow more time for connection
         // Also increase timeout for serverless runtime to handle RDS connection latency
         // Cross-continental latency (Vercel US ↔ RDS eu-north-1) + SSL handshake requires longer timeout
@@ -269,11 +268,9 @@ export default buildConfig({
           : isServerless
           ? 60000  // Serverless runtime: 60 seconds (increased for extreme cross-continental latency - Mumbai/India ↔ Stockholm/Sweden)
           : 30000, // RDS: 30 seconds (longer timeout for network latency)
-        // In serverless, don't allow exit on idle - keep connection alive within execution context
-        // This reduces cold start overhead for subsequent requests in the same Lambda
-        allowExitOnIdle: isServerless && isProduction && !isPreview && !isDev
-          ? false  // Serverless: Keep connection alive within Lambda execution context
-          : true,  // Default: Allow pool to close when idle to free connections
+        // Allow connections to close when idle for cleaner connection pool
+        // This ensures connections don't accumulate unnecessarily
+        allowExitOnIdle: true, // Allow pool to close when idle - keeps connection pool clean
         // In serverless, add a queue timeout to fail fast when pool is exhausted
         // This prevents requests from waiting indefinitely when the single connection is busy
         ...(isServerless && isProduction && !isPreview && !isDev
@@ -283,10 +280,13 @@ export default buildConfig({
               // Note: pg-pool doesn't have a direct queueTimeout, but we handle this in error handling
             }
           : {}),
-        // Connection pool settings for multi-region high availability
+        // Connection pool settings - clean identification
+        // Use clear application names to identify Vercel vs Local connections
         application_name: isUsingLocalDb
-          ? `ncg-local-${process.pid}` // Local development
-          : `ncg-payload-cms-${process.env.AWS_REGION || 'default'}-${process.pid}`, // RDS production
+          ? 'ncg-local' // Local development - single identifier
+          : process.env.VERCEL
+          ? 'ncg-vercel' // Vercel production - single identifier
+          : `ncg-payload-cms-${process.env.AWS_REGION || 'default'}-${process.pid}`, // Other environments
       }
     })(),
     // Disable automatic schema push/pull to prevent continuous retries
