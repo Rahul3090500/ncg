@@ -1,3 +1,4 @@
+import { getHomepageData } from '../../lib/payload'
 import ClientHomepage from './ClientHomepage'
 import approachData from './data/approach.json'
 import React from 'react'
@@ -110,69 +111,11 @@ interface HomepageData {
 }
 
 // Use ISR - revalidate every 60 seconds (removes force-dynamic for better performance)
-// Use static generation with ISR - revalidate every 60 seconds
 export const revalidate = 60
 
 const Home = async () => {
-  // CRITICAL: Render immediately without waiting for data
-  // Use empty data by default - page will render fast
-  // Data will be fetched client-side if needed
-  let homepageData: any = {
-    heroSection: null,
-    servicesSection: null,
-    trustedBySection: null,
-    caseStudiesHeroSection: null,
-    caseStudiesGridSection: null,
-    testimonialsSection: null,
-    approachSection: null,
-    contactSection: null,
-  }
-
-  // Try to fetch from API route, but don't block - use Promise.race with very short timeout
-  const fetchData = async () => {
-    try {
-      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 
-                       (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
-                       'https://ncg-beta.vercel.app'
-      
-      // Very short timeout - fail fast
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 1000) // 1 second timeout
-      
-      const response = await fetch(`${serverUrl}/api/homepage-read`, {
-        next: { revalidate: 60 },
-        cache: 'force-cache',
-        signal: controller.signal,
-      }).finally(() => clearTimeout(timeoutId))
-      
-      if (response.ok) {
-        const data = await response.json()
-        if (data && !data._buildTimeFallback) {
-          return data
-        }
-      }
-    } catch (error) {
-      // Silently fail - return null to use empty data
-    }
-    return null
-  }
-
-  // Don't await - let it run in background, use empty data for now
-  // This ensures page renders immediately
-  const dataPromise = fetchData()
-  
-  // Use Promise.race to get data if it arrives quickly, otherwise use empty data
-  try {
-    const quickData = await Promise.race([
-      dataPromise,
-      new Promise((resolve) => setTimeout(() => resolve(null), 500)) // 500ms max wait
-    ])
-    if (quickData) {
-      homepageData = quickData
-    }
-  } catch {
-    // Use empty data - page renders immediately
-  }
+  // Fetch data on the server
+  const homepageData = await getHomepageData()
 
   // Use CMS data if available, otherwise fall back to defaults
   const defaultHeroData = {
@@ -252,17 +195,31 @@ const Home = async () => {
   // Use CMS services data if available, otherwise fall back to empty structure
   const servicesSection = (homepageData as HomepageData)?.servicesSection
   
-  // Use services section from homepage data, or empty fallback
-  // Don't fetch services separately - use what's in homepage data or empty
+  // If services-section exists but has no services, or doesn't exist, fetch all services as fallback
   let servicesDataFromCMS
   if (servicesSection?.sectionTitle && servicesSection?.services && Array.isArray(servicesSection.services) && servicesSection.services.length > 0) {
     // Use CMS data if it has services
     servicesDataFromCMS = servicesSection
   } else {
-    // Empty fallback - don't fetch services (would block page load)
-    servicesDataFromCMS = {
-      sectionTitle: servicesSection?.sectionTitle || 'Our\nServices',
-      services: [],
+    // Fallback: fetch all services and create structure
+    const { getServicesData } = await import('../../lib/payload')
+    const allServices = await getServicesData()
+    
+    if (allServices.length > 0) {
+      // Transform services to match the expected structure
+      servicesDataFromCMS = {
+        sectionTitle: servicesSection?.sectionTitle || 'Our\nServices',
+        services: allServices.map((service: any) => ({
+          service: service, // Full service object
+          subServices: [], // Empty - user can add sub-services in admin
+        })),
+      }
+    } else {
+      // No services at all
+      servicesDataFromCMS = {
+        sectionTitle: servicesSection?.sectionTitle || 'Our\nServices',
+        services: [],
+      }
     }
   }
 

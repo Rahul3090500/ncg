@@ -59,14 +59,22 @@ export async function getHomepageData() {
                          (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
                          'https://ncg-beta.vercel.app'
         
+        console.log('[getHomepageData] serverUrl:', serverUrl, {
+          NODE_ENV: process.env.NODE_ENV,
+          NEXT_PUBLIC_SERVER_URL: process.env.NEXT_PUBLIC_SERVER_URL,
+          VERCEL_URL: process.env.VERCEL_URL,
+        })
+
         if (process.env.NODE_ENV === 'production') {
           const serverCache = getCacheManager()
           
           // Try server cache first
           const cached = await serverCache.get('homepage-data', { ttl: 3600 })
           if (cached) {
+            console.log('[getHomepageData] cache HIT (homepage-data)')
             return cached
           }
+          console.log('[getHomepageData] cache MISS (homepage-data) -> fetching API')
 
           // Add timeout to fetch - fail fast if API is slow
           const controller = new AbortController()
@@ -86,12 +94,16 @@ export async function getHomepageData() {
               if (result && !result._buildTimeFallback) {
                 // Store in server cache
                 await serverCache.set('homepage-data', result, { ttl: 3600 })
+                console.log('[getHomepageData] API fetch SUCCESS, cached result')
                 return result
               }
+              console.warn('[getHomepageData] API fetch returned fallback or empty result')
+            } else {
+              console.warn('[getHomepageData] API fetch not OK:', response.status)
             }
           } catch (fetchError: any) {
             // If API fetch fails or times out, return empty data instead of blocking
-            console.warn('API fetch failed, returning empty data:', fetchError.message)
+            console.warn('[getHomepageData] API fetch failed, returning empty data:', fetchError.message)
             return {
               heroSection: null,
               servicesSection: null,

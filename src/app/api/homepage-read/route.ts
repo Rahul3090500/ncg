@@ -11,6 +11,7 @@ export const revalidate = 3600
 export async function GET() {
   // CRITICAL: Check build time FIRST before any database operations
   if (isBuildTime()) {
+    console.log('[api/homepage-read] Build time detected - returning fallback')
     return NextResponse.json(
       {
         heroSection: null,
@@ -40,6 +41,7 @@ export async function GET() {
     // Try cache first (increased TTL from 1 hour to 2 hours for better performance)
     const cached = await cache.get(cacheKey, { ttl: 7200 })
     if (cached) {
+      console.log('[api/homepage-read] Cache HIT')
       const etag = `"${Date.now()}"` // Simple ETag
 
       const response = NextResponse.json(cached)
@@ -50,6 +52,7 @@ export async function GET() {
     }
 
     // Cache miss - fetch from database
+    console.log('[api/homepage-read] Cache MISS - fetching from database')
     const payload = await getPayload({ config })
     
     // Fetch all globals in parallel
@@ -92,13 +95,14 @@ export async function GET() {
     response.headers.set('Cache-Control', 'public, s-maxage=7200, stale-while-revalidate=86400')
     response.headers.set('ETag', etag)
     response.headers.set('X-Cache', 'MISS')
+    console.log('[api/homepage-read] DB fetch SUCCESS - cached result')
     return response
   } catch (error: any) {
-    console.error('Error fetching homepage data:', error)
+    console.error('[api/homepage-read] Error fetching homepage data:', error?.message || error)
     
     // During build time, return empty data gracefully instead of error
     if (isBuildTime() && isDatabaseConnectionError(error)) {
-      console.warn('Build-time database connection failed, returning empty data. Will fetch at runtime.')
+      console.warn('[api/homepage-read] Build-time DB error, returning fallback for build.')
       return NextResponse.json(
         {
           heroSection: null,

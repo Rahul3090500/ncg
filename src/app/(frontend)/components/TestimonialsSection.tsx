@@ -1,4 +1,5 @@
 import React from 'react'
+import { getPayloadClient } from '@/lib/payload-retry'
 import dynamic from 'next/dynamic'
 
 // Dynamically import TestimonialsCarousel for better code splitting
@@ -23,12 +24,28 @@ interface TestimonialsData {
 }
 
 const TestimonialsSection = async () => {
-  // Use fallback data - don't fetch from database (would block page load)
-  // Data can be fetched client-side if needed
+  // Fetch testimonials section data from CMS
   let cmsData: TestimonialsData | null = null
   
-  // Try to get from homepage data if available (passed via props or context)
-  // For now, use fallback to avoid blocking
+  try {
+    const payloadClient = await getPayloadClient()
+    const testimonialsSection = await payloadClient.findGlobal({ slug: 'testimonials-section' }).catch(() => null)
+    
+    if (testimonialsSection?.overline && Array.isArray(testimonialsSection.testimonials)) {
+      cmsData = {
+        overline: String(testimonialsSection.overline),
+        testimonials: testimonialsSection.testimonials.map((t: any) => ({
+          name: String(t?.name || ''),
+          position: String(t?.position || ''),
+          company: String(t?.company || ''),
+          image: t?.image?.url ? { url: String(t.image.url) } : undefined,
+          quote: String(t?.quote || ''),
+        })),
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching testimonials section data:', error)
+  }
 
   // Use CMS data if available, otherwise use fallback
   const data: TestimonialsData = cmsData || {
