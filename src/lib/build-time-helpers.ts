@@ -16,70 +16,22 @@ export function isBuildTime(): boolean {
     return true
   }
   
-  // CRITICAL: On Vercel, if VERCEL is set, check if we're in build vs runtime
-  // During Vercel builds, VERCEL=1 is always set
-  // During runtime requests, NEXT_RUNTIME=nodejs is set
-  if (process.env.VERCEL === '1' || process.env.VERCEL === 'true') {
-    // Vercel sets NEXT_RUNTIME only for some runtimes; in production requests VERCEL_URL is present.
-    // Treat presence of either NEXT_RUNTIME or VERCEL_URL as a runtime hint.
-    const hasRuntimeHints = Boolean(process.env.NEXT_RUNTIME) || Boolean(process.env.VERCEL_URL)
-    // Consider edge/node runtimes as valid runtime contexts
-    const isRuntime =
-      process.env.NEXT_RUNTIME === 'nodejs' ||
-      process.env.NEXT_RUNTIME === 'edge' ||
-      process.env.NEXT_RUNTIME === 'experimental-edge' ||
-      Boolean(process.env.VERCEL_URL)
-
-    // If we have no runtime hints, we're in the build phase
-    if (!hasRuntimeHints) {
-      return true
-    }
-
-    // If we can't confirm runtime, assume build
-    if (!isRuntime) {
-      return true
-    }
-  }
-  
-  // Check for Vercel CI environment
-  if (process.env.VERCEL && process.env.CI) {
-    // CI=true indicates build environment on Vercel
+  // Explicit Vercel CI build
+  if ((process.env.VERCEL === '1' || process.env.VERCEL === 'true') && process.env.CI) {
     return true
   }
-  
-  // Check for build context (Vercel sets this during builds)
-  if (process.env.VERCEL_ENV === 'production' && process.env.VERCEL && !process.env.VERCEL_URL) {
-    // During build, VERCEL_URL is not set yet
-    return true
-  }
-  
-  // Check for local build: if NODE_ENV is production but we're not in a runtime environment
-  // During local `next build`, NODE_ENV=production but no VERCEL_URL or NEXT_PUBLIC_SERVER_URL
+
+  // Vercel production build where VERCEL_URL may be absent during compile
   if (
-    typeof window === 'undefined' && 
-    process.env.NODE_ENV === 'production' && 
-    !process.env.VERCEL &&
+    process.env.VERCEL_ENV === 'production' &&
+    (process.env.VERCEL === '1' || process.env.VERCEL === 'true') &&
     !process.env.VERCEL_URL &&
-    !process.env.NEXT_PUBLIC_SERVER_URL &&
-    // Additional check: if we're in a build context (no request object available)
-    typeof process !== 'undefined' &&
-    process.env.NEXT_RUNTIME !== 'nodejs' // During build, NEXT_RUNTIME is not set
+    process.env.NEXT_PHASE === 'phase-production-build'
   ) {
     return true
   }
-  
-  // Additional check: if NEXT_PUBLIC_SERVER_URL is not set during production build
-  // This catches local builds where the server URL isn't configured
-  if (
-    typeof window === 'undefined' &&
-    process.env.NODE_ENV === 'production' &&
-    !process.env.NEXT_PUBLIC_SERVER_URL &&
-    !process.env.VERCEL_URL
-  ) {
-    // Likely a build-time environment
-    return true
-  }
-  
+
+  // Otherwise, assume runtime to avoid false positives that wipe data on prod
   return false
 }
 
