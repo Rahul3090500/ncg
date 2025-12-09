@@ -8,14 +8,38 @@
  * During build, database connections may timeout, so we return empty data gracefully
  */
 export function isBuildTime(): boolean {
-  return (
+  // Check for Next.js build phase
+  if (
     process.env.NEXT_PHASE === 'phase-production-build' ||
-    process.env.NEXT_PHASE === 'phase-production-compile' ||
-    (typeof window === 'undefined' && 
-     process.env.NODE_ENV === 'production' && 
-     !process.env.VERCEL &&
-     !process.env.VERCEL_ENV)
-  )
+    process.env.NEXT_PHASE === 'phase-production-compile'
+  ) {
+    return true
+  }
+  
+  // Check for Vercel build environment
+  // During Vercel builds, VERCEL is set but we're still in build phase
+  if (process.env.VERCEL && process.env.CI) {
+    // CI=true indicates build environment on Vercel
+    return true
+  }
+  
+  // Check for build context (Vercel sets this during builds)
+  if (process.env.VERCEL_ENV === 'production' && process.env.VERCEL && !process.env.VERCEL_URL) {
+    // During build, VERCEL_URL is not set yet
+    return true
+  }
+  
+  // Fallback: if in production mode but no runtime URL, likely build time
+  if (
+    typeof window === 'undefined' && 
+    process.env.NODE_ENV === 'production' && 
+    !process.env.VERCEL &&
+    !process.env.VERCEL_ENV
+  ) {
+    return true
+  }
+  
+  return false
 }
 
 /**
@@ -37,16 +61,21 @@ export function isDatabaseConnectionError(error: any): boolean {
     errorMessage.includes('connection timeout') ||
     errorMessage.includes('connection terminated') ||
     errorMessage.includes('timeout exceeded') ||
+    errorMessage.includes('timeout exceeded when trying to connect') ||
     errorMessage.includes('unavailable') ||
     errorMessage.includes('exhausted') ||
+    errorMessage.includes('failed query') ||
     causeMessage.includes('connection timeout') ||
     causeMessage.includes('connection terminated') ||
     causeMessage.includes('terminated unexpectedly') ||
     causeMessage.includes('timeout exceeded') ||
+    causeMessage.includes('timeout exceeded when trying to connect') ||
     causeMessage.includes('pool') ||
     // Check for pg-pool specific errors
     errorMessage.includes('timeout waiting for connection') ||
-    errorMessage.includes('all connection attempts failed')
+    errorMessage.includes('all connection attempts failed') ||
+    errorMessage.includes('ETIMEDOUT') ||
+    errorMessage.includes('ECONNREFUSED')
   )
 }
 

@@ -218,6 +218,13 @@ export default buildConfig({
         process.env.AMPLIFY_ENV ||
         process.env.NEXT_RUNTIME === 'nodejs'
       
+      // Detect build time (Next.js static generation)
+      const isBuildTime = 
+        process.env.NEXT_PHASE === 'phase-production-build' ||
+        process.env.NEXT_PHASE === 'phase-production-compile' ||
+        (process.env.VERCEL && process.env.CI) || // Vercel build
+        (process.env.VERCEL_ENV === 'production' && process.env.VERCEL && !process.env.VERCEL_URL)
+      
       return {
         connectionString,
         // SSL only for RDS (production), not for local PostgreSQL
@@ -230,10 +237,14 @@ export default buildConfig({
           : 2, // Local/Dev/Preview: 2 connections
         min: 0, // Don't keep idle connections - let them close to free up slots
         idleTimeoutMillis: 30000, // 30 seconds - close idle connections quickly
-        connectionTimeoutMillis: isUsingLocalDb 
+        // Increase timeout for build-time operations to allow more time for connection
+        // Also increase timeout for serverless runtime to handle RDS connection latency
+        connectionTimeoutMillis: isBuildTime
+          ? 60000  // Build time: 60 seconds (longer timeout for build operations)
+          : isUsingLocalDb 
           ? 10000  // Local DB: 10 seconds (fast fail)
           : isServerless
-          ? 15000  // Serverless: 15 seconds (faster timeout to prevent queue buildup)
+          ? 30000  // Serverless runtime: 30 seconds (increased from 15s for RDS network latency)
           : 30000, // RDS: 30 seconds (longer timeout for network latency)
         allowExitOnIdle: true, // Allow pool to close when idle to free connections
         // In serverless, add a queue timeout to fail fast when pool is exhausted

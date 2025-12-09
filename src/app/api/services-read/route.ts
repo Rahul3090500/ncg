@@ -26,16 +26,40 @@ export async function GET() {
       return response
     }
 
-    // Cache miss - fetch from database
+    // Cache miss - fetch from database with retry logic
     const payload = await getPayload({ config })
     
-    const result = await payload.find({
-      collection: 'services',
-      limit: 100,
-      depth: 2,
-      sort: 'title',
-      // Optimize: Only fetch needed fields (depth: 2 already limits, but we can be explicit)
-    })
+    // Retry the query up to 2 times if it fails due to connection issues
+    let result
+    let lastError: any = null
+    const maxRetries = 2
+    
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        result = await payload.find({
+          collection: 'services',
+          limit: 100,
+          depth: 2,
+          sort: 'title',
+          // Optimize: Only fetch needed fields (depth: 2 already limits, but we can be explicit)
+        })
+        break // Success, exit retry loop
+      } catch (error: any) {
+        lastError = error
+        // Only retry on connection/timeout errors
+        if (isDatabaseConnectionError(error) && attempt < maxRetries) {
+          const delay = (attempt + 1) * 1000 // 1s, 2s delays
+          console.warn(`Database query failed (attempt ${attempt + 1}/${maxRetries + 1}), retrying in ${delay}ms...`)
+          await new Promise(resolve => setTimeout(resolve, delay))
+          continue
+        }
+        throw error // Re-throw if not a connection error or max retries reached
+      }
+    }
+    
+    if (!result) {
+      throw lastError || new Error('Failed to fetch services after retries')
+    }
     
     // Store in cache
     await cache.set(cacheKey, result, { ttl: 7200 })
@@ -46,8 +70,6 @@ export async function GET() {
     response.headers.set('X-Cache', 'MISS')
     return response
   } catch (error: any) {
-    console.error('Error fetching services:', error)
-    
     // Check if it's a database connection error
     if (isDatabaseConnectionError(error)) {
       const isTimeout = error?.message?.toLowerCase().includes('timeout') || 
@@ -57,7 +79,8 @@ export async function GET() {
       // During build time, return empty data gracefully instead of error
       // This allows static generation to succeed, data will be fetched at runtime
       if (isBuildTime()) {
-        console.warn('Build-time database connection failed, returning empty data. Will fetch at runtime.')
+        // Suppress error logging during build time - this is expected behavior
+        // Data will be fetched at runtime when the database is available
         return NextResponse.json(
           getBuildTimeCollectionFallback(),
           { 
@@ -69,6 +92,9 @@ export async function GET() {
           }
         )
       }
+      
+      // Runtime error - log it
+      console.error('Error fetching services:', error)
       
       // Runtime error - return proper error response
       return NextResponse.json(
