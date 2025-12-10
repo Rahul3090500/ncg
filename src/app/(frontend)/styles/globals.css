@@ -1,0 +1,739 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Diagramm-Regular';
+  src: url('/fonts/Diagramm-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter-Regular';
+  src: url('/fonts/Inter-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Inter-Light';
+  src: url('/fonts/InterTight-Light.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Diagramm-Medium';
+  src: url('/fonts/Diagramm-Medium.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Diagramm-Semibold';
+  src: url('/fonts/Diagramm-SemiBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Inter-Semibold';
+  src: url('/fonts/Inter-Semi-Bold.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Inter-Medium';
+  src: url('/fonts/Inter-Medium.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Manrope Font Faces - Using local font files */
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 400; /* Default to normal/regular weight */
+  overflow-x: hidden;
+}
+.containersection {
+  max-width: 1794px;
+  width: 95%;
+  margin: auto;
+  overflow: hidden;
+}
+
+@media (max-width: 1794px) {
+  .containersection {
+    max-width: 100%;
+    width: 100%;
+    margin: auto;
+    overflow: hidden;
+  }
+}
+/* Manrope Font Weight Classes - Using local Manrope font files */
+.font-manrope-extralight {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 200; /* Extra Light */
+}
+
+.font-manrope-light {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 300; /* Light */
+}
+
+.font-manrope-normal {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 400; /* Normal/Regular */
+}
+
+.font-manrope-medium {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 500; /* Medium */
+}
+
+.font-manrope-semibold {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600; /* Semi Bold */
+}
+
+.font-manrope-bold {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700; /* Bold */
+}
+
+.font-manrope-extrabold {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800; /* Extra Bold */
+}
+
+/* Map Tailwind's default font-weight utilities to use Manrope */
+.font-thin,
+.font-extralight,
+.font-light,
+.font-normal,
+.font-medium,
+.font-semibold,
+.font-bold,
+.font-extrabold,
+.font-black {
+  font-family: 'Manrope', sans-serif;
+}
+
+/* Hide scrollbar for horizontal scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}
+
+/* Custom dashed line pattern */
+.custom-dashed-line {
+  background-image: repeating-linear-gradient(
+    to right,
+    white 0px,
+    white 30px,
+    transparent 30px,
+    transparent 50px
+  );
+  height: 1.5px;
+}
+
+/* Footer link hover animation */
+.footer-link {
+  width: fit-content;
+  position: relative;
+  overflow: hidden;
+  display: block;
+  cursor: pointer;
+  background: linear-gradient(
+    to right,
+    #5799FF,
+    #5799FF 50%,
+    #ffffff 50%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 100%;
+  background-position: 100%;
+  transition: background-position 0.5s ease;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  background-position: 0 100%;
+}
+
+.footer-link::after {
+  content: "";
+  background: none repeat scroll 0 0 transparent;
+  bottom: 0;
+  left: 0;
+  display: block;
+  height: 1px;
+  transform: scaleX(0);
+  margin-top: 0px;
+  position: relative;
+  transform-origin: bottom right;
+  transition: transform 0.5s ease-out;
+  width: 100%;
+  background-color: #5799FF;
+}
+
+.footer-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+/* Header link hover animation - White text (when not scrolled) */
+.header-link-white {
+  width: fit-content;
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  cursor: pointer;
+  background: linear-gradient(
+    to right,
+    #5799FF,
+    #5799FF 50%,
+    #ffffff 50%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 100%;
+  background-position: 100%;
+  transition: background-position 0.5s ease;
+  text-decoration: none;
+}
+
+.header-link-white:hover {
+  background-position: 0 100%;
+}
+
+.header-link-white::after {
+  content: "";
+  background: none repeat scroll 0 0 transparent;
+  bottom: 0;
+  left: 0;
+  display: block;
+  height: 1px;
+  transform: scaleX(0);
+  margin-top: 0px;
+  position: relative;
+  transform-origin: bottom right;
+  transition: transform 0.5s ease-out;
+  width: 100%;
+  background-color: #5799FF;
+}
+
+.header-link-white:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+/* Header link hover animation - Dark text (when scrolled) */
+.header-link-dark {
+  width: fit-content;
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  cursor: pointer;
+  background: linear-gradient(
+    to right,
+    #5799FF,
+    #5799FF 50%,
+    #000F19 50%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 100%;
+  background-position: 100%;
+  transition: background-position 0.5s ease;
+  text-decoration: none;
+}
+
+.header-link-dark:hover {
+  background-position: 0 100%;
+}
+
+.header-link-dark::after {
+  content: "";
+  background: none repeat scroll 0 0 transparent;
+  bottom: 0;
+  left: 0;
+  display: block;
+  height: 1px;
+  transform: scaleX(0);
+  margin-top: 0px;
+  position: relative;
+  transform-origin: bottom right;
+  transition: transform 0.5s ease-out;
+  width: 100%;
+  background-color: #5799FF;
+}
+
+.header-link-dark:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+/* Header link hover animation - Blue text (for service titles in dropdown) */
+.header-link-blue {
+  width: fit-content;
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  cursor: pointer;
+  background: linear-gradient(
+    to right,
+    #5799FF,
+    #5799FF 50%,
+    #488bf3 50%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: #488bf3;
+  background-size: 200% 100%;
+  background-position: 100%;
+  transition: background-position 0.5s ease;
+  text-decoration: none;
+}
+
+.header-link-blue:hover {
+  background-position: 0 100%;
+  -webkit-text-fill-color: transparent;
+}
+
+.header-link-blue::after {
+  content: "";
+  background: none repeat scroll 0 0 transparent;
+  bottom: 0;
+  left: 0;
+  display: block;
+  height: 1px;
+  transform: scaleX(0);
+  margin-top: 0px;
+  position: relative;
+  transform-origin: bottom right;
+  transition: transform 0.5s ease-out;
+  width: 100%;
+  background-color: #5799FF;
+}
+
+.header-link-blue:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+/* Hide Swiper default pagination */
+.case-studies-swiper .swiper-pagination {
+  display: none;
+}
+
+/* Ensure case studies swiper slides maintain proper width */
+.case-studies-swiper {
+  width: 100%;
+  overflow: visible;
+}
+
+.case-studies-swiper .swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.case-studies-swiper .swiper-slide {
+  height: auto;
+  display: flex;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 100% !important;
+}
+
+/* For tablet and desktop with multiple cards, use fixed width */
+@media (min-width: 768px) {
+  .case-studies-swiper .swiper-slide {
+    width: 477px !important;
+    max-width: 477px !important;
+    min-width: 477px !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .case-studies-swiper .swiper-slide > * {
+    width: 477px !important;
+    max-width: 477px !important;
+    min-width: 477px !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+/* For single card on mobile, full width */
+@media (max-width: 767px) {
+  .case-studies-swiper .swiper-slide {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  
+  .case-studies-swiper .swiper-slide > * {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Hide Swiper default pagination and navigation for Related Insights */
+.related-insights-swiper .swiper-pagination,
+.related-insights-swiper .swiper-button-next,
+.related-insights-swiper .swiper-button-prev {
+  display: none;
+}
+
+/* Ensure related insights swiper slides maintain proper width */
+.related-insights-swiper {
+  width: 100%;
+  overflow: visible;
+}
+
+.related-insights-swiper .swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.related-insights-swiper .swiper-slide {
+  height: auto;
+  display: flex;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 100% !important;
+}
+
+/* For tablet with 2 cards */
+@media (min-width: 768px) {
+  .related-insights-swiper .swiper-slide {
+    width: calc(50% - 12px) !important;
+    max-width: calc(50% - 12px) !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+/* Hide Swiper default pagination for Challenges Swiper */
+.challenges-swiper .swiper-pagination {
+  display: none;
+}
+
+.challenges-swiper {
+  width: 100%;
+  overflow: visible;
+}
+
+.challenges-swiper .swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.challenges-swiper .swiper-slide {
+  height: auto;
+  display: flex;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 100% !important;
+}
+
+/* IGA Services Swiper Styles */
+.iga-services-swiper {
+  width: 100%;
+  overflow: visible;
+}
+
+.iga-services-swiper .swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+  gap: 0 !important;
+  margin: 0 !important;
+}
+
+.iga-services-swiper .swiper-slide {
+  height: auto;
+  display: flex;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* For tablet with 2 cards */
+@media (min-width: 768px) {
+  .iga-services-swiper .swiper-slide {
+    width: 50% !important;
+    max-width: 50% !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+.iga-services-swiper .swiper-pagination {
+  position: relative;
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.iga-services-swiper .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  background: #488BF3;
+  opacity: 0.3;
+  transition: all 0.3s ease;
+}
+
+.iga-services-swiper .swiper-pagination-bullet-active {
+  opacity: 1;
+  width: 32px;
+  border-radius: 4px;
+}
+
+/* Our Approach Section Mobile Progress Dots - Responsive */
+@media (min-width: 768px) {
+  .progress-container-mobile {
+    width: calc(var(--steps-count, 1) * 470px + (var(--steps-count, 1) - 1) * 24px) !important;
+  }
+  
+  .progress-container-mobile .progress-dot[style*="left"] {
+    /* Scale dot positions for tablet - positions will be recalculated via inline styles */
+  }
+}
+
+/* Hide Swiper default navigation */
+.testimonials-swiper .swiper-button-next,
+.testimonials-swiper .swiper-button-prev {
+  display: none;
+}
+
+/* Ensure testimonials swiper slides are visible */
+.testimonials-swiper {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.testimonials-swiper .swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.testimonials-swiper .swiper-slide {
+  height: auto;
+  display: flex;
+  width: 100% !important;
+  flex-shrink: 0;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.testimonials-swiper .swiper-slide-active {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Work Here Cards Swiper Styles */
+.work-here-swiper {
+  width: 100%;
+  overflow: visible;
+}
+
+/* Team Cards Swiper Styles */
+.team-cards-swiper {
+  width: 100%;
+  overflow: visible;
+}
+
+.team-cards-swiper .swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.team-cards-swiper .swiper-slide {
+  height: auto;
+  display: flex;
+  width: 100% !important;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.team-cards-swiper .swiper-pagination {
+  position: relative;
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.team-cards-swiper .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  background: #000F19;
+  opacity: 0.3;
+  transition: all 0.3s ease;
+}
+
+.team-cards-swiper .swiper-pagination-bullet-active {
+  opacity: 1;
+  width: 32px;
+  border-radius: 4px;
+}
+
+/* Job Openings Swiper Styles */
+.job-openings-swiper {
+  width: 100%;
+  overflow: visible;
+}
+
+.job-openings-swiper .swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.job-openings-swiper .swiper-slide {
+  height: auto;
+  display: flex;
+  width: 100% !important;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.job-openings-swiper .swiper-pagination {
+  position: relative;
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.job-openings-swiper .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  background: white;
+  opacity: 0.3;
+  transition: all 0.3s ease;
+}
+
+.job-openings-swiper .swiper-pagination-bullet-active {
+  opacity: 1;
+  width: 32px;
+  border-radius: 4px;
+}
+
+.work-here-swiper .swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.work-here-swiper .swiper-slide {
+  height: auto;
+  display: flex;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 100% !important;
+}
+
+/* Hide Swiper default pagination and navigation for Value Delivered Swiper */
+.value-delivered-swiper .swiper-pagination,
+.value-delivered-swiper .swiper-button-next,
+.value-delivered-swiper .swiper-button-prev {
+  display: none;
+}
+
+.value-delivered-swiper {
+  width: 100%;
+  overflow: visible;
+}
+
+.value-delivered-swiper .swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.value-delivered-swiper .swiper-slide {
+  height: auto;
+  display: flex;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 100% !important;
+}
+
+/* For tablet with 2 cards */
+@media (min-width: 768px) {
+  .value-delivered-swiper .swiper-slide {
+    width: 50% !important;
+    max-width: 50% !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+/* For tablet with 2.2 cards */
+@media (min-width: 768px) {
+  .work-here-swiper .swiper-slide {
+    width: calc(100% / 2.2) !important;
+    max-width: calc(100% / 2.2) !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+

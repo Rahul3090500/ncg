@@ -1,0 +1,28 @@
+{
+  "testimonials": [
+    {
+      "id": 1,
+      "name": "Martin Håkansson",
+      "position": "Chief Technology Officer",
+      "company": "Klarpay",
+      "image": "/home-images/testimonial-photo.png",
+      "quote": "NCG has redefined what we expect from a cybersecurity partner. Their proactive approach, deep expertise, and ability to adapt to our evolving fintech infrastructure have made them indispensable to our operations."
+    },
+    {
+      "id": 2,
+      "name": "Sarah Johnson",
+      "position": "Head of Security",
+      "company": "TechCorp",
+      "image": "/home-images/testimonial-photo-2.png",
+      "quote": "Working with NCG has been transformative for our security posture. Their team's dedication and innovative solutions have helped us stay ahead of emerging threats while maintaining operational efficiency."
+    },
+    {
+      "id": 3,
+      "name": "David Chen",
+      "position": "CISO",
+      "company": "DataSecure Inc",
+      "image": "",
+      "quote": "NCG's comprehensive approach to cybersecurity has given us the confidence to scale our operations without compromising on security. Their expertise is unmatched in the industry."
+    }
+  ]
+}

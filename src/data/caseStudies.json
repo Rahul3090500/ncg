@@ -1,0 +1,34 @@
+{
+  "caseStudies": [
+    {
+      "id": "medisano-healthcare",
+      "image": "/home-images/case-study-1-442671.png",
+      "alt": "Medisano Case Study",
+      "category": "Healthcare",
+      "iconType": "healthcare",
+      "title": "Medisano: Protecting lives through secure healthcare systems",
+      "description": "NCG designed a resilient cybersecurity architecture for a public hospital network, ensuring patient data privacy and continuous uptime under strict compliance regulations.",
+      "link": "/case-studies/medisano-healthcare"
+    },
+    {
+      "id": "tfl-real-estate",
+      "image": "/home-images/case-study-2-3df659.png",
+      "alt": "TFL Case Study",
+      "category": "Real Estate",
+      "iconType": "realEstate",
+      "title": "TFL: Securing real estate for the digital age",
+      "description": "Discover how leading real estate companies protect sensitive data, ensure compliance, and build client trust with NCG's tailored cybersecurity solutions.",
+      "link": "/case-studies/tfl-real-estate"
+    },
+    {
+      "id": "banco-itau-finance",
+      "image": "/home-images/case-study-3-1e9adb.png",
+      "alt": "Banco Itaú Case Study",
+      "category": "Finance",
+      "iconType": "finance",
+      "title": "Banco Itaú: Building trust in every transaction",
+      "description": "We helped a leading Scandinavian fintech company secure high-volume digital payments with real-time threat detection and encryption, reinforcing trust where it matters most.",
+      "link": "/case-studies/banco-itau-finance"
+    }
+  ]
+}
