@@ -65,7 +65,18 @@ export async function GET() {
 
     // Cache miss - fetch from database
     console.log('[api/homepage-read] Cache MISS - fetching from database')
-    const payload = await getPayload({ config })
+    let payload
+    try {
+      payload = await getPayload({ config })
+      console.log('[api/homepage-read] Payload initialized successfully')
+    } catch (initError: any) {
+      console.error('[api/homepage-read] Failed to initialize Payload:', {
+        message: initError?.message,
+        code: initError?.code,
+        stack: initError?.stack,
+      })
+      throw initError // Re-throw to be caught by outer catch block
+    }
     
     // Fetch all globals in parallel with proper error logging
     const [

@@ -1,11 +1,14 @@
 import React from 'react'
 
+// Force dynamic rendering since we fetch real-time database health
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 async function getDatabaseHealth() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://ncg-beta.vercel.app'
     const response = await fetch(`${baseUrl}/api/database-health`, {
-      next: { revalidate: 10 }, // Revalidate every 10 seconds
-      cache: 'no-store', // Always fetch fresh
+      cache: 'no-store', // Always fetch fresh (page is force-dynamic)
     })
     
     return await response.json()
