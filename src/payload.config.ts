@@ -118,18 +118,110 @@ function stripSslParams(uri?: string) {
   }
 }
 
-// Database configuration - validate lazily to avoid webpack bundling issues
+// Database configuration
+// Priority order:
+// 1. Development: LOCAL_DATABASE_URI (local PostgreSQL) OR DATABASE_URL (Vercel Neon integration)
+// 2. Production: DATABASE_URI (RDS for AWS Amplify) OR DATABASE_URL (Vercel Neon, if still using)
+//
+// Migration path: Neon (via Vercel) → RDS (AWS Amplify)
+// Just update DATABASE_URI in production environment when ready
 function getDbUri() {
-  const uri = stripSslParams(sanitizeEnv(process.env.DATABASE_URI))
-  if (!uri) {
-    throw new Error('DATABASE_URI environment variable is required')
+  const isProduction = process.env.NODE_ENV === 'production'
+  const localDbUri = sanitizeEnv(process.env.LOCAL_DATABASE_URI)
+  const dbUri = sanitizeEnv(process.env.DATABASE_URI)
+  // DATABASE_URL is automatically set by Vercel Neon integration
+  const databaseUrl = sanitizeEnv(process.env.DATABASE_URL)
+  
+  let connectionString: string
+  let dbSource: string
+  
+  if (isProduction) {
+    // Production: Prefer RDS (DATABASE_URI) for AWS Amplify, fallback to Neon (DATABASE_URL)
+    if (dbUri) {
+      connectionString = stripSslParams(dbUri)
+      dbSource = 'RDS'
+    } else if (databaseUrl) {
+      connectionString = stripSslParams(databaseUrl)
+      dbSource = 'Neon (Vercel)'
+      console.warn('[DB] DATABASE_URI not set, using DATABASE_URL (Neon). Set DATABASE_URI for RDS migration.')
+    } else {
+      throw new Error('DATABASE_URI or DATABASE_URL must be set in production')
+    }
+  } else {
+    // Development: Prefer LOCAL_DATABASE_URI, then DATABASE_URL (Vercel Neon), then DATABASE_URI
+    if (localDbUri) {
+      connectionString = stripSslParams(localDbUri)
+      dbSource = 'LOCAL'
+    } else if (databaseUrl) {
+      connectionString = stripSslParams(databaseUrl)
+      dbSource = 'Neon (Vercel)'
+    } else if (dbUri) {
+      connectionString = stripSslParams(dbUri)
+      dbSource = 'RDS (fallback)'
+      console.warn('[DB] Using DATABASE_URI in development. Set LOCAL_DATABASE_URI or connect Neon via Vercel for better dev experience.')
+    } else {
+      throw new Error('LOCAL_DATABASE_URI or DATABASE_URL must be set for development')
+    }
   }
-  return uri
+  
+  // Log which database is being used
+  console.log(`[DB] Using ${dbSource} database`)
+  
+  return connectionString
 }
 
-// SSL configuration for RDS
-// Use CA certificate if available (PG_SSL_CA_BASE64), otherwise skip verification
+// SSL configuration
+// Local databases: No SSL
+// Free cloud DBs (Supabase/Neon): SSL usually required (they handle it)
+// RDS (production): SSL with CA certificate if available
 function getSslConfig() {
+  // Determine which connection string is active (same priority as getDbUri)
+  const isProduction = process.env.NODE_ENV === 'production'
+  const localDbUri = sanitizeEnv(process.env.LOCAL_DATABASE_URI)
+  const databaseUrl = sanitizeEnv(process.env.DATABASE_URL)
+  const dbUri = sanitizeEnv(process.env.DATABASE_URI)
+  
+  // Get active DB URI (same logic as getDbUri)
+  let activeDbUri: string | undefined
+  if (isProduction) {
+    activeDbUri = dbUri || databaseUrl
+  } else {
+    activeDbUri = localDbUri || databaseUrl || dbUri
+  }
+  
+  if (!activeDbUri) {
+    return false // Fallback if no DB URI found
+  }
+  
+  // Check if DB URI indicates a cloud service (Supabase, Neon, etc.)
+  const isCloudFreeDb = (
+    activeDbUri.includes('supabase.co') ||
+    activeDbUri.includes('neon.tech') ||
+    activeDbUri.includes('railway.app') ||
+    activeDbUri.includes('render.com') ||
+    activeDbUri.includes('neon.build') // Vercel Neon integration uses .neon.build domain
+  )
+  
+  // Check if it's a localhost database
+  const isLocalhost = (
+    activeDbUri.includes('localhost') ||
+    activeDbUri.includes('127.0.0.1') ||
+    activeDbUri.startsWith('postgresql://localhost')
+  )
+  
+  // No SSL for truly local databases (localhost)
+  if (isLocalhost) {
+    return false
+  }
+  
+  // Cloud free DBs (Supabase/Neon) need SSL but handle certificates themselves
+  if (isCloudFreeDb) {
+    return {
+      rejectUnauthorized: false, // Cloud providers handle certificate validation
+    }
+  }
+  
+  // SSL for RDS (production)
   const caBase64 = sanitizeEnv(process.env.PG_SSL_CA_BASE64)
   if (caBase64) {
     try {
@@ -248,13 +340,23 @@ const config = buildConfig({
     pool: {
       connectionString: getDbUri(),
       ssl: getSslConfig(),
-      // Production: Use exactly 1 connection for RDS (Vercel serverless)
+      // Production (AWS Amplify + RDS): Use exactly 1 connection for RDS
+      // Local/Dev: Use 2 connections for local PostgreSQL
       max: process.env.NODE_ENV === 'production' ? 1 : 2,
       min: 0,
       idleTimeoutMillis: 45000,
       connectionTimeoutMillis: 50000,
       allowExitOnIdle: true,
-      application_name: process.env.VERCEL ? 'ncg-vercel' : 'ncg-local',
+      application_name: (() => {
+        const isProduction = process.env.NODE_ENV === 'production'
+        const localDbUri = sanitizeEnv(process.env.LOCAL_DATABASE_URI)
+        const isUsingLocalDb = !isProduction && !!localDbUri
+        
+        if (isUsingLocalDb) return 'ncg-local'
+        if (process.env.VERCEL) return 'ncg-vercel'
+        if (process.env.AWS_EXECUTION_ENV || process.env.AMPLIFY_ENV) return 'ncg-amplify'
+        return 'ncg-payload-cms'
+      })(),
     },
     push: false,
     migrationDir: path.resolve(dirname, 'migrations'),
