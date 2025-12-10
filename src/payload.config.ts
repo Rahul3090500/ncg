@@ -176,60 +176,112 @@ export default buildConfig({
   },
   db: postgresAdapter({
     pool: (() => {
-      // PRODUCTION SERVER (https://ncg-beta.vercel.app/):
-      // - MUST use DATABASE_URI (RDS) ONLY
-      // - MUST use exactly 1 connection (max: 1, min: 0)
-      // - LOCAL_DATABASE_URI should NOT be set in production
+      // DATABASE CONFIGURATION PRIORITY:
+      // 1. LOCAL_DATABASE_URI (local development PostgreSQL)
+      // 2. DATABASE_URL (Neon database - Vercel/development)
+      // 3. DATABASE_URI (RDS database - AWS Amplify production)
       //
-      // LOCAL DEVELOPMENT & DEV/PREVIEW ENVIRONMENTS:
-      // - Uses LOCAL_DATABASE_URI if set and not empty
-      // - Falls back to DATABASE_URI if LOCAL_DATABASE_URI is not set
-      // - Uses 2 connections for local PostgreSQL and dev/preview environments
+      // NEON DATABASE (Vercel):
+      // - Uses DATABASE_URL with connection pooling
+      // - Supports multiple connections (Neon handles pooling)
+      // - Uses standard SSL (no custom CA certificate needed)
+      //
+      // RDS DATABASE (AWS Amplify):
+      // - Uses DATABASE_URI
+      // - MUST use exactly 1 connection (max: 1, min: 0)
+      // - Requires custom SSL CA certificate
+      //
+      // LOCAL DEVELOPMENT:
+      // - Uses LOCAL_DATABASE_URI if set
+      // - Falls back to DATABASE_URL or DATABASE_URI
+      // - Uses 2 connections for local PostgreSQL
       
       const isProduction = process.env.NODE_ENV === 'production'
       const localDbUri = process.env.LOCAL_DATABASE_URI?.trim()
-      const dbUri = process.env.DATABASE_URI?.trim()
+      const neonDbUrl = process.env.DATABASE_URL?.trim()
+      const rdsDbUri = process.env.DATABASE_URI?.trim()
       
-      // In production, FORCE use of DATABASE_URI only (ignore LOCAL_DATABASE_URI)
-      const connectionString = stripSslParams(
-        isProduction ? (dbUri || '') : (localDbUri || dbUri || '')
-      )
+      // Determine connection string priority
+      let connectionString: string | undefined
+      let isUsingNeon = false
+      let isUsingRds = false
+      
+      if (localDbUri && !isProduction) {
+        // Local development - use local database
+        connectionString = stripSslParams(localDbUri)
+      } else if (neonDbUrl) {
+        // Neon database (Vercel/development)
+        connectionString = neonDbUrl // Keep SSL params for Neon
+        isUsingNeon = true
+      } else if (rdsDbUri) {
+        // RDS database (AWS Amplify production)
+        connectionString = stripSslParams(rdsDbUri)
+        isUsingRds = true
+      }
       
       // Validate connection string
       if (!connectionString) {
         const envHint = isProduction 
-          ? 'DATABASE_URI must be set in production'
-          : 'Set either LOCAL_DATABASE_URI (for local dev) or DATABASE_URI (for production)'
+          ? 'Set DATABASE_URL (for Neon/Vercel) or DATABASE_URI (for RDS/AWS Amplify)'
+          : 'Set LOCAL_DATABASE_URI (for local dev), DATABASE_URL (for Neon), or DATABASE_URI (for RDS)'
         throw new Error(`Database connection string is required. ${envHint}`)
       }
       
       // Determine if using local database (only in non-production)
-      const isUsingLocalDb = !isProduction && !!localDbUri
+      const isUsingLocalDb = !isProduction && !!localDbUri && !isUsingNeon && !isUsingRds
       
       // Determine environment type
       const isDev = process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === 'development'
       const isPreview = process.env.VERCEL_ENV === 'preview'
+      const isVercel = !!process.env.VERCEL
+      
+      // SSL configuration
+      // Neon uses standard SSL (no custom CA needed)
+      // RDS requires custom CA certificate
+      // Local PostgreSQL doesn't use SSL
+      let sslConfigForDb: any
+      if (isUsingLocalDb) {
+        sslConfigForDb = false // No SSL for local PostgreSQL
+      } else if (isUsingNeon) {
+        sslConfigForDb = { rejectUnauthorized: false } // Standard SSL for Neon
+      } else {
+        sslConfigForDb = sslConfig // Custom SSL for RDS
+      }
+      
+      // Connection pool configuration
+      // Neon: Supports multiple connections (uses pgbouncer pooling)
+      // RDS: Must use exactly 1 connection in production
+      // Local: Use 2 connections for development
+      let maxConnections: number
+      if (isUsingNeon) {
+        // Neon supports connection pooling, use more connections
+        maxConnections = isProduction && !isPreview && !isDev ? 5 : 10
+      } else if (isUsingRds && isProduction && !isPreview && !isDev) {
+        // RDS production: exactly 1 connection
+        maxConnections = 1
+      } else {
+        // Local development or preview: 2 connections
+        maxConnections = 2
+      }
       
       return {
         connectionString,
-        // SSL only for RDS (production), not for local PostgreSQL
-        ssl: isUsingLocalDb ? false : sslConfig,
-        // CRITICAL: Production RDS connection limit
-        // Production server MUST use exactly 1 connection (no more, no less)
-        // Local development and dev/preview environments use 2 connections
-        max: isProduction && !isPreview && !isDev
-          ? 1  // PRODUCTION: Exactly 1 connection for RDS
-          : 2, // Local/Dev/Preview: 2 connections
+        ssl: sslConfigForDb,
+        max: maxConnections,
         min: 0, // Don't keep idle connections - let them close to free up slots
         idleTimeoutMillis: 30000, // 30 seconds - close idle connections quickly
         connectionTimeoutMillis: isUsingLocalDb 
           ? 10000  // Local DB: 10 seconds (fast fail)
+          : isUsingNeon
+          ? 15000  // Neon: 15 seconds (good balance)
           : 30000, // RDS: 30 seconds (longer timeout for network latency)
         allowExitOnIdle: true, // Allow pool to close when idle to free connections
-        // Connection pool settings for multi-region high availability
+        // Connection pool settings
         application_name: isUsingLocalDb
           ? `ncg-local-${process.pid}` // Local development
-          : `ncg-payload-cms-${process.env.AWS_REGION || 'default'}-${process.pid}`, // RDS production
+          : isUsingNeon
+          ? `ncg-neon-${isVercel ? 'vercel' : 'dev'}-${process.pid}` // Neon
+          : `ncg-rds-${process.env.AWS_REGION || 'default'}-${process.pid}`, // RDS production
       }
     })(),
     // Disable automatic schema push/pull to prevent continuous retries
