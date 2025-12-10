@@ -15,13 +15,11 @@ export async function getHomepageData() {
         // In production, ALWAYS use the API route (never direct database calls)
         // This ensures proper caching and avoids 60+ second timeouts
         const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 
-                         (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
                          'https://ncg-beta.vercel.app'
         
         console.log('[getHomepageData] serverUrl:', serverUrl, {
           NODE_ENV: process.env.NODE_ENV,
           NEXT_PUBLIC_SERVER_URL: process.env.NEXT_PUBLIC_SERVER_URL,
-          VERCEL_URL: process.env.VERCEL_URL,
         })
 
         if (process.env.NODE_ENV === 'production') {

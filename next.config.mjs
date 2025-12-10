@@ -57,7 +57,7 @@ const nextConfig = {
   },
   
   // External packages for server components
-  serverExternalPackages: ['@payloadcms/db-postgres'],
+  serverExternalPackages: ['@payloadcms/db-postgres', 'sharp'],
   
   // Experimental features for performance
   experimental: {

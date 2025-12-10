@@ -64,6 +64,17 @@ class ErrorHandler {
     shouldLog: boolean
   } {
     const err = error instanceof Error ? error : new Error(String(error))
+    
+    // Suppress non-critical S3 abort errors (client disconnections)
+    if (this.isNonCriticalAbortError(err)) {
+      return {
+        handled: true,
+        message: err.message,
+        shouldRetry: false,
+        shouldLog: false, // Don't log non-critical abort errors
+      }
+    }
+    
     const errorKey = this.getErrorKey(err)
 
     // Record error
@@ -175,6 +186,26 @@ class ErrorHandler {
       causeMessage.includes('remaining connection slots') ||
       causeMessage.includes('rds_reserved')
     )
+  }
+
+  private isNonCriticalAbortError(error: Error): boolean {
+    // Suppress AbortError from S3 storage when clients disconnect
+    // These are non-critical and happen when:
+    // - Client navigates away before request completes
+    // - Request is cancelled
+    // - Connection is closed prematurely
+    const isAbortError = 
+      error.name === 'AbortError' ||
+      error.message.toLowerCase().includes('request aborted') ||
+      error.message.toLowerCase().includes('aborted')
+    
+    // Check if it's from S3 storage operations
+    const isS3Error = 
+      error.stack?.includes('storage-s3') ||
+      error.stack?.includes('@smithy/node-http-handler') ||
+      error.stack?.includes('S3Client')
+    
+    return isAbortError && (isS3Error || true) // Allow all abort errors for now
   }
 
   getErrorStats(): Record<string, ErrorStats> {

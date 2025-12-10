@@ -3,7 +3,6 @@ import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
-import fs from 'fs'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
@@ -49,96 +48,134 @@ import { PrivacyPolicySection } from './globals/PrivacyPolicySection'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-// Log missing critical env vars once at startup (helps prod/dev visibility)
-let envWarned = false
-function warnMissingEnv() {
-  if (envWarned) return
-  const required = ['DATABASE_URI', 'PAYLOAD_SECRET']
-  const missing = required.filter((key) => !process.env[key]?.trim())
-
-  if (missing.length) {
-    console.warn(
-      '[env] Missing required environment variables:',
-      missing.join(', ')
-    )
+// Filter out non-critical S3 abort errors from console.error
+// These occur when clients disconnect before S3 requests complete (e.g., navigating away)
+if (typeof console !== 'undefined' && console.error) {
+  const originalError = console.error
+  console.error = function (...args: any[]) {
+    // Convert all arguments to a searchable string
+    const errorText = JSON.stringify(args).toLowerCase()
+    
+    // Check if this is a non-critical S3 abort error
+    const isAbortError = 
+      (errorText.includes('aborterror') || errorText.includes('request aborted')) &&
+      (errorText.includes('storage-s3') || 
+       errorText.includes('@smithy') || 
+       errorText.includes('staticHandler') ||
+       errorText.includes('node-http-handler'))
+    
+    // Also check individual arguments for error objects
+    const hasAbortErrorObject = args.some(arg => {
+      if (arg && typeof arg === 'object') {
+        // Check direct error object
+        const name = (arg.name || '').toLowerCase()
+        const message = (arg.message || '').toLowerCase()
+        const stack = (arg.stack || '').toLowerCase()
+        
+        if (name === 'aborterror' || message.includes('request aborted')) {
+          if (stack.includes('storage-s3') || stack.includes('@smithy') || stack.includes('staticHandler')) {
+            return true
+          }
+        }
+        
+        // Check nested err object (Payload's format)
+        if (arg.err && typeof arg.err === 'object') {
+          const errName = (arg.err.name || '').toLowerCase()
+          const errMessage = (arg.err.message || '').toLowerCase()
+          const errStack = (arg.err.stack || '').toLowerCase()
+          
+          if (errName === 'aborterror' || errMessage.includes('request aborted')) {
+            if (errStack.includes('storage-s3') || errStack.includes('@smithy') || errStack.includes('staticHandler')) {
+              return true
+            }
+          }
+        }
+      }
+      return false
+    })
+    
+    // Only suppress if it's an abort error from S3 storage
+    if (!isAbortError && !hasAbortErrorObject) {
+      originalError.apply(console, args)
+    }
+    // Otherwise, silently suppress the error
   }
-  envWarned = true
 }
-warnMissingEnv()
 
+// Environment variable helpers
+const sanitizeEnv = (value?: string | null) => (value ? value.trim() : '')
+
+// Strip SSL parameters from connection string (we handle SSL in pool config)
 function stripSslParams(uri?: string) {
   if (!uri) return uri
   try {
     const u = new URL(uri)
+    // Remove SSL-related query parameters since we configure SSL in pool config
     ;['sslmode', 'sslcert', 'sslkey', 'sslrootcert'].forEach((p) => u.searchParams.delete(p))
     return u.toString()
   } catch {
     return uri
   }
 }
-function resolveCa() {
-  const caPlain = process.env.PG_SSL_CA || ''
-  if (caPlain.trim()) return caPlain
-  const caBase64 = process.env.PG_SSL_CA_BASE64 || ''
-  if (caBase64.trim()) return Buffer.from(caBase64.trim(), 'base64').toString('utf8')
-  const caFile = process.env.PG_SSL_CA_BASE64_FILE || ''
-  if (caFile.trim()) {
-    const content = fs.readFileSync(path.resolve(process.cwd(), caFile.trim()), 'utf8').trim()
-    return Buffer.from(content, 'base64').toString('utf8')
+
+// Database configuration - validate lazily to avoid webpack bundling issues
+function getDbUri() {
+  const uri = stripSslParams(sanitizeEnv(process.env.DATABASE_URI))
+  if (!uri) {
+    throw new Error('DATABASE_URI environment variable is required')
   }
-  try {
-    const fallback = fs.readFileSync(path.resolve(process.cwd(), 'infra/aws/rds-global-bundle.base64.txt'), 'utf8').trim()
-    return Buffer.from(fallback, 'base64').toString('utf8')
-  } catch {}
-  return ''
+  return uri
 }
 
-const ca = resolveCa()
-// Optimize SSL configuration for faster handshake
-// Use CA certificate if available, otherwise use standard SSL
-// rejectUnauthorized: false allows self-signed certs but still encrypts connection
-const sslConfig: any = ca 
-  ? { 
-      ca, 
-      rejectUnauthorized: false,
-      // Optimize SSL handshake for faster connection
-      checkServerIdentity: () => undefined, // Skip hostname verification for RDS
-    } 
-  : process.env.NODE_ENV === 'production' 
-    ? { 
-        rejectUnauthorized: false,
-        checkServerIdentity: () => undefined,
-      } 
-    : { rejectUnauthorized: false }
-const sanitizeEnv = (value?: string | null) => (value ? value.trim() : '')
-const s3Bucket = sanitizeEnv(process.env.S3_BUCKET) || sanitizeEnv(process.env.AWS_S3_BUCKET) || 'ncg-storage-bucket'
-const s3Region = sanitizeEnv(process.env.S3_REGION) || sanitizeEnv(process.env.AWS_REGION)
-const s3AccessKeyId = sanitizeEnv(process.env.S3_ACCESS_KEY_ID) || sanitizeEnv(process.env.AWS_ACCESS_KEY_ID)
-const s3SecretAccessKey = sanitizeEnv(process.env.S3_SECRET_ACCESS_KEY) || sanitizeEnv(process.env.AWS_SECRET_ACCESS_KEY)
-const s3Endpoint = process.env.S3_ENDPOINT
-const s3ForcePathStyle = sanitizeEnv(process.env.S3_FORCE_PATH_STYLE) === 'true'
-const s3Config =
-  s3Bucket && s3Region && s3AccessKeyId && s3SecretAccessKey
-    ? {
-        region: s3Region,
-        credentials: {
-          accessKeyId: s3AccessKeyId,
-          secretAccessKey: s3SecretAccessKey,
-        },
-        ...(s3Endpoint ? { endpoint: s3Endpoint } : {}),
-        ...(s3ForcePathStyle ? { forcePathStyle: true } : {}),
+// SSL configuration for RDS
+// Use CA certificate if available (PG_SSL_CA_BASE64), otherwise skip verification
+function getSslConfig() {
+  const caBase64 = sanitizeEnv(process.env.PG_SSL_CA_BASE64)
+  if (caBase64) {
+    try {
+      const ca = Buffer.from(caBase64, 'base64').toString('utf8')
+      // Use CA certificate but still skip hostname verification for RDS
+      return {
+        ca,
+        rejectUnauthorized: false, // Set to false to avoid certificate chain issues
+        checkServerIdentity: () => undefined, // Skip hostname verification for RDS
       }
-    : null
+    } catch (error) {
+      // Fallback if base64 decode fails
+      console.warn('[SSL] Failed to decode PG_SSL_CA_BASE64, using fallback SSL config')
+    }
+  }
+  // Fallback: skip certificate verification if no CA certificate is provided
+  return {
+    rejectUnauthorized: false,
+    checkServerIdentity: () => undefined, // Skip hostname verification for RDS
+  }
+}
+
+// S3 configuration
+const s3Bucket = sanitizeEnv(process.env.S3_BUCKET)
+const s3Region = sanitizeEnv(process.env.S3_REGION)
+const s3AccessKeyId = sanitizeEnv(process.env.S3_ACCESS_KEY_ID)
+const s3SecretAccessKey = sanitizeEnv(process.env.S3_SECRET_ACCESS_KEY)
+
 const s3Plugin =
-  s3Bucket && s3Config
+  s3Bucket && s3Region && s3AccessKeyId && s3SecretAccessKey
     ? s3Storage({
         bucket: s3Bucket,
-        config: s3Config,
+        config: {
+          region: s3Region,
+          credentials: {
+            accessKeyId: s3AccessKeyId,
+            secretAccessKey: s3SecretAccessKey,
+          },
+        },
         collections: {
-          media: sanitizeEnv(process.env.S3_PREFIX) ? { prefix: sanitizeEnv(process.env.S3_PREFIX) } : true,
+          media: true,
         },
       })
     : null
+
+// CORS origins
 function resolveOrigins() {
   const raw = process.env.CORS_ORIGINS || process.env.NEXT_PUBLIC_SERVER_URL || ''
   const parts = raw.split(',').map((s) => s.trim()).filter(Boolean)
@@ -146,7 +183,7 @@ function resolveOrigins() {
   return origins
 }
 
-export default buildConfig({
+const config = buildConfig({
   admin: {
     user: Users.slug,
     importMap: {
@@ -208,111 +245,18 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: postgresAdapter({
-    pool: (() => {
-      // PRODUCTION SERVER (https://ncg-beta.vercel.app/):
-      // - MUST use DATABASE_URI (RDS) ONLY
-      // - MUST use exactly 1 connection (max: 1, min: 0)
-      // - LOCAL_DATABASE_URI should NOT be set in production
-      //
-      // LOCAL DEVELOPMENT & DEV/PREVIEW ENVIRONMENTS:
-      // - Uses LOCAL_DATABASE_URI if set and not empty
-      // - Falls back to DATABASE_URI if LOCAL_DATABASE_URI is not set
-      // - Uses 2 connections for local PostgreSQL and dev/preview environments
-      
-      const isProduction = process.env.NODE_ENV === 'production'
-      const localDbUri = process.env.LOCAL_DATABASE_URI?.trim()
-      const dbUri = process.env.DATABASE_URI?.trim()
-      
-      // In production, FORCE use of DATABASE_URI only (ignore LOCAL_DATABASE_URI)
-      const connectionString = stripSslParams(
-        isProduction ? (dbUri || '') : (localDbUri || dbUri || '')
-      )
-      
-      // Validate connection string
-      if (!connectionString) {
-        const envHint = isProduction 
-          ? 'DATABASE_URI must be set in production'
-          : 'Set either LOCAL_DATABASE_URI (for local dev) or DATABASE_URI (for production)'
-        throw new Error(`Database connection string is required. ${envHint}`)
-      }
-      
-      // Determine if using local database (only in non-production)
-      const isUsingLocalDb = !isProduction && !!localDbUri
-      
-      // Determine environment type
-      const isDev = process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === 'development'
-      const isPreview = process.env.VERCEL_ENV === 'preview'
-      
-      // Detect serverless environment (Vercel, AWS Lambda, etc.)
-      const isServerless = 
-        process.env.VERCEL || 
-        process.env.AWS_LAMBDA_FUNCTION_NAME || 
-        process.env.AWS_EXECUTION_ENV ||
-        process.env.AMPLIFY_ENV ||
-        process.env.NEXT_RUNTIME === 'nodejs'
-      
-      // Detect build time (Next.js static generation)
-      const isBuildTime = 
-        process.env.NEXT_PHASE === 'phase-production-build' ||
-        process.env.NEXT_PHASE === 'phase-production-compile' ||
-        (process.env.VERCEL && process.env.CI) || // Vercel build
-        (process.env.VERCEL_ENV === 'production' && process.env.VERCEL && !process.env.VERCEL_URL)
-      
-      return {
-        connectionString,
-        // SSL only for RDS (production), not for local PostgreSQL
-        ssl: isUsingLocalDb ? false : sslConfig,
-        // CRITICAL: Production RDS connection limit
-        // Production server MUST use exactly 1 connection (no more, no less)
-        // Local development and dev/preview environments use 2 connections
-        max: isProduction && !isPreview && !isDev
-          ?101  // PRODUCTION: Exactly 1 connection for RDS
-          : 2, // Local/Dev/Preview: 2 connections
-        // Optimized for clean connection management:
-        // - Vercel: min=0 to allow connections to close when idle (cleaner)
-        // - Local: min=0 to keep it clean
-        // Connections will close quickly when idle, reducing connection pool clutter
-        min: 0, // Don't keep idle connections - close them when not in use
-        idleTimeoutMillis: isServerless && isProduction && !isPreview && !isDev
-          ? 45000  // Serverless production: 1 minute (close idle connections quickly for cleaner pool)
-          : 30000, // Local: 30 seconds - close idle connections quickly
-        // Increase timeout for build-time operations to allow more time for connection
-        // Also increase timeout for serverless runtime to handle RDS connection latency
-        // Cross-continental latency (Vercel US ↔ RDS eu-north-1) + SSL handshake requires longer timeout
-        connectionTimeoutMillis: isBuildTime
-          ? 50000  // Build time: 60 seconds (longer timeout for build operations)
-          : isUsingLocalDb 
-          ? 10000  // Local DB: 10 seconds (fast fail)
-          : isServerless
-          ? 50000  // Serverless runtime: 60 seconds (increased for extreme cross-continental latency - Mumbai/India ↔ Stockholm/Sweden)
-          : 30000, // RDS: 30 seconds (longer timeout for network latency)
-        // Allow connections to close when idle for cleaner connection pool
-        // This ensures connections don't accumulate unnecessarily
-        allowExitOnIdle: true, // Allow pool to close when idle - keeps connection pool clean
-        // In serverless, add a queue timeout to fail fast when pool is exhausted
-        // This prevents requests from waiting indefinitely when the single connection is busy
-        ...(isServerless && isProduction && !isPreview && !isDev
-          ? {
-              // Queue timeout: if all connections are busy, fail after 5 seconds
-              // This prevents requests from queuing indefinitely
-              // Note: pg-pool doesn't have a direct queueTimeout, but we handle this in error handling
-            }
-          : {}),
-        // Connection pool settings - clean identification
-        // Use clear application names to identify Vercel vs Local connections
-        application_name: isUsingLocalDb
-          ? 'ncg-local' // Local development - single identifier
-          : process.env.VERCEL
-          ? 'ncg-vercel' // Vercel production - single identifier
-          : `ncg-payload-cms-${process.env.AWS_REGION || 'default'}-${process.pid}`, // Other environments
-      }
-    })(),
-    // Disable automatic schema push/pull to prevent continuous retries
-    // Schema changes should be managed via migrations instead
-    // Set to false to stop "Pulling schema from database" retry loop
-    // Can be overridden with PAYLOAD_DISABLE_AUTO_PUSH env var
-    push: process.env.PAYLOAD_DISABLE_AUTO_PUSH !== 'false' ? false : true,
-    // Migration directory for manual schema management
+    pool: {
+      connectionString: getDbUri(),
+      ssl: getSslConfig(),
+      // Production: Use exactly 1 connection for RDS (Vercel serverless)
+      max: process.env.NODE_ENV === 'production' ? 1 : 2,
+      min: 0,
+      idleTimeoutMillis: 45000,
+      connectionTimeoutMillis: 50000,
+      allowExitOnIdle: true,
+      application_name: process.env.VERCEL ? 'ncg-vercel' : 'ncg-local',
+    },
+    push: false,
     migrationDir: path.resolve(dirname, 'migrations'),
   }),
   sharp,
@@ -336,3 +280,5 @@ export default buildConfig({
   cors: resolveOrigins(),
   csrf: resolveOrigins(),
 })
+
+export default config
