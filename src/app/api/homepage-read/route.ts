@@ -11,6 +11,17 @@ export const revalidate = 0
 
 export async function GET() {
   // CRITICAL: Check build time FIRST before any database operations
+  // Log environment to help debug production issues
+  console.log('[api/homepage-read] Environment check:', {
+    NODE_ENV: process.env.NODE_ENV,
+    VERCEL: process.env.VERCEL,
+    VERCEL_ENV: process.env.VERCEL_ENV,
+    VERCEL_URL: process.env.VERCEL_URL,
+    NEXT_PHASE: process.env.NEXT_PHASE,
+    CI: process.env.CI,
+    isBuildTime: isBuildTime(),
+  })
+  
   if (isBuildTime()) {
     console.log('[api/homepage-read] Build time detected - returning fallback')
     return NextResponse.json(
@@ -56,7 +67,7 @@ export async function GET() {
     console.log('[api/homepage-read] Cache MISS - fetching from database')
     const payload = await getPayload({ config })
     
-    // Fetch all globals in parallel
+    // Fetch all globals in parallel with proper error logging
     const [
       heroSection,
       servicesSection,
@@ -67,14 +78,38 @@ export async function GET() {
       approachSection,
       contactSection,
     ] = await Promise.all([
-      payload.findGlobal({ slug: 'hero-section', depth: 2 }).catch(() => null),
-      payload.findGlobal({ slug: 'services-section', depth: 2 }).catch(() => null),
-      payload.findGlobal({ slug: 'trusted-by-section' }).catch(() => null),
-      payload.findGlobal({ slug: 'case-studies-hero' }).catch(() => null),
-      payload.findGlobal({ slug: 'case-studies-grid', depth: 2 }).catch(() => null),
-      payload.findGlobal({ slug: 'testimonials-section' }).catch(() => null),
-      payload.findGlobal({ slug: 'approach-section' }).catch(() => null),
-      payload.findGlobal({ slug: 'contact-section' }).catch(() => null),
+      payload.findGlobal({ slug: 'hero-section', depth: 2 }).catch((err) => {
+        console.error('[api/homepage-read] Error fetching hero-section:', err?.message || err)
+        return null
+      }),
+      payload.findGlobal({ slug: 'services-section', depth: 2 }).catch((err) => {
+        console.error('[api/homepage-read] Error fetching services-section:', err?.message || err)
+        return null
+      }),
+      payload.findGlobal({ slug: 'trusted-by-section' }).catch((err) => {
+        console.error('[api/homepage-read] Error fetching trusted-by-section:', err?.message || err)
+        return null
+      }),
+      payload.findGlobal({ slug: 'case-studies-hero' }).catch((err) => {
+        console.error('[api/homepage-read] Error fetching case-studies-hero:', err?.message || err)
+        return null
+      }),
+      payload.findGlobal({ slug: 'case-studies-grid', depth: 2 }).catch((err) => {
+        console.error('[api/homepage-read] Error fetching case-studies-grid:', err?.message || err)
+        return null
+      }),
+      payload.findGlobal({ slug: 'testimonials-section' }).catch((err) => {
+        console.error('[api/homepage-read] Error fetching testimonials-section:', err?.message || err)
+        return null
+      }),
+      payload.findGlobal({ slug: 'approach-section' }).catch((err) => {
+        console.error('[api/homepage-read] Error fetching approach-section:', err?.message || err)
+        return null
+      }),
+      payload.findGlobal({ slug: 'contact-section' }).catch((err) => {
+        console.error('[api/homepage-read] Error fetching contact-section:', err?.message || err)
+        return null
+      }),
     ])
     
     const result = {
@@ -88,15 +123,23 @@ export async function GET() {
       contactSection,
     }
     
-    // Store in cache (increased TTL from 1 hour to 2 hours for better performance)
-    await cache.set(cacheKey, result, { ttl: 7200 })
+    // Only cache if we got at least some data (don't cache all nulls)
+    const hasData = Object.values(result).some(value => value !== null)
+    if (hasData) {
+      await cache.set(cacheKey, result, { ttl: 7200 })
+      console.log('[api/homepage-read] DB fetch SUCCESS - cached result')
+    } else {
+      console.warn('[api/homepage-read] All queries returned null - NOT caching. Check database connection.')
+    }
     
     const etag = `"${Date.now()}"`
     const response = NextResponse.json(result)
     response.headers.set('Cache-Control', 'public, s-maxage=7200, stale-while-revalidate=86400')
     response.headers.set('ETag', etag)
     response.headers.set('X-Cache', 'MISS')
-    console.log('[api/homepage-read] DB fetch SUCCESS - cached result')
+    if (!hasData) {
+      response.headers.set('X-All-Null', 'true')
+    }
     return response
   } catch (error: any) {
     console.error('[api/homepage-read] Error fetching homepage data:', error?.message || error)
