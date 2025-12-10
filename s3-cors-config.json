@@ -14,7 +14,9 @@
       "http://localhost:3000",
       "http://localhost:3001",
       "https://main.d1b4y595gzn5fd.amplifyapp.com",
-      "https://*.amplifyapp.com"
+      "https://*.amplifyapp.com",
+      "https://ncg-beta.vercel.app",
+      "https://*.vercel.app"
     ],
     "ExposeHeaders": [
       "ETag",

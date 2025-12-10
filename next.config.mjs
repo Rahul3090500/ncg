@@ -52,6 +52,22 @@ const nextConfig = {
         hostname: '**',
         pathname: '/api/media/**',
       },
+      // S3 bucket domains (for direct S3 URLs)
+      {
+        protocol: 'https',
+        hostname: '*.s3.*.amazonaws.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.s3.amazonaws.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 's3.*.amazonaws.com',
+        pathname: '/**',
+      },
     ],
     unoptimized: false,
   },
