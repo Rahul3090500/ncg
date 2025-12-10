@@ -5,8 +5,9 @@ import { getCacheManager } from '@/lib/cache-manager'
 import { isBuildTime, isDatabaseConnectionError, getBuildTimeGlobalFallback } from '@/lib/build-time-helpers'
 
 export const runtime = 'nodejs'
-// Use ISR - revalidate every hour
-export const revalidate = 3600
+// Force runtime execution so we don't bake build-time fallbacks into a static response
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export async function GET() {
   // CRITICAL: Check build time FIRST before any database operations
