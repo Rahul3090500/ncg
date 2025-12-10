@@ -266,7 +266,7 @@ export default buildConfig({
         // Production server MUST use exactly 1 connection (no more, no less)
         // Local development and dev/preview environments use 2 connections
         max: isProduction && !isPreview && !isDev
-          ? 1  // PRODUCTION: Exactly 1 connection for RDS
+          ?101  // PRODUCTION: Exactly 1 connection for RDS
           : 2, // Local/Dev/Preview: 2 connections
         // Optimized for clean connection management:
         // - Vercel: min=0 to allow connections to close when idle (cleaner)
@@ -274,17 +274,17 @@ export default buildConfig({
         // Connections will close quickly when idle, reducing connection pool clutter
         min: 0, // Don't keep idle connections - close them when not in use
         idleTimeoutMillis: isServerless && isProduction && !isPreview && !isDev
-          ? 60000  // Serverless production: 1 minute (close idle connections quickly for cleaner pool)
+          ? 45000  // Serverless production: 1 minute (close idle connections quickly for cleaner pool)
           : 30000, // Local: 30 seconds - close idle connections quickly
         // Increase timeout for build-time operations to allow more time for connection
         // Also increase timeout for serverless runtime to handle RDS connection latency
         // Cross-continental latency (Vercel US ↔ RDS eu-north-1) + SSL handshake requires longer timeout
         connectionTimeoutMillis: isBuildTime
-          ? 60000  // Build time: 60 seconds (longer timeout for build operations)
+          ? 50000  // Build time: 60 seconds (longer timeout for build operations)
           : isUsingLocalDb 
           ? 10000  // Local DB: 10 seconds (fast fail)
           : isServerless
-          ? 60000  // Serverless runtime: 60 seconds (increased for extreme cross-continental latency - Mumbai/India ↔ Stockholm/Sweden)
+          ? 50000  // Serverless runtime: 60 seconds (increased for extreme cross-continental latency - Mumbai/India ↔ Stockholm/Sweden)
           : 30000, // RDS: 30 seconds (longer timeout for network latency)
         // Allow connections to close when idle for cleaner connection pool
         // This ensures connections don't accumulate unnecessarily
