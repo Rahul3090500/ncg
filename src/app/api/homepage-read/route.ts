@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { getCacheManager } from '@/lib/cache-manager'
@@ -9,7 +9,7 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   // CRITICAL: Check build time FIRST before any database operations
   // Log environment to help debug production issues
   console.log('[api/homepage-read] Environment check:', {
@@ -49,18 +49,27 @@ export async function GET() {
   try {
     const cache = getCacheManager()
     const cacheKey = 'api-homepage-read'
-
+    
+    // Check for cache-bust query parameter (?cache=clear)
+    const cacheBust = request.nextUrl.searchParams.get('cache') === 'clear'
+    
     // Try cache first (increased TTL from 1 hour to 2 hours for better performance)
-    const cached = await cache.get(cacheKey, { ttl: 7200 })
+    const cached = cacheBust ? null : await cache.get(cacheKey, { ttl: 7200 })
     if (cached) {
-      console.log('[api/homepage-read] Cache HIT')
-      const etag = `"${Date.now()}"` // Simple ETag
+      // Check if cached data has all nulls (bad cache)
+      const hasNullData = Object.values(cached).every(value => value === null)
+      if (hasNullData) {
+        console.warn('[api/homepage-read] Cache contains all nulls - ignoring cache and fetching fresh')
+      } else {
+        console.log('[api/homepage-read] Cache HIT')
+        const etag = `"${Date.now()}"` // Simple ETag
 
-      const response = NextResponse.json(cached)
-      response.headers.set('Cache-Control', 'public, s-maxage=7200, stale-while-revalidate=86400')
-      response.headers.set('ETag', etag)
-      response.headers.set('X-Cache', 'HIT')
-      return response
+        const response = NextResponse.json(cached)
+        response.headers.set('Cache-Control', 'public, s-maxage=7200, stale-while-revalidate=86400')
+        response.headers.set('ETag', etag)
+        response.headers.set('X-Cache', 'HIT')
+        return response
+      }
     }
 
     // Cache miss - fetch from database
