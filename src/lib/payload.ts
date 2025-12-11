@@ -64,7 +64,7 @@ export async function getHomepageData() {
             payloadClient.findGlobal({ slug: 'services-section', depth: 3 }).catch(() => null),
             payloadClient.findGlobal({ slug: 'trusted-by-section' }).catch(() => null),
             payloadClient.findGlobal({ slug: 'case-studies-hero' }).catch(() => null),
-            payloadClient.findGlobal({ slug: 'case-studies-grid', depth: 2 }).catch(() => null),
+            payloadClient.findGlobal({ slug: 'case-studies-grid', depth: 3 }).catch(() => null),
             payloadClient.findGlobal({ slug: 'testimonials-section' }).catch(() => null),
             // Use depth: 2 to ensure step images are fully populated
             payloadClient.findGlobal({ slug: 'approach-section', depth: 2 }).catch(() => null),
@@ -143,7 +143,7 @@ export async function getCaseStudiesPageData() {
       const payloadClient = await getPayloadClient()
       const [caseStudiesPage, caseStudiesAll, contactSection] = await Promise.all([
         payloadClient.findGlobal({ slug: 'case-studies-page', depth: 2 }).catch(() => null),
-        payloadClient.find({ collection: 'case-studies', limit: 100, depth: 2 }).catch(() => ({ docs: [] })),
+        payloadClient.find({ collection: 'case-studies', limit: 100, depth: 3 }).catch(() => ({ docs: [] })),
         payloadClient.findGlobal({ slug: 'contact-section' }).catch(() => null),
       ])
       return {

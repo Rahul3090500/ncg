@@ -30,17 +30,7 @@ export async function GET() {
       payload.find({ 
         collection: 'case-studies', 
         limit: 100, 
-        depth: 2,
-        // Optimize: Only fetch needed fields
-        select: {
-          id: true,
-          title: true,
-          slug: true,
-          excerpt: true,
-          image: true,
-          category: true,
-          clientName: true,
-        }
+        depth: 3, // Increased depth to ensure relationships (icon, image) are populated
       }).catch(() => ({ docs: [] })),
       payload.findGlobal({ slug: 'contact-section' }).catch(() => null),
     ])

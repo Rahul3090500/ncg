@@ -258,23 +258,96 @@ const Home = async () => {
   const caseStudiesHeroData = caseStudiesHeroSection?.heading ? caseStudiesHeroSection : defaultCaseStudiesHeroData
 
   const caseStudiesGridSection = (homepageData as HomepageData)?.caseStudiesGridSection as any
+  
+  // Debug: Log case studies grid section structure in production
+  if (process.env.NODE_ENV === 'production' && caseStudiesGridSection) {
+    console.log('Homepage: caseStudiesGridSection structure:', {
+      exists: !!caseStudiesGridSection,
+      hasSelectedCaseStudies: !!caseStudiesGridSection.selectedCaseStudies,
+      selectedCaseStudiesIsArray: Array.isArray(caseStudiesGridSection.selectedCaseStudies),
+      selectedCaseStudiesLength: Array.isArray(caseStudiesGridSection.selectedCaseStudies) 
+        ? caseStudiesGridSection.selectedCaseStudies.length 
+        : 0,
+      firstCaseStudy: Array.isArray(caseStudiesGridSection.selectedCaseStudies) && caseStudiesGridSection.selectedCaseStudies.length > 0
+        ? {
+            hasId: !!caseStudiesGridSection.selectedCaseStudies[0]?.id,
+            hasTitle: !!caseStudiesGridSection.selectedCaseStudies[0]?.title,
+            idType: typeof caseStudiesGridSection.selectedCaseStudies[0]?.id,
+            isObject: typeof caseStudiesGridSection.selectedCaseStudies[0] === 'object',
+          }
+        : null
+    })
+  }
+  
   const selected = Array.isArray(caseStudiesGridSection?.selectedCaseStudies)
     ? caseStudiesGridSection.selectedCaseStudies
     : []
-  const mappedSelected = selected.map((cs: any) => ({
-    id: cs?.id,
-    image: cs?.image?.url ? { url: cs.image.url } : undefined,
-    category: cs?.category,
-    iconType: cs?.iconType,
-    iconAssetUrl: cs?.icon?.svg?.url,
-    title: cs?.title,
-    description: cs?.description,
-    link: cs?.link,
-  }))
+  
+  // Map selected case studies, handling both populated objects and IDs
+  const mappedSelected = selected
+    .map((cs: any) => {
+      // If cs is just an ID (string or number), skip it - we need the full object
+      if (typeof cs === 'string' || typeof cs === 'number') {
+        return null
+      }
+      
+      // If cs is an object but missing required fields, it might not be fully populated
+      if (!cs || !cs.id || !cs.title) {
+        return null
+      }
+      
+      return {
+        id: cs.id,
+        image: cs?.image?.url ? { url: cs.image.url } : undefined,
+        category: cs?.category || '',
+        iconType: cs?.iconType || '',
+        iconAssetUrl: cs?.icon?.svg?.url,
+        title: cs?.title || '',
+        description: cs?.description || cs?.excerpt || '',
+        link: cs?.link || (cs?.slug ? `/case-studies/${cs.slug}` : undefined),
+        slug: cs?.slug,
+      }
+    })
+    .filter((cs: any): cs is NonNullable<typeof cs> => cs !== null)
+  
+  // If no valid case studies were mapped, try to fetch case studies as fallback
+  let finalCaseStudies = mappedSelected.slice(0, 3)
+  
+  if (finalCaseStudies.length === 0) {
+    try {
+      // Fallback: fetch case studies directly from the collection
+      // Use getCaseStudiesPageData which already handles both dev and production
+      const { getCaseStudiesPageData } = await import('../../lib/payload')
+      const caseStudiesPageData = await getCaseStudiesPageData()
+      const allCaseStudies = Array.isArray(caseStudiesPageData?.caseStudiesAll) 
+        ? caseStudiesPageData.caseStudiesAll 
+        : []
+      
+      // Map the first 3 case studies to the expected format
+      finalCaseStudies = allCaseStudies.slice(0, 3)
+        .filter((cs: any) => cs && cs.id && cs.title) // Filter out invalid entries
+        .map((cs: any) => ({
+          id: cs?.id,
+          image: cs?.image?.url ? { url: cs.image.url } : undefined,
+          category: cs?.category || '',
+          iconType: cs?.iconType || '',
+          iconAssetUrl: cs?.icon?.svg?.url,
+          title: cs?.title || '',
+          description: cs?.description || '',
+          link: cs?.link || (cs?.slug ? `/case-studies/${cs.slug}` : undefined),
+          slug: cs?.slug,
+        }))
+    } catch (error) {
+      console.error('Error fetching fallback case studies:', error)
+      // Keep empty array if fallback fails
+      finalCaseStudies = []
+    }
+  }
+  
   const caseStudiesGridData = {
     buttonText: caseStudiesGridSection?.buttonText || 'All Case Studies',
     buttonLink: caseStudiesGridSection?.buttonLink || '/case-studies',
-    caseStudies: mappedSelected.slice(0, 3),
+    caseStudies: finalCaseStudies,
   }
 
   const defaultApproachData = {
