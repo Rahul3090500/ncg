@@ -287,6 +287,26 @@ const Home = async () => {
     steps: approachData.steps,
   }
   const approachSection = (homepageData as HomepageData)?.approachSection
+  
+  // Debug: Log approach section structure in production
+  if (process.env.NODE_ENV === 'production') {
+    console.log('Homepage: approachSection structure:', {
+      exists: !!approachSection,
+      hasTitle: !!approachSection?.title,
+      hasSteps: !!approachSection?.steps,
+      stepsIsArray: Array.isArray(approachSection?.steps),
+      stepsLength: Array.isArray(approachSection?.steps) ? approachSection.steps.length : 0,
+      firstStep: Array.isArray(approachSection?.steps) && approachSection.steps.length > 0
+        ? {
+            hasImage: !!approachSection.steps[0].image,
+            imageType: typeof approachSection.steps[0].image,
+            imageIsObject: typeof approachSection.steps[0].image === 'object',
+            imageUrl: typeof approachSection.steps[0].image === 'object' ? approachSection.steps[0].image?.url : null
+          }
+        : null
+    })
+  }
+  
   const approachDataFromCMS = approachSection?.title ? approachSection : defaultApproachData
 
   return (

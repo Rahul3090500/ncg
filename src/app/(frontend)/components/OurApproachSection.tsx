@@ -36,14 +36,48 @@ type ProcessedStep = ContentStep | ImageStep;
 export default function OurApproachSection({ data }: OurApproachSectionProps) {
   const { title, heading, description: sectionDescription, buttonText, buttonLink, steps: apiSteps } = data;
 
-  const stepsData: ProcessedStep[] = apiSteps.flatMap((step, index) => {
+  // Debug: Log data structure in production
+  if (process.env.NODE_ENV === 'production') {
+    console.log('OurApproachSection: Received data:', {
+      hasTitle: !!title,
+      hasHeading: !!heading,
+      hasSteps: !!apiSteps,
+      stepsIsArray: Array.isArray(apiSteps),
+      stepsLength: Array.isArray(apiSteps) ? apiSteps.length : 0,
+      firstStep: Array.isArray(apiSteps) && apiSteps.length > 0
+        ? {
+            hasImage: !!apiSteps[0].image,
+            imageType: typeof apiSteps[0].image,
+            imageIsObject: typeof apiSteps[0].image === 'object',
+            imageUrl: typeof apiSteps[0].image === 'object' ? apiSteps[0].image?.url : null
+          }
+        : null
+    })
+  }
+
+  // Ensure apiSteps is an array
+  const safeSteps = Array.isArray(apiSteps) ? apiSteps : []
+  
+  const stepsData: ProcessedStep[] = safeSteps.flatMap((step, index) => {
     const id = String(index + 1).padStart(2, '0');
+    
+    // Debug: Log step image in production
+    if (process.env.NODE_ENV === 'production' && !step.image?.url) {
+      console.warn(`OurApproachSection: Step ${index + 1} missing image URL:`, {
+        stepTitle: step.title,
+        hasImage: !!step.image,
+        imageType: typeof step.image,
+        imageIsObject: typeof step.image === 'object',
+        imageValue: step.image
+      })
+    }
+    
     return [
       {
         id,
         type: 'content' as const,
-        title: step.title,
-        description: step.description
+        title: step.title || '',
+        description: step.description || ''
       },
       {
         type: 'image' as const,
@@ -51,6 +85,16 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
       }
     ];
   });
+  
+  // Debug: Log final stepsData in production
+  if (process.env.NODE_ENV === 'production') {
+    console.log('OurApproachSection: Processed stepsData:', {
+      totalSteps: stepsData.length,
+      contentSteps: stepsData.filter(s => s.type === 'content').length,
+      imageSteps: stepsData.filter(s => s.type === 'image').length,
+      imageStepsWithUrl: stepsData.filter(s => s.type === 'image' && s.bgImage).length
+    })
+  }
 
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -120,7 +164,21 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
     };
   }, []);
 
+  // Debug: Log why component might not render
   if (stepsData.length === 0) {
+    if (process.env.NODE_ENV === 'production') {
+      console.warn('OurApproachSection: Not rendering - stepsData is empty', {
+        hasApiSteps: !!apiSteps,
+        apiStepsIsArray: Array.isArray(apiSteps),
+        apiStepsLength: Array.isArray(apiSteps) ? apiSteps.length : 0,
+        safeStepsLength: safeSteps.length,
+        dataReceived: {
+          title,
+          heading,
+          hasSteps: !!apiSteps
+        }
+      })
+    }
     return null;
   }
 

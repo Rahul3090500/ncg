@@ -33,14 +33,29 @@ export default function OurApproachSectionMobile({ data }: OurApproachSectionMob
   const { title, heading, description: sectionDescription, buttonText, buttonLink, steps: apiSteps } = data;
   const [isTablet, setIsTablet] = useState(false);
 
-  const stepsData: ProcessedStep[] = apiSteps.flatMap((step, index) => {
+  // Ensure apiSteps is an array
+  const safeSteps = Array.isArray(apiSteps) ? apiSteps : []
+  
+  // Debug: Log data structure in production
+  if (process.env.NODE_ENV === 'production') {
+    console.log('OurApproachSectionMobile: Received data:', {
+      hasTitle: !!title,
+      hasHeading: !!heading,
+      hasSteps: !!apiSteps,
+      stepsIsArray: Array.isArray(apiSteps),
+      stepsLength: Array.isArray(apiSteps) ? apiSteps.length : 0,
+      safeStepsLength: safeSteps.length
+    })
+  }
+
+  const stepsData: ProcessedStep[] = safeSteps.flatMap((step, index) => {
     const id = String(index + 1).padStart(2, '0');
     return [
       {
         id,
         type: 'content' as const,
-        title: step.title,
-        description: step.description
+        title: step.title || '',
+        description: step.description || ''
       },
       {
         type: 'image' as const,
@@ -48,6 +63,16 @@ export default function OurApproachSectionMobile({ data }: OurApproachSectionMob
       }
     ];
   });
+  
+  // Debug: Log why component might not render
+  if (stepsData.length === 0 && process.env.NODE_ENV === 'production') {
+    console.warn('OurApproachSectionMobile: Not rendering - stepsData is empty', {
+      hasApiSteps: !!apiSteps,
+      apiStepsIsArray: Array.isArray(apiSteps),
+      apiStepsLength: Array.isArray(apiSteps) ? apiSteps.length : 0,
+      safeStepsLength: safeSteps.length
+    })
+  }
 
   useEffect(() => {
     const checkScreenSize = () => {

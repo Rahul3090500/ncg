@@ -66,7 +66,8 @@ export async function getHomepageData() {
             payloadClient.findGlobal({ slug: 'case-studies-hero' }).catch(() => null),
             payloadClient.findGlobal({ slug: 'case-studies-grid', depth: 2 }).catch(() => null),
             payloadClient.findGlobal({ slug: 'testimonials-section' }).catch(() => null),
-            payloadClient.findGlobal({ slug: 'approach-section' }).catch(() => null),
+            // Use depth: 2 to ensure step images are fully populated
+            payloadClient.findGlobal({ slug: 'approach-section', depth: 2 }).catch(() => null),
             payloadClient.findGlobal({ slug: 'contact-section' }).catch(() => null),
           ])
 

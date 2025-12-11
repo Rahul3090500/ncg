@@ -46,7 +46,8 @@ export async function GET() {
       payload.findGlobal({ slug: 'case-studies-hero' }).catch(() => null),
       payload.findGlobal({ slug: 'case-studies-grid', depth: 2 }).catch(() => null),
       payload.findGlobal({ slug: 'testimonials-section' }).catch(() => null),
-      payload.findGlobal({ slug: 'approach-section' }).catch(() => null),
+      // Use depth: 2 to ensure step images are fully populated
+      payload.findGlobal({ slug: 'approach-section', depth: 2 }).catch(() => null),
       payload.findGlobal({ slug: 'contact-section' }).catch(() => null),
     ])
     
