@@ -27,8 +27,7 @@ const CaseStudiesParallaxHero = dynamic(() => import('../../components/CaseStudi
       <div className="absolute scale-[1.4] inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/assets/8669139b5ad96631528dce4a3734eddb4b03dc40.jpg')" }} />
       <div className="absolute inset-0 bg-black/30" />
     </section>
-  ),
-  ssr: false
+  )
 })
 
 type PageProps = {
