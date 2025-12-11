@@ -13,20 +13,42 @@ import type {
 async function invalidateCaches(cacheKeys: string[]) {
   if (cacheKeys.length === 0) return
 
-  const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+  // Determine server URL for cache invalidation
+  // Priority: NEXT_PUBLIC_SERVER_URL > VERCEL_URL > localhost
+  let serverUrl = process.env.NEXT_PUBLIC_SERVER_URL
+  
+  if (!serverUrl && process.env.VERCEL_URL) {
+    // VERCEL_URL doesn't include protocol, add it
+    serverUrl = `https://${process.env.VERCEL_URL}`
+  }
+  
+  if (!serverUrl) {
+    serverUrl = 'http://localhost:3000'
+  }
   
   try {
-    await fetch(`${serverUrl}/api/cache-invalidate`, {
+    const response = await fetch(`${serverUrl}/api/cache-invalidate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ keys: cacheKeys }),
-    }).catch(() => {
-      // Ignore errors - cache will expire naturally
-      console.warn('Cache invalidation failed, will expire naturally')
+      // Don't wait too long - fail fast (5 second timeout)
+      signal: AbortSignal.timeout(5000),
     })
-  } catch (error) {
-    // Ignore errors
-    console.warn('Cache invalidation error:', error)
+    
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => 'Unknown error')
+      console.warn(`⚠️ Cache invalidation returned ${response.status}:`, errorText)
+    } else {
+      const result = await response.json().catch(() => ({}))
+      console.log(`✅ Cache invalidated successfully:`, cacheKeys, result)
+    }
+  } catch (error: any) {
+    // Log error but don't throw - cache will expire naturally within 5 minutes
+    if (error?.name === 'TimeoutError') {
+      console.warn('⏱️ Cache invalidation timed out (will expire naturally):', cacheKeys)
+    } else {
+      console.warn('⚠️ Cache invalidation failed (will expire naturally):', error?.message || error, cacheKeys)
+    }
   }
 }
 

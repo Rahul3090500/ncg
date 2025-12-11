@@ -5,8 +5,8 @@ import { getCacheManager } from '@/lib/cache-manager'
 import { isBuildTime, isDatabaseConnectionError, getBuildTimeGlobalFallback } from '@/lib/build-time-helpers'
 
 export const runtime = 'nodejs'
-// Use ISR - revalidate every hour
-export const revalidate = 3600
+// Use ISR - revalidate every 5 minutes (reduced for instant updates)
+export const revalidate = 300
 
 export async function GET() {
   try {
