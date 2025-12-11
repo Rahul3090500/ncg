@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { Users } from './collections/Users'
+import { invalidateCacheAfterGlobalChange } from './hooks/payload'
 import { Media } from './collections/Media'
 import { CaseStudies } from './collections/CaseStudies'
 import { Blogs } from './collections/Blogs'

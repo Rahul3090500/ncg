@@ -16,24 +16,24 @@ export async function getHomepageData() {
         if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
           const serverCache = getCacheManager()
           
-          // Try server cache first
-          const cached = await serverCache.get('homepage-data', { ttl: 3600 })
+          // Try server cache first (reduced TTL for faster updates - 5 minutes)
+          const cached = await serverCache.get('homepage-data', { ttl: 300 })
           if (cached) {
             return cached
           }
 
           const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/homepage-read`, {
-            next: { revalidate: 3600 }, // Revalidate every hour
+            next: { revalidate: 300 }, // Revalidate every 5 minutes
             headers: {
-              'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+              'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
             },
           })
           
           if (response.ok) {
             const result = await response.json()
             if (result) {
-              // Store in server cache
-              await serverCache.set('homepage-data', result, { ttl: 3600 })
+              // Store in server cache (reduced TTL for faster updates)
+              await serverCache.set('homepage-data', result, { ttl: 300 })
               return result
             }
           }
@@ -93,7 +93,7 @@ export async function getHomepageData() {
       }
     },
     {
-      ttl: 3600, // 1 hour client cache
+      ttl: 300, // 5 minutes client cache (reduced for instant updates)
       useLocalStorage: true,
       staleWhileRevalidate: true,
     }

@@ -13,13 +13,13 @@ export async function GET() {
     const cache = getCacheManager()
     const cacheKey = 'api-homepage-read'
 
-    // Try cache first (increased TTL from 1 hour to 2 hours for better performance)
-    const cached = await cache.get(cacheKey, { ttl: 7200 })
+    // Try cache first (reduced TTL for faster updates - 5 minutes)
+    const cached = await cache.get(cacheKey, { ttl: 300 })
     if (cached) {
       const etag = `"${Date.now()}"` // Simple ETag
 
       const response = NextResponse.json(cached)
-      response.headers.set('Cache-Control', 'public, s-maxage=7200, stale-while-revalidate=86400')
+      response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
       response.headers.set('ETag', etag)
       response.headers.set('X-Cache', 'HIT')
       return response
@@ -60,12 +60,12 @@ export async function GET() {
       contactSection,
     }
     
-    // Store in cache (increased TTL from 1 hour to 2 hours for better performance)
-    await cache.set(cacheKey, result, { ttl: 7200 })
+    // Store in cache (reduced TTL for faster updates - 5 minutes)
+    await cache.set(cacheKey, result, { ttl: 300 })
     
     const etag = `"${Date.now()}"`
     const response = NextResponse.json(result)
-    response.headers.set('Cache-Control', 'public, s-maxage=7200, stale-while-revalidate=86400')
+    response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
     response.headers.set('ETag', etag)
     response.headers.set('X-Cache', 'MISS')
     return response
