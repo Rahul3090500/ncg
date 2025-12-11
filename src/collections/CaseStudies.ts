@@ -103,6 +103,7 @@ export const CaseStudies: CollectionConfig = {
                     limit: 1,
                   })
                   
+                  
                   if (existing.docs.length > 0) {
                     let counter = 1
                     let uniqueSlug = `${baseSlug}-${counter}`
