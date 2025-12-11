@@ -1,15 +1,15 @@
 /**
- * Example: Neon Server Action
+ * Example: Supabase Server Action
  * 
- * This is an example of how to use Neon database with Next.js Server Actions.
+ * This is an example of how to use Supabase database with Next.js Server Actions.
  * You can use this pattern for forms and other server-side database operations.
  * 
  * To use this:
- * 1. Create a table in Neon SQL Editor:
+ * 1. Create a table in Supabase SQL Editor:
  *    CREATE TABLE IF NOT EXISTS comments (id SERIAL PRIMARY KEY, comment TEXT, created_at TIMESTAMP DEFAULT NOW());
  * 
  * 2. Import and use in your component:
- *    import { createComment } from '@/app/examples/neon-server-action-example'
+ *    import { createComment } from '@/app/examples/supabase-server-action-example'
  * 
  * 3. Use in a form:
  *    <form action={createComment}>
@@ -20,11 +20,11 @@
 
 'use server'
 
-import { getNeonConnection } from '@/lib/neon'
+import { getSupabaseConnection } from '@/lib/supabase'
 
 export async function createComment(formData: FormData) {
   try {
-    const sql = getNeonConnection()
+    const sql = getSupabaseConnection()
     const comment = formData.get('comment')
 
     if (!comment || typeof comment !== 'string') {
@@ -46,7 +46,7 @@ export async function createComment(formData: FormData) {
  */
 export async function getComments() {
   try {
-    const sql = getNeonConnection()
+    const sql = getSupabaseConnection()
     const result = await sql('SELECT * FROM comments ORDER BY created_at DESC LIMIT 10')
     return { success: true, comments: result }
   } catch (error: any) {

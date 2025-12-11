@@ -44,11 +44,11 @@ export async function GET() {
 
   try {
     // Check for database connection string (priority: DATABASE_URL > DATABASE_URI)
-    const neonDbUrl = process.env.DATABASE_URL?.trim()
+    const supabaseDbUrl = process.env.DATABASE_URL?.trim()
     const rdsDbUri = process.env.DATABASE_URI?.trim()
-    const dbUri = neonDbUrl || rdsDbUri
-    const isNeon = !!neonDbUrl && neonDbUrl.includes('neon.tech')
-    const isRds = !!rdsDbUri && !isNeon
+    const dbUri = supabaseDbUrl || rdsDbUri
+    const isSupabase = !!supabaseDbUrl && (supabaseDbUrl.includes('supabase.com') || supabaseDbUrl.includes('supabase.co'))
+    const isRds = !!rdsDbUri && !isSupabase
 
     if (!dbUri) {
       healthCheck.status = 'error'
@@ -58,7 +58,7 @@ export async function GET() {
     }
 
     healthCheck.database.uriPresent = true
-    healthCheck.database.databaseType = isNeon ? 'neon' : isRds ? 'rds' : 'unknown'
+    healthCheck.database.databaseType = isSupabase ? 'supabase' : isRds ? 'rds' : 'unknown'
 
     // Extract connection info
     const uriMatch = dbUri.match(/postgresql:\/\/[^:]+:[^@]+@([^:]+):(\d+)\/([^?]+)/)
@@ -67,15 +67,15 @@ export async function GET() {
         host: uriMatch[1],
         port: uriMatch[2],
         database: uriMatch[3],
-        type: isNeon ? 'Neon' : isRds ? 'RDS' : 'Unknown',
+        type: isSupabase ? 'Supabase' : isRds ? 'RDS' : 'Unknown',
       }
     }
 
     // Test connection
-    // Neon uses standard SSL, RDS requires custom CA certificate
+    // Supabase uses standard SSL, RDS requires custom CA certificate
     let sslConfig: any
-    if (isNeon) {
-      // Neon uses standard SSL (no custom CA needed)
+    if (isSupabase) {
+      // Supabase uses standard SSL (no custom CA needed)
       sslConfig = {
         rejectUnauthorized: false,
         checkServerIdentity: () => undefined,
@@ -95,8 +95,8 @@ export async function GET() {
           }
     }
 
-    // For RDS, strip SSL params; for Neon, keep them
-    const cleanUri = isNeon ? dbUri : dbUri.replace(/[?&]sslmode=[^&]*/, '')
+    // For RDS, strip SSL params; for Supabase, keep them
+    const cleanUri = isSupabase ? dbUri : dbUri.replace(/[?&]sslmode=[^&]*/, '')
     const client = new Client({
       connectionString: cleanUri,
       ssl: sslConfig,
