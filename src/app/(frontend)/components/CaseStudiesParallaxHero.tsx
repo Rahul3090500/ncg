@@ -5,11 +5,13 @@ import React, { useEffect, useRef, useState } from 'react'
 interface CaseStudiesParallaxHeroProps {
   caseStudiesLabel: string
   caseStudiesHeroTitle: string
+  caseStudiesHeroImage?: string | null
 }
 
 const CaseStudiesParallaxHero: React.FC<CaseStudiesParallaxHeroProps> = ({
   caseStudiesLabel,
   caseStudiesHeroTitle,
+  caseStudiesHeroImage,
 }) => {
   const sectionRef = useRef<HTMLElement>(null)
   const [parallaxData, setParallaxData] = useState({
@@ -82,7 +84,9 @@ const CaseStudiesParallaxHero: React.FC<CaseStudiesParallaxHeroProps> = ({
       <div
         className="absolute inset-0 scale-[1.3]"
         style={{
-          backgroundImage: "url('/assets/8669139b5ad96631528dce4a3734eddb4b03dc40.jpg')",
+          backgroundImage: caseStudiesHeroImage 
+            ? `url('${caseStudiesHeroImage}')` 
+            : "url('/assets/8669139b5ad96631528dce4a3734eddb4b03dc40.jpg')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',

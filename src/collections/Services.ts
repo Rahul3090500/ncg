@@ -459,6 +459,15 @@ export const Services: CollectionConfig = {
       },
     },
     {
+      name: 'caseStudiesHeroImage',
+      type: 'upload',
+      relationTo: 'media',
+      required: false,
+      admin: {
+        description: 'Background image for the case studies parallax hero section',
+      },
+    },
+    {
       name: 'caseStudiesIntro',
       type: 'textarea',
       required: false,

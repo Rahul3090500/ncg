@@ -564,6 +564,10 @@ export interface Service {
    */
   caseStudiesHeroTitle?: string | null;
   /**
+   * Background image for the case studies parallax hero section
+   */
+  caseStudiesHeroImage?: (number | null) | Media;
+  /**
    * Introductory text for case studies section
    */
   caseStudiesIntro?: string | null;
@@ -1140,6 +1144,7 @@ export interface ServicesSelect<T extends boolean = true> {
       };
   caseStudiesLabel?: T;
   caseStudiesHeroTitle?: T;
+  caseStudiesHeroImage?: T;
   caseStudiesIntro?: T;
   caseStudies?: T;
   subServices?: T;

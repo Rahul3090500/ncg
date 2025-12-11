@@ -27,7 +27,8 @@ const CaseStudiesParallaxHero = dynamic(() => import('../../components/CaseStudi
       <div className="absolute scale-[1.4] inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/assets/8669139b5ad96631528dce4a3734eddb4b03dc40.jpg')" }} />
       <div className="absolute inset-0 bg-black/30" />
     </section>
-  )
+  ),
+  ssr: false
 })
 
 type PageProps = {
@@ -79,6 +80,7 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
   const advantages = service.advantages || []
   const caseStudiesLabel = service.caseStudiesLabel || 'case studies'
   const caseStudiesHeroTitle = service.caseStudiesHeroTitle || `${service.title} In Action`
+  const caseStudiesHeroImage = service.caseStudiesHeroImage?.url || null
   const caseStudiesIntro = service.caseStudiesIntro || 'Discover how NCG has helped organizations protect digital identities, streamline access management, and build trust across their digital landscape. Our case studies highlight real-world challenges, tailored solutions, and measurable results—showing you what\'s possible when identity is secured the right way.'
   // Filter out any null or invalid case studies (broken relationships)
   const caseStudies = Array.isArray(service.caseStudies)
@@ -215,6 +217,7 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
           <CaseStudiesParallaxHero
             caseStudiesLabel={caseStudiesLabel}
             caseStudiesHeroTitle={caseStudiesHeroTitle}
+            caseStudiesHeroImage={caseStudiesHeroImage}
           />
           {caseStudiesIntro && (
             <section className="pt-8 md:pt-12 lg:pt-[51px] pb-6 md:pb-8 lg:pb-[35px] bg-white">
