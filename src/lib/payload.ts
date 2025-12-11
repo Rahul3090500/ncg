@@ -60,7 +60,8 @@ export async function getHomepageData() {
             contactSection,
           ] = await Promise.all([
             payloadClient.findGlobal({ slug: 'hero-section', depth: 2 }).catch(() => null),
-            payloadClient.findGlobal({ slug: 'services-section', depth: 2 }).catch(() => null),
+            // Use depth: 3 to ensure sub-services are fully populated (nested relationships)
+            payloadClient.findGlobal({ slug: 'services-section', depth: 3 }).catch(() => null),
             payloadClient.findGlobal({ slug: 'trusted-by-section' }).catch(() => null),
             payloadClient.findGlobal({ slug: 'case-studies-hero' }).catch(() => null),
             payloadClient.findGlobal({ slug: 'case-studies-grid', depth: 2 }).catch(() => null),
@@ -297,7 +298,7 @@ export async function getJobsPageData() {
     async () => {
       try {
         const serverCache = getCacheManager()
-        const cached = await serverCache.get('jobs-page-data', { ttl: 1800 }) // 30 min cache
+        const cached = await serverCache.get<any>('jobs-page-data', { ttl: 300 }) // 5 min cache (reduced for instant updates)
         if (cached) {
           // Ensure selectedJobs is always an array
           if (cached?.jobsSection && !Array.isArray(cached.jobsSection.selectedJobs)) {
@@ -415,7 +416,7 @@ export async function getServiceBySlug(slug: string) {
         },
         limit: 1,
         depth: 2,
-      }).catch((error) => {
+      }).catch((error: any) => {
         // Only log actual errors, not null/undefined
         if (error) {
           console.error(`Error fetching service by slug (${slug}):`, error)

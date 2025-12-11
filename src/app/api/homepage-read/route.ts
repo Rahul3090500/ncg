@@ -40,7 +40,8 @@ export async function GET() {
       contactSection,
     ] = await Promise.all([
       payload.findGlobal({ slug: 'hero-section', depth: 2 }).catch(() => null),
-      payload.findGlobal({ slug: 'services-section', depth: 2 }).catch(() => null),
+      // Use depth: 3 to ensure sub-services are fully populated (nested relationships)
+      payload.findGlobal({ slug: 'services-section', depth: 3 }).catch(() => null),
       payload.findGlobal({ slug: 'trusted-by-section' }).catch(() => null),
       payload.findGlobal({ slug: 'case-studies-hero' }).catch(() => null),
       payload.findGlobal({ slug: 'case-studies-grid', depth: 2 }).catch(() => null),

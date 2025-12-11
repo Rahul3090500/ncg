@@ -110,8 +110,8 @@ interface HomepageData {
   }
 }
 
-// Use ISR - revalidate every 60 seconds (removes force-dynamic for better performance)
-export const revalidate = 60
+// Use ISR - revalidate every 5 minutes (reduced for instant updates)
+export const revalidate = 300
 
 const Home = async () => {
   // Fetch data on the server
@@ -194,6 +194,24 @@ const Home = async () => {
 
   // Use CMS services data if available, otherwise fall back to empty structure
   const servicesSection = (homepageData as HomepageData)?.servicesSection
+  
+  // Debug: Log services section structure in production
+  if (process.env.NODE_ENV === 'production' && servicesSection) {
+    console.log('Homepage: servicesSection structure:', {
+      hasServices: !!servicesSection.services,
+      servicesIsArray: Array.isArray(servicesSection.services),
+      servicesLength: Array.isArray(servicesSection.services) ? servicesSection.services.length : 0,
+      firstServiceSubServices: Array.isArray(servicesSection.services) && servicesSection.services.length > 0
+        ? {
+            hasSubServices: !!servicesSection.services[0].subServices,
+            subServicesIsArray: Array.isArray(servicesSection.services[0].subServices),
+            subServicesLength: Array.isArray(servicesSection.services[0].subServices) 
+              ? servicesSection.services[0].subServices.length 
+              : 0
+          }
+        : null
+    })
+  }
   
   // If services-section exists but has no services, or doesn't exist, fetch all services as fallback
   let servicesDataFromCMS

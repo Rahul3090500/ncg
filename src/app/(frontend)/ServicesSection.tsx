@@ -79,6 +79,27 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
       return []
     }
 
+    // Debug: Log raw data structure in production
+    if (process.env.NODE_ENV === 'production') {
+      console.log('ServicesSection: Raw servicesData structure:', {
+        servicesCount: servicesData.services.length,
+        firstService: servicesData.services[0] ? {
+          serviceType: typeof servicesData.services[0].service,
+          serviceIsObject: typeof servicesData.services[0].service === 'object',
+          subServicesType: typeof servicesData.services[0].subServices,
+          subServicesIsArray: Array.isArray(servicesData.services[0].subServices),
+          subServicesLength: Array.isArray(servicesData.services[0].subServices) ? servicesData.services[0].subServices.length : 0,
+          subServicesSample: Array.isArray(servicesData.services[0].subServices) && servicesData.services[0].subServices.length > 0
+            ? {
+                type: typeof servicesData.services[0].subServices[0],
+                isObject: typeof servicesData.services[0].subServices[0] === 'object',
+                value: servicesData.services[0].subServices[0]
+              }
+            : null
+        } : null
+      })
+    }
+
     return servicesData.services
       .map((item, index) => {
         // Handle service - could be ID or object
@@ -99,6 +120,54 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
           return null
         }
 
+        // Transform sub-services with better debugging
+        const subServicesArray = Array.isArray(item.subServices) ? item.subServices : []
+        
+        if (process.env.NODE_ENV === 'production' && subServicesArray.length > 0) {
+          console.log(`ServicesSection: Service "${service.title}" has ${subServicesArray.length} sub-services (raw):`, 
+            subServicesArray.map((sub: any) => ({
+              type: typeof sub,
+              isObject: typeof sub === 'object',
+              id: typeof sub === 'object' ? sub?.id : sub,
+              title: typeof sub === 'object' ? sub?.title : 'N/A'
+            }))
+          )
+        }
+
+        const transformedSubServices = subServicesArray
+          .map((sub: any) => {
+            const subService = typeof sub === 'object' && sub !== null ? sub : null
+            
+            if (!subService) {
+              if (process.env.NODE_ENV === 'production') {
+                console.warn(`ServicesSection: Sub-service is not an object, got:`, typeof sub, sub)
+              }
+              return null
+            }
+            
+            if (!subService.title) {
+              if (process.env.NODE_ENV === 'production') {
+                console.warn(`ServicesSection: Sub-service missing title:`, subService)
+              }
+              return null
+            }
+            
+            return {
+              id: subService.id || String(subService.id),
+              title: subService.title || '',
+              description: subService.description || '',
+              slug: subService.slug,
+              heroImage: subService.heroImage,
+            }
+          })
+          .filter(Boolean)
+
+        if (process.env.NODE_ENV === 'production' && transformedSubServices.length > 0) {
+          console.log(`ServicesSection: Service "${service.title}" transformed to ${transformedSubServices.length} sub-services:`, 
+            transformedSubServices.map((s: SubServiceData | null) => s?.title || 'N/A').filter(Boolean)
+          )
+        }
+
         return {
           id: service.id || String(service.id),
           title: service.title || '',
@@ -106,23 +175,7 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
           slug: service.slug,
           heroImage: service.heroImage,
           heroAlt: service.heroAlt,
-          // Transform sub-services
-          subServices: Array.isArray(item.subServices)
-            ? item.subServices
-              .map((sub: any) => {
-                const subService = typeof sub === 'object' && sub !== null ? sub : null
-                return subService
-                  ? {
-                    id: subService.id || String(subService.id),
-                    title: subService.title || '',
-                    description: subService.description || '',
-                    slug: subService.slug,
-                    heroImage: subService.heroImage,
-                  }
-                  : null
-              })
-              .filter(Boolean)
-            : [],
+          subServices: transformedSubServices,
         }
       })
       .filter(Boolean) as ServiceData[]
@@ -130,20 +183,29 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
 
   const services = transformServices()
   
-  // Debug logging
+  // Debug logging and force re-render when data changes
   useEffect(() => {
     const servicesArrayLength = servicesData?.services?.length ?? 0
     if (services.length === 0 && servicesArrayLength > 0) {
       console.error('ServicesSection: Services were filtered out. Check console for warnings above.')
       console.error('Raw servicesData:', JSON.stringify(servicesData, null, 2))
     }
+    
+    // Log when sub-services change for debugging
+    if (services.length > 0) {
+      const totalSubServices = services.reduce((sum, s) => sum + (s.subServices?.length || 0), 0)
+      console.log(`ServicesSection: ${services.length} services, ${totalSubServices} total sub-services`)
+    }
   }, [services, servicesData])
-  const currentService = services[activeServiceIndex]
+  
+  // Reset active service index when services change
   useEffect(() => {
     if (services.length > 0 && activeServiceIndex >= services.length) {
       setActiveServiceIndex(0)
     }
   }, [services, activeServiceIndex])
+  
+  const currentService = services[activeServiceIndex]
 
   const handleServiceChange = (index: number) => {
     setActiveServiceIndex(index)

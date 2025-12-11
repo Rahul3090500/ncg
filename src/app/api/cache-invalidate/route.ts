@@ -21,24 +21,28 @@ export async function POST(request: NextRequest) {
     const serverCache = getCacheManager()
     const clientCache = getAPICache()
 
-    // Invalidate specific keys
+    // Invalidate server-side cache
     for (const key of keys) {
-      await Promise.all([
-        serverCache.invalidate(key),
-        // Note: Client cache invalidation happens on next request
-      ])
+      await serverCache.invalidate(key)
+    }
+
+    // Invalidate client-side cache (localStorage/sessionStorage)
+    // This ensures client components get fresh data on next request
+    for (const key of keys) {
+      clientCache.invalidate(key)
     }
 
     // Invalidate by pattern
     if (pattern) {
       await serverCache.invalidateByTag(pattern)
-      // Client cache will be invalidated on next access
+      clientCache.invalidatePattern(pattern.replace('*', '.*'))
     }
 
     return NextResponse.json({
       success: true,
       invalidated: keys.length,
       pattern: pattern || null,
+      message: 'Server and client caches invalidated',
     })
   } catch (error: any) {
     return NextResponse.json(
