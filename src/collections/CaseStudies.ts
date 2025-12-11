@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { invalidateCacheAfterChange, invalidateCacheAfterDelete } from '../hooks/payload'
 
 export const CaseStudies: CollectionConfig = {
   slug: 'case-studies',
@@ -15,6 +16,10 @@ export const CaseStudies: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     description: 'Create and manage all case studies used across the site',
+  },
+  hooks: {
+    afterChange: [invalidateCacheAfterChange],
+    afterDelete: [invalidateCacheAfterDelete],
   },
   fields: [
     {

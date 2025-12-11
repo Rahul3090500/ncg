@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { invalidateCacheAfterGlobalChange } from '../hooks/payload'
 
 export const CareerStatsSection: GlobalConfig = {
   slug: 'career-stats',
@@ -10,6 +11,9 @@ export const CareerStatsSection: GlobalConfig = {
   access: {
     read: () => true,
     update: ({ req: { user } }) => Boolean(user),
+  },
+  hooks: {
+    afterChange: [invalidateCacheAfterGlobalChange],
   },
   fields: [
     {

@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { invalidateCacheAfterChange, invalidateCacheAfterDelete } from '../hooks/payload'
 
 export const Icons: CollectionConfig = {
   slug: 'icons',
@@ -15,6 +16,10 @@ export const Icons: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     description: 'Upload SVG icons and reuse them across case studies',
+  },
+  hooks: {
+    afterChange: [invalidateCacheAfterChange],
+    afterDelete: [invalidateCacheAfterDelete],
   },
   fields: [
     {

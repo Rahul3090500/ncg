@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { invalidateCacheAfterGlobalChange } from '../hooks/payload'
 
 export const AboutUsSection: GlobalConfig = {
   slug: 'about-us-section',
@@ -10,6 +11,9 @@ export const AboutUsSection: GlobalConfig = {
   access: {
     read: () => true,
     update: ({ req: { user } }) => Boolean(user),
+  },
+  hooks: {
+    afterChange: [invalidateCacheAfterGlobalChange],
   },
   fields: [
     { name: 'sectionLabel', type: 'text', required: true, defaultValue: 'ABOUT US' },

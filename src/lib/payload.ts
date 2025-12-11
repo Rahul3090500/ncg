@@ -104,7 +104,7 @@ export async function getFooterData() {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/footer-read`, {
-        next: { revalidate: 3600 }, // Cache for 1 hour (ISR)
+        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
       })
       if (response.ok) {
         const result = await response.json()
@@ -126,7 +126,7 @@ export async function getCaseStudiesPageData() {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/case-studies-read`, {
-        next: { revalidate: 3600 }, // Cache for 1 hour (ISR)
+        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
       })
       if (response.ok) {
         const result = await response.json()
@@ -162,7 +162,7 @@ export async function getCaseStudyBySlug(slug: string) {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/case-studies-read/${slug}`, {
-        next: { revalidate: 3600 }, // Cache for 1 hour (ISR)
+        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
       })
       if (response.ok) {
         const result = await response.json()
@@ -193,7 +193,7 @@ export async function getAboutPageData() {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/about-read`, {
-        next: { revalidate: 3600 }, // Cache for 1 hour (ISR)
+        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
       })
       if (response.ok) {
         const result = await response.json()
@@ -239,7 +239,7 @@ export async function getBlogsPageData() {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/blogs-read`, {
-        next: { revalidate: 3600 }, // Cache for 1 hour (ISR)
+        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
       })
       if (response.ok) {
         const result = await response.json()
@@ -264,7 +264,7 @@ export async function getBlogBySlug(slug: string) {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/blogs-read/${slug}`, {
-        next: { revalidate: 3600 }, // Cache for 1 hour (ISR)
+        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
       })
       if (response.ok) {
         const result = await response.json()
@@ -308,8 +308,8 @@ export async function getJobsPageData() {
 
         if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
           const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs-read`, {
-            next: { revalidate: 1800 },
-            headers: { 'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=3600' },
+            next: { revalidate: 300 },
+            headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600' },
           })
           if (response.ok) {
             const result = await response.json()
@@ -318,7 +318,7 @@ export async function getJobsPageData() {
               result.jobsSection.selectedJobs = []
             }
             if (result) {
-              await serverCache.set('jobs-page-data', result, { ttl: 1800 })
+              await serverCache.set('jobs-page-data', result, { ttl: 300 })
               return result
             }
           }
@@ -339,7 +339,7 @@ export async function getJobsPageData() {
         return { jobsSection: null }
       }
     },
-    { ttl: 1800, useLocalStorage: true, staleWhileRevalidate: true }
+    { ttl: 300, useLocalStorage: true, staleWhileRevalidate: true }
   )
 }
 
@@ -347,7 +347,7 @@ export async function getPrivacyPolicyPageData() {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/privacy-policy-read`, {
-        next: { revalidate: 3600 }, // Cache for 1 hour (ISR)
+        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
       })
       if (response.ok) {
         const result = await response.json()
@@ -370,7 +370,7 @@ export async function getServicesData() {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/services-read`, {
-        next: { revalidate: 3600 }, // Cache for 1 hour (ISR)
+        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
       })
       if (response.ok) {
         const result = await response.json()
@@ -392,7 +392,7 @@ export async function getServiceBySlug(slug: string) {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/services-read/${slug}`, {
-        next: { revalidate: 3600 }, // Cache for 1 hour (ISR)
+        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
       })
       if (response.ok) {
         const result = await response.json()
@@ -451,7 +451,7 @@ export async function getSubServicesForService(serviceSlug: string) {
 
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/services-read/${serviceSlug}/sub-services`, {
-        next: { revalidate: 3600 }, // Cache for 1 hour (ISR)
+        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
       })
       if (response.ok) {
         const result = await response.json()
@@ -487,7 +487,7 @@ export async function getSubServiceBySlug(serviceSlug: string, subServiceSlug: s
 
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/services-read/${serviceSlug}/${subServiceSlug}`, {
-        next: { revalidate: 3600 }, // Cache for 1 hour (ISR)
+        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
       })
       if (response.ok) {
         const result = await response.json()
@@ -527,7 +527,7 @@ export async function getJobBySlug(slug: string) {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs-read/${slug}`, {
-        next: { revalidate: 3600 }, // Cache for 1 hour (ISR)
+        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
       })
       if (response.ok) {
         const result = await response.json()

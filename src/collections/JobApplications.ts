@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { invalidateCacheAfterChange, invalidateCacheAfterDelete } from '../hooks/payload'
 
 export const JobApplications: CollectionConfig = {
   slug: 'job-applications',
@@ -13,6 +14,10 @@ export const JobApplications: CollectionConfig = {
     create: () => true, // Allow public submissions
     update: ({ req: { user } }) => Boolean(user),
     delete: ({ req: { user } }) => Boolean(user),
+  },
+  hooks: {
+    afterChange: [invalidateCacheAfterChange],
+    afterDelete: [invalidateCacheAfterDelete],
   },
   fields: [
     {

@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { invalidateCacheAfterGlobalChange } from '../hooks/payload'
 
 export const PrivacyPolicySection: GlobalConfig = {
   slug: 'privacy-policy-section',
@@ -10,6 +11,9 @@ export const PrivacyPolicySection: GlobalConfig = {
   access: {
     read: () => true,
     update: ({ req: { user } }) => Boolean(user),
+  },
+  hooks: {
+    afterChange: [invalidateCacheAfterGlobalChange],
   },
   fields: [
     {

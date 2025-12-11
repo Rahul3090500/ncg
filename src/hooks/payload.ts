@@ -45,24 +45,34 @@ export const invalidateCacheAfterChange: CollectionAfterChangeHook = async ({
     switch (collectionSlug) {
       case 'services':
       case 'sub-services':
-        cacheKeys.push('homepage-data', 'services-data', 'api-services-read', 'api-homepage-read')
+        cacheKeys.push('homepage-data', 'services-data', 'api-services-read', 'api-homepage-read', 'homepage-data-dev')
         break
       case 'blogs':
-        cacheKeys.push('blogs-data', 'api-blogs-read')
+        cacheKeys.push('blogs-data', 'api-blogs-read', 'homepage-data', 'api-homepage-read', 'homepage-data-dev')
         break
       case 'case-studies':
-        cacheKeys.push('case-studies-data', 'api-case-studies-read', 'homepage-data', 'api-homepage-read')
+        cacheKeys.push('case-studies-data', 'api-case-studies-read', 'homepage-data', 'api-homepage-read', 'homepage-data-dev')
         break
       case 'job-openings':
-        cacheKeys.push('jobs-data', 'api-jobs-read', 'homepage-data', 'api-homepage-read')
+        cacheKeys.push('jobs-data', 'api-jobs-read', 'homepage-data', 'api-homepage-read', 'homepage-data-dev')
+        break
+      case 'job-applications':
+        cacheKeys.push('jobs-data', 'api-jobs-read', 'homepage-data', 'api-homepage-read', 'homepage-data-dev')
+        break
+      case 'icons':
+        cacheKeys.push('homepage-data', 'api-homepage-read', 'homepage-data-dev')
         break
       case 'media':
-        // Media changes affect homepage (hero images, etc.)
-        cacheKeys.push('homepage-data', 'api-homepage-read')
+        // Media changes affect homepage (hero images, etc.) and all pages
+        cacheKeys.push('homepage-data', 'api-homepage-read', 'homepage-data-dev', 'about-data', 'api-about-read', 'blogs-data', 'api-blogs-read', 'career-data', 'api-career-read', 'case-studies-data', 'api-case-studies-read')
+        break
+      case 'users':
+        // Users don't typically affect public pages, but invalidate to be safe
+        cacheKeys.push('homepage-data', 'api-homepage-read', 'homepage-data-dev')
         break
       default:
-        // For other collections, invalidate homepage cache as well
-        cacheKeys.push('homepage-data', 'api-homepage-read')
+        // For any other collections, invalidate all relevant caches
+        cacheKeys.push('homepage-data', 'api-homepage-read', 'homepage-data-dev', 'about-data', 'api-about-read', 'blogs-data', 'api-blogs-read', 'career-data', 'api-career-read', 'case-studies-data', 'api-case-studies-read', 'jobs-data', 'api-jobs-read', 'services-data', 'api-services-read')
     }
   }
 
@@ -118,10 +128,10 @@ export const invalidateCacheAfterGlobalChange: GlobalAfterChangeHook = async ({
       case 'about-core-values-section':
       case 'about-team-section':
       case 'about-cta-section':
-        cacheKeys.push('about-data', 'api-about-read')
+        cacheKeys.push('about-data', 'api-about-read', 'homepage-data', 'api-homepage-read', 'homepage-data-dev')
         break
       case 'blogs-page-hero-section':
-        cacheKeys.push('blogs-data', 'api-blogs-read')
+        cacheKeys.push('blogs-data', 'api-blogs-read', 'homepage-data', 'api-homepage-read', 'homepage-data-dev')
         break
       case 'career-hero-section':
       case 'career-stats-section':
@@ -131,8 +141,22 @@ export const invalidateCacheAfterGlobalChange: GlobalAfterChangeHook = async ({
       case 'career-life-at-ncg-section':
       case 'career-spotify-section':
       case 'career-job-section':
-        cacheKeys.push('career-data', 'api-career-read')
+        cacheKeys.push('career-data', 'api-career-read', 'homepage-data', 'api-homepage-read', 'homepage-data-dev')
         break
+      case 'case-studies-page-section':
+      case 'case-studies-page-hero-section':
+      case 'case-studies-page-grid-section':
+        cacheKeys.push('case-studies-data', 'api-case-studies-read', 'homepage-data', 'api-homepage-read', 'homepage-data-dev')
+        break
+      case 'jobs-section':
+        cacheKeys.push('jobs-data', 'api-jobs-read', 'homepage-data', 'api-homepage-read', 'homepage-data-dev')
+        break
+      case 'privacy-policy-section':
+        cacheKeys.push('homepage-data', 'api-homepage-read', 'homepage-data-dev')
+        break
+      default:
+        // For any other globals, invalidate homepage cache to be safe
+        cacheKeys.push('homepage-data', 'api-homepage-read', 'homepage-data-dev')
     }
   }
 

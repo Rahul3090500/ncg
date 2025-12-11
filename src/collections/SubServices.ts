@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { invalidateCacheAfterChange, invalidateCacheAfterDelete } from '../hooks/payload'
 
 export const SubServices: CollectionConfig = {
   slug: 'sub-services',
@@ -11,6 +12,10 @@ export const SubServices: CollectionConfig = {
     create: ({ req: { user } }) => Boolean(user),
     update: ({ req: { user } }) => Boolean(user),
     delete: ({ req: { user } }) => Boolean(user),
+  },
+  hooks: {
+    afterChange: [invalidateCacheAfterChange],
+    afterDelete: [invalidateCacheAfterDelete],
   },
   admin: {
     useAsTitle: 'title',

@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { invalidateCacheAfterChange, invalidateCacheAfterDelete } from '../hooks/payload'
 
 export const Blogs: CollectionConfig = {
   slug: 'blogs',
@@ -15,6 +16,10 @@ export const Blogs: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     description: 'Create and manage blog posts displayed on the Blogs page',
+  },
+  hooks: {
+    afterChange: [invalidateCacheAfterChange],
+    afterDelete: [invalidateCacheAfterDelete],
   },
   fields: [
     {

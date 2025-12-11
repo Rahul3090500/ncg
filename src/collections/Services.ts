@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { invalidateCacheAfterChange, invalidateCacheAfterDelete } from '../hooks/payload'
 
 export const Services: CollectionConfig = {
   slug: 'services',
@@ -14,6 +15,7 @@ export const Services: CollectionConfig = {
   },
   hooks: {
     afterChange: [
+      invalidateCacheAfterChange,
       async ({ doc, operation, req }) => {
         if (!req || !req.payload || operation !== 'create') {
           return
@@ -99,6 +101,7 @@ export const Services: CollectionConfig = {
           throw error
         }
       },
+      invalidateCacheAfterDelete,
     ],
   },
   admin: {

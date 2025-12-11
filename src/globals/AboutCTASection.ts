@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { invalidateCacheAfterGlobalChange } from '../hooks/payload'
 
 export const AboutCTASection: GlobalConfig = {
   slug: 'about-cta-section',
@@ -10,6 +11,9 @@ export const AboutCTASection: GlobalConfig = {
   access: {
     read: () => true,
     update: ({ req: { user } }) => Boolean(user),
+  },
+  hooks: {
+    afterChange: [invalidateCacheAfterGlobalChange],
   },
   fields: [
     { name: 'title', type: 'textarea', required: true, defaultValue: 'Ready To Strengthen Your Cybersecurity?' },

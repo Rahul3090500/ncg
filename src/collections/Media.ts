@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3'
+import { invalidateCacheAfterChange, invalidateCacheAfterDelete } from '../hooks/payload'
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -18,6 +19,7 @@ export const Media: CollectionConfig = {
   ],
   upload: true,
   hooks: {
+    afterChange: [invalidateCacheAfterChange],
     afterDelete: [
       async (args: any) => {
         const doc = args?.doc || {}
@@ -50,6 +52,7 @@ export const Media: CollectionConfig = {
         }
         await client.send(new DeleteObjectCommand({ Bucket: s3Bucket, Key: key }))
       },
+      invalidateCacheAfterDelete,
     ],
   },
 }
