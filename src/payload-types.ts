@@ -1283,9 +1283,18 @@ export interface HeroSection {
       }[]
     | null;
   /**
-   * Background images that change with each animated text. Order should match the animated texts above.
+   * Background images that change with each animated text. Order should match the animated texts above. Used for desktop screens (lg and above).
    */
   backgroundImages?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Background images for mobile and tablet screens. Order should match the animated texts above. If not provided, desktop images will be used.
+   */
+  mobileTabletBackgroundImages?:
     | {
         image: number | Media;
         id?: string | null;
@@ -1873,6 +1882,12 @@ export interface HeroSectionSelect<T extends boolean = true> {
         id?: T;
       };
   backgroundImages?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  mobileTabletBackgroundImages?:
     | T
     | {
         image?: T;

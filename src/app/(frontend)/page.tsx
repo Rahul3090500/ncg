@@ -45,6 +45,12 @@ interface HomepageData {
         url: string
       } | number | null
     }> | null
+    mobileTabletBackgroundImages?: Array<{
+      id?: string | number
+      image?: {
+        url: string
+      } | number | null
+    }> | null
     callToAction: {
       description: string
       ctaHeading: string
@@ -186,6 +192,35 @@ const Home = async () => {
             item !== null && (item.image === null || typeof item.image === 'number' || (typeof item.image === 'object' && 'url' in item.image))
           )
       : defaultHeroData.backgroundImages,
+    mobileTabletBackgroundImages: (heroSection.mobileTabletBackgroundImages && Array.isArray(heroSection.mobileTabletBackgroundImages) && heroSection.mobileTabletBackgroundImages.length > 0)
+      ? heroSection.mobileTabletBackgroundImages
+          .map((item: any): { id?: string | number; image?: { url: string } | number | null } | null => {
+            // Handle Payload structure: { id: string, image: Media }
+            if (typeof item === 'object' && item !== null) {
+              const image = item.image;
+              // If image is a Media object with url
+              if (typeof image === 'object' && image !== null && 'url' in image && typeof image.url === 'string') {
+                return { id: item.id, image: { url: image.url } };
+              }
+              // If image is a number (ID), we'll need to resolve it, but for now pass it through
+              if (typeof image === 'number') {
+                return { id: item.id, image: image };
+              }
+              // Handle direct url structure: { url: string }
+              if ('url' in item && typeof item.url === 'string') {
+                return { id: item.id, image: { url: item.url } };
+              }
+            }
+            // Handle direct string
+            if (typeof item === 'string') {
+              return { image: { url: item } };
+            }
+            return null;
+          })
+          .filter((item): item is { id?: string | number; image?: { url: string } | number | null } => 
+            item !== null && (item.image === null || typeof item.image === 'number' || (typeof item.image === 'object' && 'url' in item.image))
+          )
+      : undefined, // undefined means not provided, will fallback to desktop images
   } : defaultHeroData
 
   // Use CMS services data if available, otherwise fall back to empty structure

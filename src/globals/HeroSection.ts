@@ -54,10 +54,28 @@ export const HeroSection: GlobalConfig = {
     {
       name: 'backgroundImages',
       type: 'array',
-      label: 'Animated Background Images',
+      label: 'Animated Background Images (Desktop)',
       minRows: 0,
       admin: {
-        description: 'Background images that change with each animated text. Order should match the animated texts above.',
+        description: 'Background images that change with each animated text. Order should match the animated texts above. Used for desktop screens (lg and above).',
+      },
+      fields: [
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+          label: 'Background Image',
+        },
+      ],
+    },
+    {
+      name: 'mobileTabletBackgroundImages',
+      type: 'array',
+      label: 'Animated Background Images (Mobile/Tablet)',
+      minRows: 0,
+      admin: {
+        description: 'Background images for mobile and tablet screens. Order should match the animated texts above. If not provided, desktop images will be used.',
       },
       fields: [
         {

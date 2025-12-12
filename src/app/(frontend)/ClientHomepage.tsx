@@ -25,6 +25,12 @@ interface HomepageData {
         url: string;
       } | number | null;
     }> | null;
+    mobileTabletBackgroundImages?: Array<{
+      id?: string | number;
+      image?: {
+        url: string;
+      } | number | null;
+    }> | null;
     callToAction: {
       description: string;
       ctaHeading: string;
@@ -163,6 +169,42 @@ const ClientHomepage = ({ heroData, servicesData }: ClientHomepageProps) => {
     ? backgroundImages 
     : [fallbackBackgroundImage];
 
+  // Process mobile/tablet background images
+  const mobileTabletBackgroundImagesFromCMS = heroData.mobileTabletBackgroundImages && Array.isArray(heroData.mobileTabletBackgroundImages) && heroData.mobileTabletBackgroundImages.length > 0
+    ? heroData.mobileTabletBackgroundImages
+        .map((item: any): string | null => {
+          // Handle Payload structure: { id: string, image: Media }
+          if (typeof item === 'object' && item !== null) {
+            // Payload returns: { id: string, image: { url: string } } or { id: string, image: number }
+            const image = item.image;
+            if (typeof image === 'object' && image !== null && 'url' in image) {
+              return image.url;
+            }
+            // If image is a number (ID), we can't resolve it here, skip it
+            if (typeof image === 'number') {
+              return null;
+            }
+            // Handle direct url structure: { url: string }
+            if ('url' in item) {
+              return item.url;
+            }
+          }
+          // Handle direct string
+          if (typeof item === 'string') {
+            return item;
+          }
+          return null;
+        })
+        .filter((url: string | null): url is string => Boolean(url))
+    : null; // null means use desktop images as fallback
+  
+  // Ensure mobile/tablet background images array matches phrases length (if provided)
+  const finalMobileTabletBackgroundImages = mobileTabletBackgroundImagesFromCMS
+    ? phrasesToUse.map((_, index) => 
+        mobileTabletBackgroundImagesFromCMS[index] || mobileTabletBackgroundImagesFromCMS[mobileTabletBackgroundImagesFromCMS.length - 1] || finalBackgroundImages[index] || finalBackgroundImages[0]
+      )
+    : undefined; // undefined means component will fallback to desktop images
+
 
   return (
     <div className="min-h-screen bg-white">
@@ -174,6 +216,7 @@ const ClientHomepage = ({ heroData, servicesData }: ClientHomepageProps) => {
           mainHeading={heroData.mainHeading}
           phrases={phrasesToUse}
           backgroundImages={finalBackgroundImages}
+          mobileTabletBackgroundImages={finalMobileTabletBackgroundImages}
         />
         
         {/* Overlay */}

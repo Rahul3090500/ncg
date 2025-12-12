@@ -60,7 +60,7 @@ const FooterMobile: React.FC<FooterMobileProps> = ({
   bottomBar,
 }) => {
   return (
-    <footer className="bg-[#000F19] text-white py-8 md:py-10 lg:hidden">
+    <footer className="bg-[#000F19] text-white pt-8 md:pt-10 lg:hidden">
       <div className="containersection px-4 md:px-6">
         {/* Mobile: Single Column, Tablet: Two Columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-6 mb-8 md:mb-10">
@@ -117,57 +117,8 @@ const FooterMobile: React.FC<FooterMobileProps> = ({
                 )}
               </ul>
             </div>
-
-            {/* Contact Us */}
-            <div>
-              <ul className="space-y-3">
-                <div className="flex items-center">
-                  <div className="w-1.5 h-1.5 mr-4 bg-blue-400" />
-                  <h4 className="text-blue-400 font-manrope-medium text-lg md:text-xl">Contact Us</h4>
-                </div>
-                <li className="pl-5.5">
-                  <p className="text-white font-manrope-semibold text-base md:text-lg">{contact?.phoneHeading || 'Phone:'}</p>
-                </li>
-                <li className="pl-5.5">
-                  <p className="text-white font-manrope-medium text-sm md:text-base">{contact?.phone?.sweden || 'Sweden: +46-732-442-583'}</p>
-                </li>
-                <li className="pl-5.5">
-                  <p className="text-white font-manrope-medium text-sm md:text-base">{contact?.phone?.denmark || 'Denmark: +12 34 45 67 80'}</p>
-                </li>
-                <li className="pl-5.5">
-                  <p className="text-white font-manrope-semibold text-base md:text-lg">{contact?.emailHeading || 'Email:'}</p>
-                </li>
-                <li className="pl-5.5">
-                  <p className="text-white font-manrope-medium text-sm md:text-base">{contact?.email || 'info@ncgrp.se'}</p>
-                </li>
-              </ul>
-            </div>
-
-            {/* Sweden */}
-            <div>
-              <ul className="space-y-3">
-                <div className="flex items-center">
-                  <div className="w-1.5 h-1.5 mr-4 bg-blue-400" />
-                  <h4 className="text-blue-400 font-manrope-medium text-lg md:text-xl">{sweden?.title || 'Sweden'}</h4>
-                </div>
-                <li className="pl-5.5">
-                  <p className="text-white font-manrope-semibold text-base md:text-lg">{sweden?.officeHeading || 'Head Office Stockholm'}</p>
-                </li>
-                <li className="pl-5.5">
-                  <p className="text-white font-manrope-medium text-sm md:text-base leading-relaxed">
-                    {sweden?.addressLine1 || 'Kungsbro Strand 29, 112 26'}
-                    <br />
-                    {sweden?.addressLine2 || 'Stockholm, Sweden'}
-                  </p>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Right Column - Mobile & Tablet */}
-          <div className="space-y-8 md:space-y-6">
-            {/* The Company */}
-            <div>
+       {/* The Company */}
+       <div>
               <ul className="space-y-3">
                 <div className="flex items-center">
                   <div className="w-1.5 h-1.5 mr-4 bg-blue-400" />
@@ -231,9 +182,80 @@ const FooterMobile: React.FC<FooterMobileProps> = ({
                 </li>
               </ul>
             </div>
-
-            {/* Follow Us */}
+            {/* Contact Us */}
             <div>
+              <ul className="space-y-3">
+                <div className="flex items-center">
+                  <div className="w-1.5 h-1.5 mr-4 bg-blue-400" />
+                  <h4 className="text-blue-400 font-manrope-medium text-lg md:text-xl">Contact Us</h4>
+                </div>
+                <li className="pl-5.5">
+                  <p className="text-white font-manrope-semibold text-base md:text-lg">{contact?.phoneHeading || 'Phone:'}</p>
+                </li>
+                <li className="pl-5.5">
+                  <p className="text-white font-manrope-medium text-sm md:text-base">{contact?.phone?.sweden || 'Sweden: +46-732-442-583'}</p>
+                </li>
+                <li className="pl-5.5">
+                  <p className="text-white font-manrope-medium text-sm md:text-base">{contact?.phone?.denmark || 'Denmark: +12 34 45 67 80'}</p>
+                </li>
+                <li className="pl-5.5">
+                  <p className="text-white font-manrope-semibold text-base md:text-lg">{contact?.emailHeading || 'Email:'}</p>
+                </li>
+                <li className="pl-5.5">
+                  <p className="text-white font-manrope-medium text-sm md:text-base">{contact?.email || 'info@ncgrp.se'}</p>
+                </li>
+              </ul>
+            </div>
+
+            {/* Sweden */}
+            <div>
+              <ul className="space-y-3">
+                <div className="flex items-center">
+                  <div className="w-1.5 h-1.5 mr-4 bg-blue-400" />
+                  <h4 className="text-blue-400 font-manrope-medium text-lg md:text-xl">{sweden?.title || 'Sweden'}</h4>
+                </div>
+                <li className="pl-5.5">
+                  <p className="text-white font-manrope-semibold text-base md:text-lg">{sweden?.officeHeading || 'Head Office Stockholm'}</p>
+                </li>
+                <li className="pl-5.5">
+                  <p className="text-white font-manrope-medium text-sm md:text-base leading-relaxed">
+                    {sweden?.addressLine1 || 'Kungsbro Strand 29, 112 26'}
+                    <br />
+                    {sweden?.addressLine2 || 'Stockholm, Sweden'}
+                  </p>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Right Column - Mobile & Tablet */}
+          <div className="space-y-8 md:space-y-6">
+     
+
+
+
+
+            {/* Malmo */}
+            <div>
+              <ul className="space-y-3">
+                <div className="flex items-center">
+                  <div className="w-1.5 h-1.5 mr-4 bg-blue-400" />
+                  <h4 className="text-blue-400 font-manrope-medium text-lg md:text-xl">{malmo?.title || 'Malmo'}</h4>
+                </div>
+                <li className="pl-5.5">
+                  <p className="text-white font-manrope-semibold text-base md:text-lg">{malmo?.officeHeading || 'Branch Office'}</p>
+                </li>
+                <li className="pl-5.5">
+                  <p className="text-white font-manrope-medium text-sm md:text-base leading-relaxed">
+                    {malmo?.addressLine1 || 'Torggatan 4, Seventh Floor'}
+                    <br />
+                    {malmo?.addressLine2 || '211 40 Malmo'}
+                  </p>
+                </li>
+              </ul>
+            </div>
+                        {/* Follow Us */}
+                        <div>
               <ul className="space-y-3">
                 <div className="flex items-center">
                   <div className="w-1.5 h-1.5 mr-4 bg-blue-400" />
@@ -254,33 +276,12 @@ const FooterMobile: React.FC<FooterMobileProps> = ({
                       <TwitterXIcon width={20} height={20} />
                     </Link>
                     <Link
-                      href="#"
+                      href="https://www.linkedin.com/company/nordic-cyber-group/"
                       className="w-6.5 h-6.5 bg-white rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors duration-300"
                     >
                       <LinkedInIcon width={17} height={17} />
                     </Link>
                   </div>
-                </li>
-              </ul>
-            </div>
-
-
-            {/* Malmo */}
-            <div>
-              <ul className="space-y-3">
-                <div className="flex items-center">
-                  <div className="w-1.5 h-1.5 mr-4 bg-blue-400" />
-                  <h4 className="text-blue-400 font-manrope-medium text-lg md:text-xl">{malmo?.title || 'Malmo'}</h4>
-                </div>
-                <li className="pl-5.5">
-                  <p className="text-white font-manrope-semibold text-base md:text-lg">{malmo?.officeHeading || 'Branch Office'}</p>
-                </li>
-                <li className="pl-5.5">
-                  <p className="text-white font-manrope-medium text-sm md:text-base leading-relaxed">
-                    {malmo?.addressLine1 || 'Torggatan 4, Seventh Floor'}
-                    <br />
-                    {malmo?.addressLine2 || '211 40 Malmo'}
-                  </p>
                 </li>
               </ul>
             </div>
@@ -310,7 +311,7 @@ const FooterMobile: React.FC<FooterMobileProps> = ({
             {bottomBar?.privacyLabel || 'Privacy Policy'}
           </Link>
         </div>
-        <div className="border-t border-gray-600 pt-6 md:pt-8 mb-6 md:mb-8"></div>
+        <div className="border-t border-gray-600 pt-6 md:pt-8 "></div>
 
       </div>
     </footer>

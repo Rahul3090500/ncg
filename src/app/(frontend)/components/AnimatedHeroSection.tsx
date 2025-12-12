@@ -7,16 +7,20 @@ interface AnimatedHeroSectionProps {
   mainHeading: string;
   phrases: string[];
   backgroundImages: string[];
+  mobileTabletBackgroundImages?: string[];
 }
 
-const AnimatedHeroSection = ({ mainHeading, phrases, backgroundImages }: AnimatedHeroSectionProps) => {
+const AnimatedHeroSection = ({ mainHeading, phrases, backgroundImages, mobileTabletBackgroundImages }: AnimatedHeroSectionProps) => {
   const [currentText, setCurrentText] = useState('');
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
   const phraseIndexRef = useRef(0);
 
-  // Get current background image safely
-  const currentBackgroundImage = backgroundImages[currentPhraseIndex] || backgroundImages[0] || '';
+  // Get current background images safely
+  const currentDesktopImage = backgroundImages[currentPhraseIndex] || backgroundImages[0] || '';
+  const currentMobileTabletImage = mobileTabletBackgroundImages && mobileTabletBackgroundImages.length > 0
+    ? (mobileTabletBackgroundImages[currentPhraseIndex] || mobileTabletBackgroundImages[0] || '')
+    : currentDesktopImage; // Fallback to desktop image if mobile/tablet images not provided
 
   useEffect(() => {
     setIsMounted(true);
@@ -29,7 +33,13 @@ const AnimatedHeroSection = ({ mainHeading, phrases, backgroundImages }: Animate
       const img = new Image();
       img.src = src;
     });
-  }, [backgroundImages, isMounted]);
+    if (mobileTabletBackgroundImages) {
+      mobileTabletBackgroundImages.forEach((src) => {
+        const img = new Image();
+        img.src = src;
+      });
+    }
+  }, [backgroundImages, mobileTabletBackgroundImages, isMounted]);
 
   useEffect(() => {
     if (!isMounted) return;
@@ -95,25 +105,27 @@ const AnimatedHeroSection = ({ mainHeading, phrases, backgroundImages }: Animate
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [phrases, backgroundImages, isMounted]);
+  }, [phrases, backgroundImages, mobileTabletBackgroundImages, isMounted]);
 
-  const displayBackgroundImage = isMounted ? currentBackgroundImage : (backgroundImages[0] || '');
+  const displayDesktopImage = isMounted ? currentDesktopImage : (backgroundImages[0] || '');
+  const displayMobileTabletImage = isMounted ? currentMobileTabletImage : (
+    mobileTabletBackgroundImages && mobileTabletBackgroundImages.length > 0 
+      ? mobileTabletBackgroundImages[0] 
+      : backgroundImages[0] || ''
+  );
   const displayPhraseIndex = isMounted ? currentPhraseIndex : 0;
   const displayText = isMounted ? currentText : '';
 
   return (
     <>
       <div className="absolute inset-0 z-0 overflow-hidden bg-slate-900">
-        {/* 
-           REMOVED mode="wait". 
-           This allows the new image to enter WHILE the old one exits (Cross-fade).
-           No more black background between slides.
-        */}
+
         <AnimatePresence>
-          {displayBackgroundImage && (
+          {/* Desktop Background Image (lg and above) */}
+          {displayDesktopImage && (
             <motion.div
-              key={`bg-${displayPhraseIndex}`} // Unique key forces a new instance for every slide
-              className="absolute inset-0"
+              key={`bg-desktop-${displayPhraseIndex}`} // Unique key forces a new instance for every slide
+              className="hidden lg:block absolute inset-0"
               initial={{ opacity: 0, scale: 1 }} // Start at normal scale
               animate={{ opacity: 1, scale: 1.15 }} // Zoom IN to 1.15
               exit={{ opacity: 0 }} // Fade out to reveal the next image underneath/above
@@ -122,7 +134,27 @@ const AnimatedHeroSection = ({ mainHeading, phrases, backgroundImages }: Animate
                 scale: { duration: 15, ease: "linear" } 
               }}
               style={{ 
-                backgroundImage: `url(${displayBackgroundImage})`, 
+                backgroundImage: `url(${displayDesktopImage})`, 
+                backgroundSize: 'cover', 
+                backgroundPosition: 'center', 
+                backgroundRepeat: 'no-repeat' 
+              }}
+            />
+          )}
+          {/* Mobile/Tablet Background Image (below lg) */}
+          {displayMobileTabletImage && (
+            <motion.div
+              key={`bg-mobile-${displayPhraseIndex}`} // Unique key forces a new instance for every slide
+              className="lg:hidden absolute inset-0"
+              initial={{ opacity: 0, scale: 1 }} // Start at normal scale
+              animate={{ opacity: 1, scale: 1.15 }} // Zoom IN to 1.15
+              exit={{ opacity: 0 }} // Fade out to reveal the next image underneath/above
+              transition={{ 
+                opacity: { duration: 1.2, ease: "easeInOut" }, 
+                scale: { duration: 15, ease: "linear" } 
+              }}
+              style={{ 
+                backgroundImage: `url(${displayMobileTabletImage})`, 
                 backgroundSize: 'cover', 
                 backgroundPosition: 'center', 
                 backgroundRepeat: 'no-repeat' 

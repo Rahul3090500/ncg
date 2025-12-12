@@ -231,7 +231,9 @@ const Footer = async () => {
                     <TwitterXIcon width={20} height={20} />
                   </Link>
                   <Link
-                    href="#"
+                    href="https://www.linkedin.com/company/nordic-cyber-group/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-6.5 h-6.5 bg-white rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors duration-300"
                   >
                     <LinkedInIcon width={17} height={17} />
