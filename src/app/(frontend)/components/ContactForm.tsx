@@ -146,8 +146,8 @@ const ContactForm: React.FC<ContactFormProps> = ({ heading, submitButtonText, pr
       </h2>
 
       {/* Success Message */}
-      {showSuccess && (
-        <div className="mb-6 p-4 md:p-6 bg-[#488BF3] text-white rounded-lg shadow-lg animate-fade-in">
+      {showSuccess ? (
+        <div className="p-4 md:p-6 bg-[#488BF3] text-white rounded-lg shadow-lg animate-fade-in">
           <div className="flex items-start gap-3">
             <svg
               className="w-6 h-6 flex-shrink-0 mt-0.5"
@@ -170,9 +170,8 @@ const ContactForm: React.FC<ContactFormProps> = ({ heading, submitButtonText, pr
             </div>
           </div>
         </div>
-      )}
-
-      <form ref={formRef} onSubmit={handleSubmit} className="space-y-6 md:space-y-[43px]">
+      ) : (
+        <form ref={formRef} onSubmit={handleSubmit} className="space-y-6 md:space-y-[43px]">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {/* Full Name */}
           <div>
@@ -329,6 +328,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ heading, submitButtonText, pr
           </div>
         </div>
       </form>
+      )}
     </div>
   )
 }
