@@ -20,15 +20,16 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
   return (
     <div className="min-h-[497px] md:h-auto lg:h-[497px] flex flex-col lg:flex-row transition-opacity duration-300 ease-in-out">
       {/* Left Column - Heading (Desktop only) */}
+
+      {/* Right Column - Testimonial Content */}
+      <div className="flex-1 flex flex-col">
       {overline && (
-        <div className="hidden lg:block lg:w-auto lg:mr-24 flex-shrink-0 mb-6 lg:mb-0">
+        <div className="hidden lg:block lg:w-auto flex-shrink-0 mb-6">
           <h3 className="text-[#000f19] text-base md:text-lg lg:text-[19px] font-manrope-semibold mt-1 uppercase leading-[17px] tracking-widest text-center lg:text-left">
             {overline}
           </h3>
         </div>
       )}
-      {/* Right Column - Testimonial Content */}
-      <div className="flex-1 flex flex-col">
         {/* Image and Name/Title Section - Vertical on tablet, side by side on desktop */}
         <div className="flex flex-col md:flex-col lg:flex-row items-center md:items-center lg:items-end mb-6 md:mb-8 lg:mb-10">
           <div className="w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 bg-gray-200 rounded-[20px] flex items-center justify-center mb-4 md:mb-4 lg:mb-0 flex-shrink-0">

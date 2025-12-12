@@ -36,8 +36,8 @@ const TestimonialsCarousel = ({ data }: TestimonialsCarouselProps) => {
   }
 
   return (
-    <section className="py-12 md:py-20 lg:py-64 bg-white">
-      <div className="containersection">
+    <section className="py-12 md:py-20 lg:py-20 bg-white">
+      <div className="containersection lg:w-[70%]!">
         {/* Heading - Centered on tablet, separate column on desktop */}
         <div className="text-center md:text-center lg:hidden mb-8 md:mb-12">
           <h3 className="text-[#000f19] text-base md:text-lg font-manrope-semibold mt-1 uppercase leading-[17px] tracking-widest">

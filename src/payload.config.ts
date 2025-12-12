@@ -41,7 +41,7 @@ import { CareerStatsSection } from './globals/CareerStatsSection'
 import { CareerFindPlaceSection } from './globals/CareerFindPlaceSection'
 import { CareerWorkHereSection } from './globals/CareerWorkHereSection'
 import { CareerTestimonialsSection } from './globals/CareerTestimonialsSection'
-import { CareerLifeAtNCGSection } from './globals/CareerLifeAtNCGSection'
+// import { CareerLifeAtNCGSection } from './globals/CareerLifeAtNCGSection'
 import { CareerSpotifySection } from './globals/CareerSpotifySection'
 import { CareerJobSection } from './globals/CareerJobSection'
 import { JobsSection } from './globals/JobsSection'
@@ -164,7 +164,7 @@ export default buildConfig({
     CareerFindPlaceSection,
     CareerWorkHereSection,
     CareerTestimonialsSection,
-    CareerLifeAtNCGSection,
+    // CareerLifeAtNCGSection,
     CareerSpotifySection,
     CareerJobSection,
     JobsSection,

@@ -69,7 +69,7 @@ const CaseStudiesHeroSection = ({ data }: CaseStudiesHeroSectionProps) => {
 
   // Calculate parallax transforms for different layers with different speeds
   // Background moves slowest (0.4x), overlay medium (0.25x), content fastest (0.15x)
-  const backgroundTransform = `translate3d(0, ${parallaxData.scrollY * 0.4}px, 0) scale(1.15)`
+  const backgroundTransform = `translate3d(0, ${parallaxData.scrollY * 0.4}px, 0) scale(1.6)`
   const contentTransform = `translate3d(0, ${parallaxData.scrollY * 0.15}px, 0)`
 
   return (
@@ -106,7 +106,7 @@ const CaseStudiesHeroSection = ({ data }: CaseStudiesHeroSectionProps) => {
 
       {/* Content Layer - Moves fastest, stays in foreground */}
       <div
-        className="relative z-10 w-full containersection px-4 md:px-6 flex justify-start pb-8 md:pb-12 lg:pb-14 items-end h-full"
+        className="relative z-10 w-full containersection px-6 md:px-16 flex justify-start pb-8 md:pb-12 lg:pb-14 items-end h-full"
         style={{
           transform: contentTransform,
           opacity: parallaxData.opacity,
@@ -116,7 +116,7 @@ const CaseStudiesHeroSection = ({ data }: CaseStudiesHeroSectionProps) => {
       >
         <div className="text-left w-full max-w-full md:max-w-[950px]">
           <h3
-            className="text-white text-sm md:text-base lg:text-[19px] font-manrope-bold uppercase leading-tight md:leading-[17px] tracking-[2px] md:tracking-[3.80px] mb-3 md:mb-4"
+            className="text-white text-sm md:text-base ml-1 lg:text-[19px] font-manrope-bold uppercase leading-tight md:leading-[17px] tracking-[2px] md:tracking-[3.80px] mb-3 md:mb-4"
             style={{
               transform: `translate3d(0, ${parallaxData.scrollY * -0.05}px, 0)`,
               willChange: 'transform',

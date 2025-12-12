@@ -292,13 +292,13 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 containersection">
+        <div className="grid grid-cols-1 lg:grid-cols-12 relative items-start max-w-[1794px] w-[100%] mx-auto overflow-visible">
           <div className="hidden lg:block absolute z-0 inset-0 w-screen"
             style={{
-              backgroundImage: "linear-gradient(to right, #001D5C 50%, #f4f7ff 50%)"
+              backgroundImage: "linear-gradient(to right, #001D5C 33.33%, #f4f7ff 33.33%)"
             }} />
-          {/* Desktop Left Menu */}
-          <div className="hidden lg:block lg:col-span-4 z-10 bg-[#001D5C] text-white p-6">
+          {/* Desktop Left Menu - STICKY */}
+          <div className="hidden lg:flex flex-col lg:col-span-4 z-10 bg-[#001D5C] text-white p-10 sticky top-14 h-screen overflow-y-auto scrollbar-hide">
             <h3 className="text-[80px] font-manrope-semibold leading-[70px] mb-8 mt-4">Our <br /> Services</h3>
             <div className="space-y-4 pt-11">
               {services.map((service, index) => (
@@ -326,8 +326,8 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
             </div>
           </div>
 
-          {/* Content Area */}
-          <div className="lg:col-span-8 bg-[#f4f7ff] px-4 md:px-8 lg:px-[58px] py-6 md:py-8 lg:py-[61px] z-10">
+          {/* Content Area - SCROLLABLE */}
+          <div className="lg:col-span-8 bg-[#f4f7ff] px-4 md:px-8 lg:px-[58px] py-6 md:py-8 lg:py-[61px] z-10 min-h-screen">
             <AnimatePresence mode="wait">
               {currentService && (
                 <motion.div
@@ -343,7 +343,7 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
                     <h3 className="text-[#000f19] text-2xl md:text-3xl lg:text-[40px] font-manrope-bold leading-tight md:leading-[29px]">
                       {currentService.title}
                     </h3>
-                    <p className="w-full max-w-full md:max-w-2xl lg:w-[933px] text-[#000f19] text-base md:text-lg font-manrope-medium mt-4 leading-6">
+                    <p className="w-full max-w-full text-[#000f19] text-base md:text-lg font-manrope-medium mt-4 leading-6">
                       {currentService.description}
                     </p>
                   </div>
@@ -361,14 +361,14 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
                     (currentService.serviceImage?.url || currentService.subServices[0].heroImage?.url || currentService.heroImage?.url) ? (
                       <Link href={`/services/${getServiceSlug(currentService)}/${getSubServiceSlug(currentService.subServices[0])}`}>
                         <motion.div
-                          className="flex flex-col md:flex-row bg-white rounded-[10px] border-[1.50px] border-[#000f19]/10 hover:border-[#000f19] group relative mt-8 md:mt-12 cursor-pointer transition-all duration-300 ease-in-out min-h-[200px] md:h-64"
+                          className="flex flex-col md:flex-row bg-white h-full rounded-[10px] border-[1.50px] border-[#000f19]/10 hover:border-[#000f19] group relative mt-8 md:mt-12 cursor-pointer transition-all duration-300 ease-in-out min-h-64"
                           initial={{ opacity: 0, }}
                           animate={{ opacity: 1, }}
                           transition={{ duration: 0.4, ease: 'easeOut' }}
                         >
                           {/* Hero Image */}
                           <motion.div
-                            className="relative overflow-hidden rounded-t-lg md:rounded-l-lg md:rounded-t-none w-full md:w-80 h-48 md:h-full flex-shrink-0"
+                            className="relative overflow-hidden rounded-t-lg md:rounded-l-lg md:rounded-t-none w-full md:w-80 h-auto md:h-auto flex-shrink-0"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.4, delay: 0.1, ease: 'easeOut' }}
@@ -382,7 +382,7 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
 
                           {/* Featured Service Card - First Sub-Service */}
                           <motion.div
-                            className="flex-1 pt-4 md:pt-5 px-4 md:px-6 pb-[100px] overflow-hidden"
+                            className="flex-1 pt-4 md:pt-5 px-4 md:px-6 pb-[80px] overflow-hidden"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4, delay: 0.2, ease: 'easeOut' }}
@@ -421,7 +421,7 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
                               className="h-full"
                             >
                               <motion.div
-                                className="bg-white rounded-[10px] border-[1.50px] border-[#000f19]/10 hover:border-[#000f19] min-h-[200px] md:min-h-64 h-full group relative px-4 md:px-5 pt-4 md:pt-5 pb-[100px] cursor-pointer transition-all duration-300 ease-in-out overflow-hidden flex flex-col"
+                                className="bg-white rounded-[10px] border-[1.50px] border-[#000f19]/10 hover:border-[#000f19] min-h-[200px] md:min-h-64 h-full group relative px-4 md:px-5 pt-4 md:pt-5 pb-[80px] cursor-pointer transition-all duration-300 ease-in-out overflow-hidden flex flex-col"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.4, delay: 0.4 + index * 0.1, ease: 'easeOut' }}

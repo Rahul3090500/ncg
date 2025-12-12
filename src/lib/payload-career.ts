@@ -10,7 +10,7 @@ export async function getCareerPageData() {
   let findPlaceData = null
   let workHereData = null
   let testimonialsData = null
-  let lifeAtNCGData = null
+  // let lifeAtNCGData = null
   let spotifyData = null
   let jobOpeningsSectionData = null
 
@@ -44,11 +44,11 @@ export async function getCareerPageData() {
     console.error('Error fetching career-testimonials:', error)
   }
 
-  try {
-    lifeAtNCGData = await payload.findGlobal({ slug: 'career-life-at-ncg' })
-  } catch (error) {
-    console.error('Error fetching career-life-at-ncg:', error)
-  }
+  // try {
+  //   lifeAtNCGData = await payload.findGlobal({ slug: 'career-life-at-ncg' })
+  // } catch (error) {
+  //   console.error('Error fetching career-life-at-ncg:', error)
+  // }
 
   try {
     spotifyData = await payload.findGlobal({ slug: 'career-spotify' })
@@ -68,7 +68,7 @@ export async function getCareerPageData() {
     careerFindPlaceSection: findPlaceData,
     careerWorkHereSection: workHereData,
     careerTestimonialsSection: testimonialsData,
-    careerLifeAtNCGSection: lifeAtNCGData,
+    // careerLifeAtNCGSection: lifeAtNCGData,
     careerSpotifySection: spotifyData,
     careerJobSection: jobOpeningsSectionData,
   }

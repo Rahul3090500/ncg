@@ -7,16 +7,30 @@ import { useCookieConsent } from '../hooks/useCookieConsent'
 const CookieConsent: React.FC = () => {
   const [showBanner, setShowBanner] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
-  const { consent, updateConsent } = useCookieConsent()
+  const { consent, isLoaded, updateConsent } = useCookieConsent()
 
   useEffect(() => {
-    // Check if user has already made a choice
-    if (!consent) {
+    // Only proceed after consent state has been loaded from localStorage
+    if (!isLoaded) return
+
+    // Only show banner if user hasn't made a choice (first-time visitor)
+    if (consent === null) {
       // Show banner after a small delay for smooth animation
       setTimeout(() => {
         setShowBanner(true)
         setTimeout(() => setIsVisible(true), 10)
       }, 500)
+    } else {
+      // User has already made a choice, don't show banner
+      setShowBanner(false)
+    }
+  }, [isLoaded, consent])
+
+  // Hide banner immediately if consent changes (user made a choice)
+  useEffect(() => {
+    if (consent === 'accepted' || consent === 'rejected') {
+      setIsVisible(false)
+      setTimeout(() => setShowBanner(false), 300)
     }
   }, [consent])
 
@@ -36,9 +50,8 @@ const CookieConsent: React.FC = () => {
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 z-50 flex justify-center px-4 pb-6 md:pb-8 transition-all duration-300 ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-full'
-      }`}
+      className={`fixed bottom-0 left-0 right-0 z-50 flex justify-center px-4 pb-6 md:pb-8 transition-all duration-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-full'
+        }`}
     >
       <div className="w-full max-w-6xl bg-[#001D5C] rounded-2xl md:rounded-3xl px-4 py-4 md:px-6 md:py-5 shadow-2xl">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">

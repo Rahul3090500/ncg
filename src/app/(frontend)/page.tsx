@@ -25,10 +25,6 @@ const OurApproachSection = dynamicImport(() => import('./components/OurApproachS
   loading: () => <div className="h-[800px] w-full" />,
 })
 
-const OurApproachSectionMobile = dynamicImport(() => import('./components/OurApproachSectionMobile'), {
-  loading: () => <div className="h-[800px] w-full md:hidden" />,
-})
-
 const ContactSection = dynamicImport(() => import('./components/ContactSection'), {
   loading: () => <div className="h-[500px] w-full" />,
 })
@@ -317,7 +313,6 @@ const Home = async () => {
       <CaseStudiesGridSection data={caseStudiesGridData} />
       <TestimonialsSection />
       <OurApproachSection data={approachDataFromCMS} />
-      <OurApproachSectionMobile data={approachDataFromCMS} />
       <ContactSection />
     </div>
   )

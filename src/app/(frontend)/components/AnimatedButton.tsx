@@ -16,6 +16,7 @@ interface AnimatedButtonProps {
   roundness?: string
   centered?: boolean
   asDiv?: boolean // When true, renders as div instead of anchor tag
+  openInNewTab?: boolean // When true, opens link in new tab
 }
 
 const AnimatedButton: React.FC<AnimatedButtonProps> = ({
@@ -31,6 +32,7 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
   roundness = 'rounded-[5px]',
   centered = false,
   asDiv = false,
+  openInNewTab = false,
 }) => {
   const handleClick = (e: React.MouseEvent) => {
     if (asDiv && link.startsWith('#')) {
@@ -240,7 +242,15 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
   }
 
   // Otherwise, wrap in Link
-  return <Link href={link}>{buttonContent}</Link>
+  return (
+    <Link 
+      href={link} 
+      target={openInNewTab ? '_blank' : undefined}
+      rel={openInNewTab ? 'noopener noreferrer' : undefined}
+    >
+      {buttonContent}
+    </Link>
+  )
 }
 
 export default AnimatedButton

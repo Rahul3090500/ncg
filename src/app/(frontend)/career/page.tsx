@@ -77,7 +77,7 @@ const Career = async () => {
   const findPlace: any = data?.careerFindPlaceSection || null
   const workHere: any = data?.careerWorkHereSection || null
   const testimonials: any = data?.careerTestimonialsSection || null
-  const lifeAtNCG: any = data?.careerLifeAtNCGSection || null
+  // const lifeAtNCG: any = data?.careerLifeAtNCGSection || null
   const spotify: any = data?.careerSpotifySection || null
   const jobOpeningsSection: any = data?.careerJobSection || null
 
@@ -235,12 +235,12 @@ const Career = async () => {
         />
       )}
 
-      {/* Life at NCG Section */}
-      {lifeAtNCG && lifeAtNCG.images && Array.isArray(lifeAtNCG.images) && lifeAtNCG.images.length === 11 && (
+      {/* Life at NCG Section - Commented out */}
+      {/* {lifeAtNCG && lifeAtNCG.images && Array.isArray(lifeAtNCG.images) && lifeAtNCG.images.length === 11 && (
         <section className="pt-[10px] bg-white overflow-hidden">
           <div className="w-full">
             {/* Row 1: 3 images */}
-            <div className="flex flex-col md:flex-row">
+            {/* <div className="flex flex-col md:flex-row">
               {lifeAtNCG.images.slice(0, 3).map((item: any, index: number) => (
                 <div
                   key={`row1-${index}`}
@@ -248,10 +248,10 @@ const Career = async () => {
                   style={{ backgroundImage: `url('${item?.image?.url || ''}')` }}
                 ></div>
               ))}
-            </div>
+            </div> */}
 
             {/* Row 2: 4 images with center text overlay */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-0 relative">
+            {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-0 relative">
               {lifeAtNCG.images.slice(3, 7).map((item: any, index: number) => (
                 <div
                   key={`row2-${index}`}
@@ -261,7 +261,7 @@ const Career = async () => {
               ))}
 
               {/* Center Text Overlay */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#488BF3] h-auto md:h-56 w-[90%] md:w-[537px] flex flex-col items-center justify-center px-4 py-6 md:py-0 z-10">
+              {/* <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#488BF3] h-auto md:h-56 w-[90%] md:w-[537px] flex flex-col items-center justify-center px-4 py-6 md:py-0 z-10">
                 <p className="text-white font-manrope-bold text-2xl md:text-4xl lg:text-7xl leading-tight md:leading-[40px] lg:leading-[50px] uppercase text-center mb-2">
                   {lifeAtNCG.title || 'Life at NCG'}
                 </p>
@@ -271,10 +271,10 @@ const Career = async () => {
                   </p>
                 )}
               </div>
-            </div>
+            </div> */}
 
             {/* Row 3: 4 images (3 full + 1 cut off on right) */}
-            <div className="flex flex-col md:flex-row">
+            {/* <div className="flex flex-col md:flex-row">
               {lifeAtNCG.images.slice(7, 10).map((item: any, index: number) => (
                 <div
                   key={`row3-${index}`}
@@ -291,7 +291,7 @@ const Career = async () => {
             </div>
           </div>
         </section>
-      )}
+      )} */}
 
       {/* Job Openings Section */}
       {jobOpeningsSection?.selectedJobs && Array.isArray(jobOpeningsSection.selectedJobs) && jobOpeningsSection.selectedJobs.length > 0 && (
@@ -383,6 +383,7 @@ const Career = async () => {
                   text={spotify.buttonText}
                   width='w-full md:w-auto lg:w-52'
                   link={spotify.spotifyLink}
+                  openInNewTab={true}
                 />
               </div>
             )}

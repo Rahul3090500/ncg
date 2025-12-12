@@ -10,12 +10,16 @@ export type CookieConsentStatus = 'accepted' | 'rejected' | null
  */
 export function useCookieConsent() {
   const [consent, setConsent] = useState<CookieConsentStatus>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    // Check localStorage for existing consent
-    const storedConsent = localStorage.getItem('ncg-cookie-consent') as CookieConsentStatus
-    if (storedConsent === 'accepted' || storedConsent === 'rejected') {
-      setConsent(storedConsent)
+    // Check localStorage for existing consent synchronously
+    if (typeof window !== 'undefined') {
+      const storedConsent = localStorage.getItem('ncg-cookie-consent') as CookieConsentStatus
+      if (storedConsent === 'accepted' || storedConsent === 'rejected') {
+        setConsent(storedConsent)
+      }
+      setIsLoaded(true)
     }
   }, [])
 
@@ -31,6 +35,7 @@ export function useCookieConsent() {
 
   return {
     consent,
+    isLoaded,
     hasConsent: consent === 'accepted',
     hasRejected: consent === 'rejected',
     updateConsent,

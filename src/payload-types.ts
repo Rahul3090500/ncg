@@ -122,7 +122,6 @@ export interface Config {
     'career-find-place': CareerFindPlace;
     'career-work-here': CareerWorkHere;
     'career-testimonials': CareerTestimonial;
-    'career-life-at-ncg': CareerLifeAtNcg;
     'career-spotify': CareerSpotify;
     'career-job-section': CareerJobSection;
     'jobs-section': JobsSection;
@@ -152,7 +151,6 @@ export interface Config {
     'career-find-place': CareerFindPlaceSelect<false> | CareerFindPlaceSelect<true>;
     'career-work-here': CareerWorkHereSelect<false> | CareerWorkHereSelect<true>;
     'career-testimonials': CareerTestimonialsSelect<false> | CareerTestimonialsSelect<true>;
-    'career-life-at-ncg': CareerLifeAtNcgSelect<false> | CareerLifeAtNcgSelect<true>;
     'career-spotify': CareerSpotifySelect<false> | CareerSpotifySelect<true>;
     'career-job-section': CareerJobSectionSelect<false> | CareerJobSectionSelect<true>;
     'jobs-section': JobsSectionSelect<false> | JobsSectionSelect<true>;
@@ -1773,34 +1771,6 @@ export interface CareerTestimonial {
   createdAt?: string | null;
 }
 /**
- * Manage Career page "Life at NCG" image gallery section
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "career-life-at-ncg".
- */
-export interface CareerLifeAtNcg {
-  id: number;
-  /**
-   * Text displayed in the center overlay
-   */
-  title?: string | null;
-  /**
-   * Subtitle displayed below the main text
-   */
-  subtitle?: string | null;
-  /**
-   * Upload exactly 11 images. Layout: Row 1 (3 images), Row 2 (4 images with center overlay), Row 3 (4 images with last one cut off)
-   */
-  images?:
-    | {
-        image: number | Media;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
  * Manage Career page Spotify section
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2325,23 +2295,6 @@ export interface CareerTestimonialsSelect<T extends boolean = true> {
         name?: T;
         role?: T;
         quote?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "career-life-at-ncg_select".
- */
-export interface CareerLifeAtNcgSelect<T extends boolean = true> {
-  title?: T;
-  subtitle?: T;
-  images?:
-    | T
-    | {
-        image?: T;
         id?: T;
       };
   updatedAt?: T;
