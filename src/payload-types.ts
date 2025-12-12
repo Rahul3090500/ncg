@@ -1333,6 +1333,10 @@ export interface ServicesSection {
          * Select sub-services to display for this service. Sub-services can belong to multiple services.
          */
         subServices?: (number | SubService)[] | null;
+        /**
+         * Service image to display in the featured card. This image is specific to this service entry and is separate from sub-service images.
+         */
+        image?: (number | null) | Media;
         id?: string | null;
       }[]
     | null;
@@ -1927,6 +1931,7 @@ export interface ServicesSectionSelect<T extends boolean = true> {
     | {
         service?: T;
         subServices?: T;
+        image?: T;
         id?: T;
       };
   updatedAt?: T;

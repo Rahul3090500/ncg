@@ -2,8 +2,8 @@ import { Key } from 'react'
 import BlogsGrid from './BlogsGrid'
 import { getBlogsPageData } from '@/lib/payload'
 
-// Use ISR - revalidate every hour for blogs listing
-export const revalidate = 3600
+// Dynamic revalidate: instant updates in development, 1 hour in production
+export const revalidate = process.env.NODE_ENV === 'development' ? 0 : 3600
 
 const Blogs = async () => {
   const { blogsPageHeroSection, blogsAll } = await getBlogsPageData()

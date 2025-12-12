@@ -3,8 +3,8 @@ import { getHomepageData, getServicesData } from '@/lib/payload';
 import CaseStudiesGridSection from '../components/CaseStudiesGridSection';
 import Link from 'next/link';
 
-// Use ISR - revalidate every hour for services listing
-export const revalidate = 3600
+// Dynamic revalidate: instant updates in development, 1 hour in production
+export const revalidate = process.env.NODE_ENV === 'development' ? 0 : 3600
 
 // Helper function to generate URL-friendly slugs
 const generateSlug = (text: string): string => {

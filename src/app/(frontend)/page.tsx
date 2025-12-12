@@ -110,8 +110,8 @@ interface HomepageData {
   }
 }
 
-// Use ISR - revalidate every 5 minutes (reduced for instant updates)
-export const revalidate = 300
+// Dynamic revalidate: instant updates in development, 5 min in production
+export const revalidate = process.env.NODE_ENV === 'development' ? 0 : 300
 
 const Home = async () => {
   // Fetch data on the server

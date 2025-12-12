@@ -3,8 +3,8 @@ import CaseStudiesFilter from '../components/CaseStudiesFilter'
 import ContactSection from '../components/ContactSection'
 import { getCaseStudiesPageData } from '@/lib/payload'
 
-// Use ISR - revalidate every hour for case studies listing
-export const revalidate = 3600
+// Dynamic revalidate: instant updates in development, 1 hour in production
+export const revalidate = process.env.NODE_ENV === 'development' ? 0 : 3600
 
 const CaseStudies = async () => {
   const { caseStudiesPageHeroSection, caseStudiesPageGridSection } = await getCaseStudiesPageData()

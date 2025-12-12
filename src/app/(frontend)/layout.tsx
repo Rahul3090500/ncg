@@ -5,6 +5,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { PerformanceMonitor } from './components/PerformanceMonitor';
 import { ResourceHints } from './components/ResourceHints';
+import CookieConsent from './components/CookieConsent';
 
 export const metadata = {
   description: 'NCG - Next Generation Cybersecurity Solutions',
@@ -31,6 +32,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         <Header />
         <main>{children}</main>
         {!shouldHideFooter && <Footer />}
+        <CookieConsent />
       </body>
     </html>
   )

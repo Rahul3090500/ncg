@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { getCacheManager } from '@/lib/cache-manager'
+import { getCacheTTL, getRevalidateTime, getCacheControlHeader, shouldUseCache } from '@/lib/cache-config'
 
 export const runtime = 'nodejs' // Required for ioredis compatibility
-export const revalidate = 3600 // Revalidate every hour
+// Dynamic revalidate: instant updates in development, 1 hour in production
+export const revalidate = process.env.NODE_ENV === 'development' ? 0 : 3600
 
 export async function GET(
   _request: NextRequest,
@@ -14,17 +16,20 @@ export async function GET(
     const { slug } = await params
     const cache = getCacheManager()
     const cacheKey = `api-case-studies-read-${slug}`
+    const cacheTTL = process.env.NODE_ENV === 'development' ? 0 : 3600
 
-    // Try cache first
-    const cached = await cache.get(cacheKey, { ttl: 3600 })
-    if (cached) {
-      const etag = `"${Date.now()}"`
+    // Try cache first (skip cache in development for instant updates)
+    if (shouldUseCache()) {
+      const cached = await cache.get(cacheKey, { ttl: cacheTTL })
+      if (cached) {
+        const etag = `"${Date.now()}"`
 
-      const response = NextResponse.json(cached)
-      response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=7200')
-      response.headers.set('ETag', etag)
-      response.headers.set('X-Cache', 'HIT')
-      return response
+        const response = NextResponse.json(cached)
+        response.headers.set('Cache-Control', getCacheControlHeader())
+        response.headers.set('ETag', etag)
+        response.headers.set('X-Cache', 'HIT')
+        return response
+      }
     }
 
     // Cache miss - fetch from database
@@ -47,13 +52,15 @@ export async function GET(
     
     const caseStudyData = result.docs[0]
     
-    // Store in cache
-    await cache.set(cacheKey, caseStudyData, { ttl: 3600 })
+    // Store in cache (skip cache in development for instant updates)
+    if (shouldUseCache()) {
+      await cache.set(cacheKey, caseStudyData, { ttl: cacheTTL })
+    }
     
     const response = NextResponse.json(caseStudyData)
-    response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=7200')
+    response.headers.set('Cache-Control', getCacheControlHeader())
     response.headers.set('ETag', `"${Date.now()}"`)
-    response.headers.set('X-Cache', 'MISS')
+    response.headers.set('X-Cache', shouldUseCache() ? 'MISS' : 'NO-CACHE')
     return response
   } catch (error) {
     console.error('Error fetching case study by slug:', error)

@@ -61,6 +61,15 @@ export const ServicesSection: GlobalConfig = {
           // Removed filterOptions to allow sub-services from any service to be selected
           // Sub-services can now belong to multiple services
         },
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          required: false,
+          admin: {
+            description: 'Service image to display in the featured card. This image is specific to this service entry and is separate from sub-service images.',
+          },
+        },
       ],
     },
   ],

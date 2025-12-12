@@ -9,8 +9,8 @@ const VideoHero = dynamicImport(() => import('../components/VideoHero'), {
   ssr: true,
 })
 
-// Use ISR - revalidate every hour for about page content
-export const revalidate = 3600
+// Dynamic revalidate: instant updates in development, 1 hour in production
+export const revalidate = process.env.NODE_ENV === 'development' ? 0 : 3600
 
 /**
  * Helper function to parse and render highlighted text

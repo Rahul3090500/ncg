@@ -1,6 +1,7 @@
 import { getPayloadClient as getPayloadClientWithRetry, executeWithRetry } from './payload-retry'
 import { getCachedAPIResponse } from './api-cache'
 import { getCacheManager } from './cache-manager'
+import { getCacheTTL, getRevalidateTime, getCacheControlHeader, shouldUseCache } from './cache-config'
 
 // Use the retry-enabled Payload client
 async function getPayloadClient() {
@@ -12,39 +13,46 @@ export async function getHomepageData() {
     'homepage-data',
     async () => {
       try {
+        const cacheTTL = getCacheTTL()
         // In production, use the custom API route with caching
         if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
           const serverCache = getCacheManager()
           
-          // Try server cache first (reduced TTL for faster updates - 5 minutes)
-          const cached = await serverCache.get('homepage-data', { ttl: 300 })
-          if (cached) {
-            return cached
+          // Try server cache first (skip cache in development for instant updates)
+          if (shouldUseCache()) {
+            const cached = await serverCache.get('homepage-data', { ttl: cacheTTL })
+            if (cached) {
+              return cached
+            }
           }
 
           const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/homepage-read`, {
-            next: { revalidate: 300 }, // Revalidate every 5 minutes
+            next: { revalidate: getRevalidateTime() },
             headers: {
-              'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+              'Cache-Control': getCacheControlHeader(),
             },
           })
           
           if (response.ok) {
             const result = await response.json()
             if (result) {
-              // Store in server cache (reduced TTL for faster updates)
-              await serverCache.set('homepage-data', result, { ttl: 300 })
+              // Store in server cache (skip cache in development)
+              if (shouldUseCache()) {
+                await serverCache.set('homepage-data', result, { ttl: cacheTTL })
+              }
               return result
             }
           }
         } else {
-          // In development, fetch all globals separately with caching
+          // In development, fetch all globals separately with minimal/no caching
           const serverCache = getCacheManager()
           
-          // Try server cache first
-          const cached = await serverCache.get('homepage-data-dev', { ttl: 300 }) // 5 min cache in dev
-          if (cached) {
-            return cached
+          // Skip cache in development for instant updates
+          if (shouldUseCache()) {
+            const cached = await serverCache.get('homepage-data-dev', { ttl: cacheTTL })
+            if (cached) {
+              return cached
+            }
           }
 
           const payloadClient = await getPayloadClient()
@@ -82,8 +90,10 @@ export async function getHomepageData() {
             contactSection,
           }
 
-          // Store in server cache
-          await serverCache.set('homepage-data-dev', result, { ttl: 300 })
+          // Store in server cache (skip cache in development)
+          if (shouldUseCache()) {
+            await serverCache.set('homepage-data-dev', result, { ttl: cacheTTL })
+          }
           return result
         }
 
@@ -95,9 +105,9 @@ export async function getHomepageData() {
       }
     },
     {
-      ttl: 300, // 5 minutes client cache (reduced for instant updates)
-      useLocalStorage: true,
-      staleWhileRevalidate: true,
+      ttl: getCacheTTL(), // Instant updates in dev (0), 5 min in prod (300)
+      useLocalStorage: process.env.NODE_ENV === 'production', // Disable localStorage cache in dev
+      staleWhileRevalidate: process.env.NODE_ENV === 'production', // Disable stale-while-revalidate in dev
     }
   )
 }
@@ -106,7 +116,7 @@ export async function getFooterData() {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/footer-read`, {
-        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
+        next: { revalidate: getRevalidateTime() },
       })
       if (response.ok) {
         const result = await response.json()
@@ -128,7 +138,7 @@ export async function getCaseStudiesPageData() {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/case-studies-read`, {
-        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
+        next: { revalidate: getRevalidateTime() },
       })
       if (response.ok) {
         const result = await response.json()
@@ -164,7 +174,7 @@ export async function getCaseStudyBySlug(slug: string) {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/case-studies-read/${slug}`, {
-        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
+        next: { revalidate: getRevalidateTime() },
       })
       if (response.ok) {
         const result = await response.json()
@@ -195,7 +205,7 @@ export async function getAboutPageData() {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/about-read`, {
-        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
+        next: { revalidate: getRevalidateTime() },
       })
       if (response.ok) {
         const result = await response.json()
@@ -241,7 +251,7 @@ export async function getBlogsPageData() {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/blogs-read`, {
-        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
+        next: { revalidate: getRevalidateTime() },
       })
       if (response.ok) {
         const result = await response.json()
@@ -266,7 +276,7 @@ export async function getBlogBySlug(slug: string) {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/blogs-read/${slug}`, {
-        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
+        next: { revalidate: getRevalidateTime() },
       })
       if (response.ok) {
         const result = await response.json()
@@ -299,19 +309,24 @@ export async function getJobsPageData() {
     async () => {
       try {
         const serverCache = getCacheManager()
-        const cached = await serverCache.get<any>('jobs-page-data', { ttl: 300 }) // 5 min cache (reduced for instant updates)
-        if (cached) {
-          // Ensure selectedJobs is always an array
-          if (cached?.jobsSection && !Array.isArray(cached.jobsSection.selectedJobs)) {
-            cached.jobsSection.selectedJobs = []
+        const cacheTTL = getCacheTTL()
+        
+        // Try cache first (skip cache in development for instant updates)
+        if (shouldUseCache()) {
+          const cached = await serverCache.get<any>('jobs-page-data', { ttl: cacheTTL })
+          if (cached) {
+            // Ensure selectedJobs is always an array
+            if (cached?.jobsSection && !Array.isArray(cached.jobsSection.selectedJobs)) {
+              cached.jobsSection.selectedJobs = []
+            }
+            return cached
           }
-          return cached
         }
 
         if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
           const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs-read`, {
-            next: { revalidate: 300 },
-            headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600' },
+            next: { revalidate: getRevalidateTime() },
+            headers: { 'Cache-Control': getCacheControlHeader() },
           })
           if (response.ok) {
             const result = await response.json()
@@ -320,7 +335,9 @@ export async function getJobsPageData() {
               result.jobsSection.selectedJobs = []
             }
             if (result) {
-              await serverCache.set('jobs-page-data', result, { ttl: 300 })
+              if (shouldUseCache()) {
+                await serverCache.set('jobs-page-data', result, { ttl: cacheTTL })
+              }
               return result
             }
           }
@@ -332,7 +349,9 @@ export async function getJobsPageData() {
             jobsSection.selectedJobs = []
           }
           const result = { jobsSection }
-          await serverCache.set('jobs-page-data', result, { ttl: 300 }) // 5 min in dev
+          if (shouldUseCache()) {
+            await serverCache.set('jobs-page-data', result, { ttl: cacheTTL })
+          }
           return result
         }
         return { jobsSection: null }
@@ -341,7 +360,11 @@ export async function getJobsPageData() {
         return { jobsSection: null }
       }
     },
-    { ttl: 300, useLocalStorage: true, staleWhileRevalidate: true }
+    { 
+      ttl: getCacheTTL(), 
+      useLocalStorage: shouldUseCache(), 
+      staleWhileRevalidate: shouldUseCache() 
+    }
   )
 }
 
@@ -349,7 +372,7 @@ export async function getPrivacyPolicyPageData() {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/privacy-policy-read`, {
-        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
+        next: { revalidate: getRevalidateTime() },
       })
       if (response.ok) {
         const result = await response.json()
@@ -372,7 +395,7 @@ export async function getServicesData() {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/services-read`, {
-        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
+        next: { revalidate: getRevalidateTime() },
       })
       if (response.ok) {
         const result = await response.json()
@@ -392,9 +415,11 @@ export async function getServicesData() {
 
 export async function getServiceBySlug(slug: string) {
   try {
+    const isDev = process.env.NODE_ENV === 'development'
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
+      const revalidateTime = isDev ? 0 : 3600
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/services-read/${slug}`, {
-        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
+        next: { revalidate: revalidateTime },
       })
       if (response.ok) {
         const result = await response.json()
@@ -453,7 +478,7 @@ export async function getSubServicesForService(serviceSlug: string) {
 
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/services-read/${serviceSlug}/sub-services`, {
-        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
+        next: { revalidate: getRevalidateTime() },
       })
       if (response.ok) {
         const result = await response.json()
@@ -489,7 +514,7 @@ export async function getSubServiceBySlug(serviceSlug: string, subServiceSlug: s
 
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/services-read/${serviceSlug}/${subServiceSlug}`, {
-        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
+        next: { revalidate: getRevalidateTime() },
       })
       if (response.ok) {
         const result = await response.json()
@@ -529,7 +554,7 @@ export async function getJobBySlug(slug: string) {
   try {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs-read/${slug}`, {
-        next: { revalidate: 300 }, // Cache for 5 minutes (reduced for instant updates)
+        next: { revalidate: getRevalidateTime() },
       })
       if (response.ok) {
         const result = await response.json()

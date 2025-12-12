@@ -23,6 +23,17 @@ interface ServiceData {
   }
   heroAlt?: string
   subServices?: SubServiceData[]
+  serviceImage?: {
+    id: number
+    alt?: string
+    url: string
+    thumbnailURL?: string | null
+    filename?: string
+    mimeType?: string
+    filesize?: number
+    width?: number
+    height?: number
+  } | null // Image field from services-section global
 }
 
 interface SubServiceData {
@@ -46,6 +57,17 @@ interface SubServiceData {
 interface ServiceItem {
   service: ServiceData | string | number // Can be object or ID
   subServices?: (SubServiceData | string | number)[] // Can be array of objects or IDs
+  image?: {
+    id: number
+    alt?: string
+    url: string
+    thumbnailURL?: string | null
+    filename?: string
+    mimeType?: string
+    filesize?: number
+    width?: number
+    height?: number
+  } | number | null // Can be object or ID
 }
 
 interface ServicesData {
@@ -168,6 +190,17 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
           )
         }
 
+        // Handle image field from services-section global (can be object or ID)
+        let serviceImage = null
+        if (item.image) {
+          if (typeof item.image === 'object' && item.image !== null) {
+            serviceImage = item.image
+          } else if (typeof item.image === 'number') {
+            // If it's just an ID, we can't use it - relationships should be populated
+            console.warn(`ServicesSection: Service image at index ${index} is not populated. Expected object but got ID:`, item.image)
+          }
+        }
+
         return {
           id: service.id || String(service.id),
           title: service.title || '',
@@ -176,6 +209,7 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
           heroImage: service.heroImage,
           heroAlt: service.heroAlt,
           subServices: transformedSubServices,
+          serviceImage: serviceImage,
         }
       })
       .filter(Boolean) as ServiceData[]
@@ -321,48 +355,52 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
                   </div>
 
                   {/* Hero Image with Featured Service Card (Card 01 - First Sub-Service Only) */}
-                  {currentService.subServices && currentService.subServices.length > 0 && (currentService.subServices[0].heroImage?.url || currentService.heroImage?.url) && (
-                    <Link href={`/services/${getServiceSlug(currentService)}/${getSubServiceSlug(currentService.subServices[0])}`}>
-                      <motion.div
-                        className="flex flex-col md:flex-row bg-white rounded-[10px] border-[1.50px] border-[#000f19]/10 hover:border-[#000f19] group relative mt-8 md:mt-12 cursor-pointer transition-all duration-300 ease-in-out min-h-[200px] md:h-64"
-                        initial={{ opacity: 0, }}
-                        animate={{ opacity: 1, }}
-                        transition={{ duration: 0.4, ease: 'easeOut' }}
-                      >
-                        {/* Hero Image */}
+                  {/* Priority: serviceImage (from services-section) > subService[0].heroImage > service.heroImage */}
+                  {currentService.subServices && 
+                    currentService.subServices.length > 0 && 
+                    (currentService.serviceImage?.url || currentService.subServices[0].heroImage?.url || currentService.heroImage?.url) && (
+                      <Link href={`/services/${getServiceSlug(currentService)}/${getSubServiceSlug(currentService.subServices[0])}`}>
                         <motion.div
-                          className="relative overflow-hidden rounded-t-lg md:rounded-l-lg md:rounded-t-none w-full md:w-80 h-48 md:h-full flex-shrink-0"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ duration: 0.4, delay: 0.1, ease: 'easeOut' }}
+                          className="flex flex-col md:flex-row bg-white rounded-[10px] border-[1.50px] border-[#000f19]/10 hover:border-[#000f19] group relative mt-8 md:mt-12 cursor-pointer transition-all duration-300 ease-in-out min-h-[200px] md:h-64"
+                          initial={{ opacity: 0, }}
+                          animate={{ opacity: 1, }}
+                          transition={{ duration: 0.4, ease: 'easeOut' }}
                         >
-                          <img
-                            src={currentService.subServices[0].heroImage?.url || currentService.heroImage?.url}
-                            alt={currentService.subServices[0].heroImage?.alt || currentService.heroAlt || currentService.subServices[0].title}
-                            className="w-full h-full object-cover rounded-t-lg md:rounded-l-lg md:rounded-t-none transition-transform duration-500 ease-in-out group-hover:scale-110"
-                          />
-                        </motion.div>
+                          {/* Hero Image */}
+                          <motion.div
+                            className="relative overflow-hidden rounded-t-lg md:rounded-l-lg md:rounded-t-none w-full md:w-80 h-48 md:h-full flex-shrink-0"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.4, delay: 0.1, ease: 'easeOut' }}
+                          >
+                            <img
+                              src={currentService.serviceImage?.url || currentService.subServices[0].heroImage?.url || currentService.heroImage?.url}
+                              alt={currentService.serviceImage?.alt || currentService.subServices[0].heroImage?.alt || currentService.heroAlt || currentService.subServices[0].title}
+                              className="w-full h-full object-cover rounded-t-lg md:rounded-l-lg md:rounded-t-none transition-transform duration-500 ease-in-out group-hover:scale-110"
+                            />
+                          </motion.div>
 
-                        {/* Featured Service Card - First Sub-Service */}
-                        <motion.div
-                          className="flex-1 pt-4 md:pt-5 px-4 md:px-6 pb-[100px] overflow-hidden"
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.4, delay: 0.2, ease: 'easeOut' }}
-                        >
-                          <h5 className="text-[#000f19] text-lg md:text-[21px] font-manrope-bold leading-tight md:leading-[23px] mb-2 md:mb-3 transition-colors duration-300">
-                            {currentService.subServices[0].title}
-                          </h5>
-                          <p className="text-[#000f19]/60 text-sm md:text-base font-manrope-medium leading-relaxed md:leading-[23px] group-hover:text-[#000f19]/80 transition-colors duration-300">
-                            {currentService.subServices[0].description}
-                          </p>
+                          {/* Featured Service Card - First Sub-Service */}
+                          <motion.div
+                            className="flex-1 pt-4 md:pt-5 px-4 md:px-6 pb-[100px] overflow-hidden"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.2, ease: 'easeOut' }}
+                          >
+                            <h5 className="text-[#000f19] text-lg md:text-[21px] font-manrope-bold leading-tight md:leading-[23px] mb-2 md:mb-3 transition-colors duration-300">
+                              {currentService.subServices[0].title}
+                            </h5>
+                            <p className="text-[#000f19]/60 text-sm md:text-base font-manrope-medium leading-relaxed md:leading-[23px] group-hover:text-[#000f19]/80 transition-colors duration-300">
+                              {currentService.subServices[0].description}
+                            </p>
+                          </motion.div>
+                          <div className="absolute z-40 bottom-4 right-4">
+                            <ArrowIcon hoverOnParent={true} />
+                          </div>
                         </motion.div>
-                        <div className="absolute z-40 bottom-4 right-4">
-                          <ArrowIcon hoverOnParent={true} />
-                        </div>
-                      </motion.div>
-                    </Link>
-                  )}
+                      </Link>
+                    )
+                  }
 
                   {/* Remaining Sub-Service Cards (Cards 02+) */}
                   {currentService.subServices && currentService.subServices.length > 1 && (
