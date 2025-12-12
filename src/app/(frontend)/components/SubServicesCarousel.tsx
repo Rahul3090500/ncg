@@ -190,15 +190,15 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
 
                   {/* BUTTON — fades in + slides up on desktop, always visible on mobile/tablet */}
                   <motion.div
-                    className={isMobile ? "mt-4" : "mt-8 md:mt-12 lg:mt-16"}
+                    className={isMobile ? "mb-4" : "mb-8 md:mb-12 lg:mb-16"}
                     variants={{
                       default: { 
                         opacity: isMobile ? 1 : 0, 
-                        marginTop: isMobile ? 16 : 90 
+                        marginBottom: isMobile ? 16 : 90 
                       },
                       hover: { 
                         opacity: 1, 
-                        marginTop: isMobile ? 16 : 56 
+                        marginBottom: isMobile ? 16 : 90 
                       },
                     }}
                     transition={{ duration: 0.35, ease: "easeInOut" }}
