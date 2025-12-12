@@ -735,7 +735,7 @@ export interface SubService {
    */
   igaServicesDescription?: string | null;
   /**
-   * Add IGA service cards (maximum 3 cards)
+   * Add IGA service cards (add as many as needed)
    */
   igaServices?:
     | {

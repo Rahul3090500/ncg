@@ -274,10 +274,10 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
       {/* Core Features Section */}
       {coreFeaturesTitle && coreFeatures.length > 0 && (
         <section className="py-8 md:py-12 lg:py-24 bg-white">
-          <div className="containersection px-4 md:px-6 lg:px-28 mx-auto">
-            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-start">
+          <div className="containersection px-4 md:px-6 lg:px-28 mx-auto lg:w-[85%]!">
+            <div className="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-16 items-start">
               {coreFeaturesImage?.url && (
-                <div className="relative w-full lg:w-[559px] h-[300px] md:h-[400px] lg:h-[548px] order-1 lg:order-1">
+                <div className="relative w-full lg:w-[559px] h-[300px] md:h-[400px] lg:h-[548px] flex-shrink-0 order-1 lg:order-1">
                   <Image
                     src={coreFeaturesImage.url}
                     alt={coreFeaturesTitle || 'Core Features'}
@@ -289,7 +289,7 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
                   />
                 </div>
               )}
-              <div className="order-2 lg:order-2 w-full">
+              <div className="order-2 lg:order-2 flex-1 w-full">
                 <h2 className="text-[#000F19] font-manrope-semibold text-2xl md:text-3xl lg:text-4xl leading-tight md:leading-[40px] lg:leading-[50px] mb-2 md:mb-3 lg:mb-1">
                   {coreFeaturesTitle}
                 </h2>

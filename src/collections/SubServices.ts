@@ -534,9 +534,8 @@ export const SubServices: CollectionConfig = {
       type: 'array',
       label: 'IGA Services',
       required: false,
-      maxRows: 3,
       admin: {
-        description: 'Add IGA service cards (maximum 3 cards)',
+        description: 'Add IGA service cards (add as many as needed)',
       },
       fields: [
         {
