@@ -345,7 +345,7 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
 
                         {/* Featured Service Card - First Sub-Service */}
                         <motion.div
-                          className="h-fit flex-1 pt-4 md:pt-5 p-4 md:p-6"
+                          className="flex-1 pt-4 md:pt-5 px-4 md:px-6 pb-[100px] overflow-hidden"
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.4, delay: 0.2, ease: 'easeOut' }}
@@ -372,7 +372,7 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
                       transition={{ duration: 0.4, delay: 0.3, ease: 'easeOut' }}
                       className="mt-4 md:mt-6"
                     >
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
                         {currentService.subServices.slice(1).map((subService, index) => {
                           const serviceSlug = getServiceSlug(currentService)
                           const subServiceSlug = getSubServiceSlug(subService)
@@ -380,19 +380,22 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
                             <Link
                               key={subService.id || index}
                               href={`/services/${serviceSlug}/${subServiceSlug}`}
+                              className="h-full"
                             >
                               <motion.div
-                                className="bg-white rounded-[10px] border-[1.50px] border-[#000f19]/10 hover:border-[#000f19] min-h-[200px] md:h-64 group relative p-4 md:p-5 cursor-pointer transition-all duration-300 ease-in-out"
+                                className="bg-white rounded-[10px] border-[1.50px] border-[#000f19]/10 hover:border-[#000f19] min-h-[200px] md:min-h-64 h-full group relative px-4 md:px-5 pt-4 md:pt-5 pb-[100px] cursor-pointer transition-all duration-300 ease-in-out overflow-hidden flex flex-col"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.4, delay: 0.4 + index * 0.1, ease: 'easeOut' }}
                               >
-                                <h5 className="text-[#000f19] text-lg md:text-[21px] font-manrope-semibold leading-tight md:leading-[23px] mb-2 md:mb-3 transition-colors duration-300">
-                                  {subService.title}
-                                </h5>
-                                <p className="text-[#000f19]/60 text-sm md:text-base font-manrope-medium leading-relaxed md:leading-[23px] group-hover:text-[#000f19]/80 transition-colors duration-300">
-                                  {subService.description}
-                                </p>
+                                <div className="flex-1">
+                                  <h5 className="text-[#000f19] text-lg md:text-[21px] font-manrope-semibold leading-tight md:leading-[23px] mb-2 md:mb-3 transition-colors duration-300">
+                                    {subService.title}
+                                  </h5>
+                                  <p className="text-[#000f19]/60 text-sm md:text-base font-manrope-medium leading-relaxed md:leading-[23px] group-hover:text-[#000f19]/80 transition-colors duration-300">
+                                    {subService.description}
+                                  </p>
+                                </div>
                                 <div className="absolute z-40 bottom-4 right-4">
                                   <ArrowIcon hoverOnParent={true} />
                                 </div>
