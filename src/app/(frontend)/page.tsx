@@ -110,8 +110,8 @@ interface HomepageData {
   }
 }
 
-// Dynamic revalidate: instant updates in development, 5 min in production
-export const revalidate = process.env.NODE_ENV === 'development' ? 0 : 300
+// Revalidate: 0 = always revalidate for instant updates (works in both dev and prod)
+export const revalidate = 0
 
 const Home = async () => {
   // Fetch data on the server

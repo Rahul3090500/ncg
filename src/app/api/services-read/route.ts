@@ -3,12 +3,13 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { getCacheManager } from '@/lib/cache-manager'
 import { isBuildTime, isDatabaseConnectionError, getBuildTimeCollectionFallback } from '@/lib/build-time-helpers'
-import { getCacheTTL, getRevalidateTime, getCacheControlHeader, shouldUseCache } from '@/lib/cache-config'
+import { getCacheTTL, getCacheControlHeader, shouldUseCache } from '@/lib/cache-config'
 
 export const runtime = 'nodejs' // Required for ioredis compatibility
 
 // Dynamic revalidate: instant updates in development, 5 min in production
-export const revalidate = getRevalidateTime()
+// Revalidate: 0 = always revalidate for instant updates
+export const revalidate = 0
 
 export async function GET() {
   try {

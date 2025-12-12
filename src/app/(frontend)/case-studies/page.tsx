@@ -4,7 +4,8 @@ import ContactSection from '../components/ContactSection'
 import { getCaseStudiesPageData } from '@/lib/payload'
 
 // Dynamic revalidate: instant updates in development, 1 hour in production
-export const revalidate = process.env.NODE_ENV === 'development' ? 0 : 3600
+// Revalidate: 0 = always revalidate for instant updates
+export const revalidate = 0
 
 const CaseStudies = async () => {
   const { caseStudiesPageHeroSection, caseStudiesPageGridSection } = await getCaseStudiesPageData()

@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { getCacheManager } from '@/lib/cache-manager'
-import { getCacheTTL, getRevalidateTime, getCacheControlHeader, shouldUseCache } from '@/lib/cache-config'
+import { getCacheTTL, getCacheControlHeader, shouldUseCache } from '@/lib/cache-config'
 
 export const runtime = 'nodejs' // Required for ioredis compatibility
 // Dynamic revalidate: instant updates in development, 1 hour in production
-export const revalidate = process.env.NODE_ENV === 'development' ? 0 : 3600
+// Revalidate: 0 = always revalidate for instant updates
+export const revalidate = 0
 
 type RouteParams = {
   params: Promise<{ serviceSlug: string }>

@@ -4,7 +4,8 @@ import CaseStudiesGridSection from '../components/CaseStudiesGridSection';
 import Link from 'next/link';
 
 // Dynamic revalidate: instant updates in development, 1 hour in production
-export const revalidate = process.env.NODE_ENV === 'development' ? 0 : 3600
+// Revalidate: 0 = always revalidate for instant updates
+export const revalidate = 0
 
 // Helper function to generate URL-friendly slugs
 const generateSlug = (text: string): string => {

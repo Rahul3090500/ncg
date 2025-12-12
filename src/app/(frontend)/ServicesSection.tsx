@@ -358,7 +358,7 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
                   {/* Priority: serviceImage (from services-section) > subService[0].heroImage > service.heroImage */}
                   {currentService.subServices && 
                     currentService.subServices.length > 0 && 
-                    (currentService.serviceImage?.url || currentService.subServices[0].heroImage?.url || currentService.heroImage?.url) && (
+                    (currentService.serviceImage?.url || currentService.subServices[0].heroImage?.url || currentService.heroImage?.url) ? (
                       <Link href={`/services/${getServiceSlug(currentService)}/${getSubServiceSlug(currentService.subServices[0])}`}>
                         <motion.div
                           className="flex flex-col md:flex-row bg-white rounded-[10px] border-[1.50px] border-[#000f19]/10 hover:border-[#000f19] group relative mt-8 md:mt-12 cursor-pointer transition-all duration-300 ease-in-out min-h-[200px] md:h-64"
@@ -399,7 +399,7 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
                           </div>
                         </motion.div>
                       </Link>
-                    )
+                    ) : null
                   }
 
                   {/* Remaining Sub-Service Cards (Cards 02+) */}
