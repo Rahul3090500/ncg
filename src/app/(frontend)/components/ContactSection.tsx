@@ -1,8 +1,12 @@
 import React from 'react'
 import Link from 'next/link'
-import AnimatedButton from './AnimatedButton'
 import SocialIcon from './SocialIcon'
 import { getPayloadClient } from '@/lib/payload-retry'
+import dynamic from 'next/dynamic'
+
+const ContactForm = dynamic(() => import('./ContactForm'), {
+  loading: () => <div className="h-[400px] w-full" />,
+})
 
 interface ContactSectionData {
   heading: string
@@ -137,117 +141,11 @@ const ContactSection = async () => {
           </div>
 
           {/* Heading and Form Section */}
-          <div className="px-0 md:px-6 relative">
-            {/* Heading - Separate on mobile, part of form section on desktop */}
-            <h2 className="text-[#000F19] font-manrope-bold text-2xl md:text-4xl leading-[1.1em] mb-6 md:mb-9 text-center lg:text-left lg:w-[90%]">
-              {contactData.heading}
-            </h2>
-
-            <form className="space-y-6 md:space-y-[43px]">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-                <div>
-                  <label
-                    htmlFor="fullName"
-                    className="block text-[#060608] font-manrope-medium text-[16px] leading-[0.94em] mb-3"
-                  >
-                    Full Name*
-                  </label>
-                  <input
-                    type="text"
-                    id="fullName"
-                    className="w-full py-3 px-3 border border-white rounded-lg bg-white text-sm outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-[#060608] font-manrope-medium text-base leading-[0.94em] mb-3"
-                  >
-                    Email*
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    className="w-full px-3 py-3 border border-white rounded-lg bg-white text-sm outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="company"
-                    className="block text-[#060608] font-manrope-medium text-base leading-[0.94em] mb-3"
-                  >
-                    Company Name*
-                  </label>
-                  <input
-                    type="text"
-                    id="company"
-                    className="w-full px-3 py-3 border border-white rounded-lg bg-white text-sm outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="website"
-                    className="block text-[#060608] font-manrope-medium text-base leading-[0.94em] mb-3"
-                  >
-                    Company Website*
-                  </label>
-                  <input
-                    type="url"
-                    id="website"
-                    className="w-full px-3 py-3 border border-white rounded-lg bg-white text-sm outline-none"
-                  />
-                </div>
-              </div>
-              <div className="col-span-1 md:col-span-2 relative">
-                <label
-                  htmlFor="message"
-                  className="block text-[#060608] font-manrope-medium text-base leading-[0.94em] mb-3"
-                >
-                  Your Message*
-                </label>
-                <textarea
-                  id="message"
-                  rows={4}
-                  className="w-full px-3 h-32 md:h-48 resize-none py-3 border border-white placeholder:text-base md:placeholder:text-lg placeholder:font-manrope-light rounded-lg bg-white text-base md:text-lg outline-none"
-                  placeholder="Let us know how we can help - whether it's a question, a project idea, or something else. The more details you share, the better we can assist you."
-                ></textarea>
-              </div>
-
-              <div className="col-span-1 md:col-span-2">
-                <AnimatedButton
-                  text={contactData.submitButtonText}
-                  bgColor="#488BF3"
-                  hoverBgColor="#fff"
-                  textColor="#fff"
-                  hoverTextColor="#488BF3"
-                  className="w-full rounded-[5px]"
-                  centered={true}
-                />
-                <div className="col-span-2 mt-3 text-xs">
-                  <p className="text-[#060608] font-manrope-medium text-xs leading-[1.6em] ">
-                    {(() => {
-                      const t = contactData.privacyText || ''
-                      const target = 'Privacy Policy'
-                      const i = t.indexOf(target)
-                      if (i === -1) return t
-                      return (
-                        <>
-                          {t.slice(0, i)}
-                          <Link href="/privacy-policy" className="text-[#488bf3] cursor-pointer font-manrope-bold hover:underline">
-                            {target}
-                          </Link>
-                          {t.slice(i + target.length)}
-                        </>
-                      )
-                    })()}
-                  </p>
-                </div>
-              </div>
-            </form>
-          </div>
+          <ContactForm 
+            heading={contactData.heading}
+            submitButtonText={contactData.submitButtonText}
+            privacyText={contactData.privacyText}
+          />
         </div>
       </div>
     </section>
