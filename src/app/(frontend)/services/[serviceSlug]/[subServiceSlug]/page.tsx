@@ -181,11 +181,11 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
 
       {/* Download Banner */}
       {downloadBannerTitle && (
-        <section className="bg-[#488BF3] min-h-[400px] md:min-h-[450px] lg:h-[503px]">
-          <div className="containersection px-4 md:px-6 h-full py-8 md:py-12 lg:py-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 items-center h-full gap-6 md:gap-8 lg:gap-0">
+        <section className="bg-[#488BF3]">
+          <div className="containersection px-4 md:px-6 h-full py-16 md:py-12 lg:py-12 lg:w-[70%]! lg:mx-auto">
+            <div className="flex flex-col md:flex-row justify-center md:justify-between items-start md:items-center h-full gap-6 md:gap-8 lg:gap-[123px]">
               {downloadBannerImage?.url && (
-                <div className="relative h-64 md:h-80 lg:h-full flex items-center justify-center overflow-hidden order-1 md:order-1">
+                <div className="relative w-fit h-64 md:h-72 lg:h-96 flex-shrink-0 shadow-[12px_13px_12.899999618530273px_-1px_rgba(0,0,0,0.36)] flex items-center justify-center overflow-hidden order-1 md:order-1 mx-auto md:mx-0">
                   <img
                     src={downloadBannerImage.url}
                     alt={downloadBannerTitle}
@@ -197,23 +197,25 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
                   />
                 </div>
               )}
-              <div className="text-white ml-0 md:ml-0 lg:-ml-32 order-2 md:order-2">
+              <div className="text-white w-full md:flex-1 lg:w-[818px] -mt-0 md:-mt-[30px] lg:-mt-[50px] ml-0 text-left order-2 md:order-2">
                 <h2 className="text-white font-manrope-semibold text-2xl md:text-3xl lg:text-5xl leading-tight md:leading-[40px] lg:leading-[58px] mb-2 md:mb-3 lg:mb-1">
                   {downloadBannerTitle}
                 </h2>
                 <p className="text-white/90 text-base md:text-lg lg:text-xl mb-6 md:mb-8 lg:mb-[67px] font-manrope-normal leading-6 md:leading-7 lg:leading-8">
                   {downloadBannerDescription}
                 </p>
-                <AnimatedButton
-                  text={downloadBannerButtonText}
-                  link={downloadBannerButtonLink}
-                  bgColor="#ffffff"
-                  hoverBgColor="#f0f0f0"
-                  textColor="#000F19"
-                  hoverTextColor="#000F19"
-                  width="w-44"
-                  className="px-6 md:px-8"
-                />
+                <div className="flex justify-start">
+                  <AnimatedButton
+                    text={downloadBannerButtonText}
+                    link={downloadBannerButtonLink}
+                    bgColor="#ffffff"
+                    hoverBgColor="#f0f0f0"
+                    textColor="#000F19"
+                    hoverTextColor="#000F19"
+                    width="w-44"
+                    className="px-6 md:px-8"
+                  />
+                </div>
               </div>
             </div>
           </div>
