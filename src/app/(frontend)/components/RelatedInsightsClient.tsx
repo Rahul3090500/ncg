@@ -40,7 +40,7 @@ const RelatedInsightsClient: React.FC<RelatedInsightsClientProps> = ({
 }) => {
   return (
     <section 
-      className="py-14 md:py-12 lg:py-[82px] lg:h-[788px] overflow-visible"
+      className="py-14 md:py-12 lg:py-[82px] overflow-visible"
       style={{ backgroundColor }}
     >
       <div className="containersection mx-auto px-4 md:px-6 lg:px-6">

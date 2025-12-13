@@ -140,9 +140,9 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
       </section>
 
       {/* CTA Section */}
-      <section className="min-h-[391px] bg-[#488BF3] flex items-center py-8 md:py-12 lg:py-0">
+      <section className="bg-[#488BF3] flex items-center py-8 md:py-12 lg:py-9">
         <div className="containersection px-4 md:px-6 lg:px-40 w-full">
-          <h2 className="text-white font-manrope-semibold text-2xl md:text-3xl lg:text-5xl leading-tight md:leading-9 lg:leading-10 text-left mb-3 md:mb-4 lg:mb-[13px]">
+          <h2 className="text-white font-manrope-semibold text-2xl md:text-3xl lg:text-5xl leading-tight md:leading-9 lg:leading-10 text-left mb-3 md:mb-3 lg:mb-[9px]">
             {ctaTitle}
           </h2>
           <p className="text-white font-manrope-normal text-base md:text-lg lg:text-2xl leading-6 md:leading-7 lg:leading-8 text-left mt-4 md:mt-5 lg:mt-6 mb-6 md:mb-8 lg:mb-[56px] max-w-full lg:max-w-[1108px]">
