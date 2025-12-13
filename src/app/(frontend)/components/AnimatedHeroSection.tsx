@@ -23,7 +23,10 @@ const AnimatedHeroSection = ({ mainHeading, phrases, backgroundImages, mobileTab
     : currentDesktopImage; // Fallback to desktop image if mobile/tablet images not provided
 
   useEffect(() => {
-    setIsMounted(true);
+    // Use requestAnimationFrame to ensure this runs after initial render
+    requestAnimationFrame(() => {
+      setIsMounted(true);
+    });
   }, []);
 
   // Preload images to ensure smooth transitions
@@ -107,14 +110,17 @@ const AnimatedHeroSection = ({ mainHeading, phrases, backgroundImages, mobileTab
     };
   }, [phrases, backgroundImages, mobileTabletBackgroundImages, isMounted]);
 
-  const displayDesktopImage = isMounted ? currentDesktopImage : (backgroundImages[0] || '');
-  const displayMobileTabletImage = isMounted ? currentMobileTabletImage : (
-    mobileTabletBackgroundImages && mobileTabletBackgroundImages.length > 0 
-      ? mobileTabletBackgroundImages[0] 
-      : backgroundImages[0] || ''
-  );
+  // Ensure consistent initial render for hydration
+  const displayDesktopImage = backgroundImages[0] || '';
+  const displayMobileTabletImage = mobileTabletBackgroundImages && mobileTabletBackgroundImages.length > 0 
+    ? mobileTabletBackgroundImages[0] 
+    : backgroundImages[0] || '';
   const displayPhraseIndex = isMounted ? currentPhraseIndex : 0;
   const displayText = isMounted ? currentText : '';
+  
+  // Use mounted state for images only after initial render
+  const activeDesktopImage = isMounted ? currentDesktopImage : displayDesktopImage;
+  const activeMobileTabletImage = isMounted ? currentMobileTabletImage : displayMobileTabletImage;
 
   return (
     <>
@@ -122,11 +128,11 @@ const AnimatedHeroSection = ({ mainHeading, phrases, backgroundImages, mobileTab
 
         <AnimatePresence>
           {/* Desktop Background Image (lg and above) */}
-          {displayDesktopImage && (
+          {activeDesktopImage && (
             <motion.div
               key={`bg-desktop-${displayPhraseIndex}`} // Unique key forces a new instance for every slide
               className="hidden lg:block absolute inset-0"
-              initial={{ opacity: 0, scale: 1 }} // Start at normal scale
+              initial={{ opacity: isMounted ? 0 : 1, scale: 1 }} // Start visible on server, fade in on client
               animate={{ opacity: 1, scale: 1.15 }} // Zoom IN to 1.15
               exit={{ opacity: 0 }} // Fade out to reveal the next image underneath/above
               transition={{ 
@@ -134,7 +140,7 @@ const AnimatedHeroSection = ({ mainHeading, phrases, backgroundImages, mobileTab
                 scale: { duration: 15, ease: "linear" } 
               }}
               style={{ 
-                backgroundImage: `url(${displayDesktopImage})`, 
+                backgroundImage: `url(${activeDesktopImage})`, 
                 backgroundSize: 'cover', 
                 backgroundPosition: 'center', 
                 backgroundRepeat: 'no-repeat' 
@@ -142,11 +148,11 @@ const AnimatedHeroSection = ({ mainHeading, phrases, backgroundImages, mobileTab
             />
           )}
           {/* Mobile/Tablet Background Image (below lg) */}
-          {displayMobileTabletImage && (
+          {activeMobileTabletImage && (
             <motion.div
               key={`bg-mobile-${displayPhraseIndex}`} // Unique key forces a new instance for every slide
               className="lg:hidden absolute inset-0"
-              initial={{ opacity: 0, scale: 1 }} // Start at normal scale
+              initial={{ opacity: isMounted ? 0 : 1, scale: 1 }} // Start visible on server, fade in on client
               animate={{ opacity: 1, scale: 1.15 }} // Zoom IN to 1.15
               exit={{ opacity: 0 }} // Fade out to reveal the next image underneath/above
               transition={{ 
@@ -154,7 +160,7 @@ const AnimatedHeroSection = ({ mainHeading, phrases, backgroundImages, mobileTab
                 scale: { duration: 15, ease: "linear" } 
               }}
               style={{ 
-                backgroundImage: `url(${displayMobileTabletImage})`, 
+                backgroundImage: `url(${activeMobileTabletImage})`, 
                 backgroundSize: 'cover', 
                 backgroundPosition: 'center', 
                 backgroundRepeat: 'no-repeat' 
@@ -171,14 +177,14 @@ const AnimatedHeroSection = ({ mainHeading, phrases, backgroundImages, mobileTab
       </div>
 
       {/* Animated Heading */}
-      <div className="absolute z-20 top-1/2 -translate-y-1/2 lg:top-[22%] lg:translate-y-0 w-full px-4 md:px-6 flex items-center justify-center lg:block">
-        <h1 className="text-white capitalize containersection overflow-visible! px-4 md:px-8 lg:px-14 text-center lg:text-left font-manrope-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight mb-0 lg:mb-8 drop-shadow-lg">
+      <div className="absolute z-20 top-[40%] md:top-1/2 -translate-y-1/2 lg:top-[22%] lg:translate-y-0 w-full px-0 md:px-6 flex items-center justify-center lg:block">
+        <h1 className="text-white capitalize containersection overflow-visible! px-0 md:px-8 lg:px-14 text-center lg:text-left font-manrope-bold text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight mb-0 lg:mb-8 drop-shadow-lg">
           {mainHeading.split('\n').map((line: string, index: number) => (
             <span key={index} className="block">
               {line}
             </span>
           ))}
-          <span className="block mt-4 h-[1.2em]">
+          <span className="block mt-1 h-[1.2em]">
             <span className="inline-flex items-center justify-center">
               {displayText}
               <motion.span 

@@ -292,11 +292,11 @@ const ClientHomepage = ({ heroData, servicesData }: ClientHomepageProps) => {
               </Link> 
             </div>
 
-            {/* Tablet/Mobile: Bottom positioning, full-width */}
-            <div className="lg:hidden flex items-end pb-0 md:pb-8 mt-auto"> 
+            {/* Tablet/Mobile: Bottom positioning, full-width on mobile, fixed width on tablet */}
+            <div className="lg:hidden flex items-end justify-end pb-0 md:pb-8 mt-auto"> 
               <Link 
                 href={heroData.callToAction.ctaLink}
-                className="group relative w-full px-6 md:px-8 py-6 md:py-8 overflow-hidden cursor-pointer"
+                className="group relative w-full md:w-[568px] px-6 md:px-8 py-6 md:py-8 overflow-hidden cursor-pointer"
                 style={{ backgroundColor: heroData.callToAction.backgroundColor || '#488BF3' }}
               > 
                 {/* Layer 1: Gradient from background color to lighter shade */}

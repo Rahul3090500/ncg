@@ -335,7 +335,7 @@ const Header: React.FC = () => {
                 <motion.div
                   className="absolute top-full left-1/2 -translate-x-1/2 mt-[3px] bg-white rounded-lg shadow-lg overflow-hidden z-50"
                   style={{ 
-                    width: '70%', 
+                    width: '98%', 
                     maxWidth: '1794px',
                     transformOrigin: 'top center'
                   }}

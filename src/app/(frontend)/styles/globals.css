@@ -643,11 +643,17 @@ body {
 .our-approach-swiper {
   width: 100%;
   overflow: visible;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .our-approach-swiper .swiper-wrapper {
   display: flex;
   align-items: stretch;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .our-approach-swiper .swiper-slide {
@@ -656,6 +662,8 @@ body {
   width: 100% !important;
   flex-shrink: 0;
   box-sizing: border-box;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .our-approach-swiper .swiper-pagination {
@@ -664,6 +672,8 @@ body {
   display: flex;
   justify-content: center;
   gap: 8px;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .our-approach-swiper .our-approach-bullet {
@@ -671,8 +681,11 @@ body {
   height: 8px;
   background: #488BF3;
   opacity: 0.3;
-  transition: all 0.3s ease;
+  transition: width 0.2s ease, opacity 0.2s ease, border-radius 0.2s ease;
   border-radius: 50%;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: width, opacity, border-radius;
 }
 
 .our-approach-swiper .our-approach-bullet-active {

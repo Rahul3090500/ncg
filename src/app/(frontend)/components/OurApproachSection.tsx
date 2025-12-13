@@ -249,8 +249,8 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
             </div>
           </div>
 
-          {/* Mobile/Tablet: Simple Layout */}
-          <div className="lg:hidden">
+          {/* Mobile: Simple Layout */}
+          <div className="md:hidden">
             <div className="hero-content-line-inner overflow-hidden mb-[18px]">
               <h2 className="text-white text-base md:text-lg font-manrope-semibold uppercase leading-[17px] tracking-widest">
                 {title}
@@ -275,14 +275,69 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
               />
             </div>
           </div>
+
+          {/* Tablet: Heading with Arrow Controls */}
+          <div className="hidden md:flex lg:hidden items-start justify-between gap-6 md:px-[42px]">
+            <div className="flex-1">
+              <div className="hero-content-line-inner overflow-hidden mb-[18px]">
+                <h2 className="text-white text-base md:text-lg font-manrope-semibold uppercase leading-[17px] tracking-widest">
+                  {title}
+                </h2>
+              </div>
+              <div className="flex items-start justify-between gap-6 mb-4">
+                <p className="text-white mb-[10px] text-2xl md:text-3xl lg:text-4xl font-manrope-semibold leading-tight md:leading-10 flex-1">
+                  {heading}
+                </p>
+              </div>
+              <p className="max-w-5xl text-white text-sm md:text-base font-manrope-medium mb-6 md:mb-[40px] leading-5 md:leading-6 section-description">
+                {sectionDescription}
+              </p>
+              <div className="section-link mb-8 md:mb-[35px] flex justify-between items-center gap-4">
+                <AnimatedButton
+                  link={buttonLink}
+                  text={buttonText}
+                  bgColor="#488BF3"
+                  hoverBgColor="#fff"
+                  textColor="#fff"
+                  hoverTextColor="#488BF3"
+                  width='w-[146px]'
+                  className="rounded-[10px]"
+                />
+                {/* Arrow Navigation Controls - Tablet/Desktop */}
+                <div className="flex gap-4 flex-shrink-0">
+                  <ArrowButton
+                    direction="left"
+                    onClick={scrollLeft}
+                    disabled={!canScrollLeft}
+                    ariaLabel="Scroll left"
+                    bgColor="bg-[#488BF3]"
+                    hoverBgColor="hover:bg-[#3a7bd5]"
+                    arrowColor="white"
+                    className="flex-shrink-0"
+                  />
+                  <ArrowButton
+                    direction="right"
+                    onClick={scrollRight}
+                    disabled={!canScrollRight}
+                    ariaLabel="Scroll right"
+                    bgColor="bg-[#488BF3]"
+                    hoverBgColor="hover:bg-[#3a7bd5]"
+                    arrowColor="white"
+                    className="flex-shrink-0"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Mobile: Swiper with Pagination */}
-        <div className="lg:hidden">
+        <div className="md:hidden">
           <Swiper
             modules={[Pagination]}
             spaceBetween={16}
             slidesPerView={1}
+            speed={300}
             pagination={{
               clickable: true,
               bulletClass: 'swiper-pagination-bullet our-approach-bullet',
@@ -290,27 +345,34 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
             }}
             className="our-approach-swiper"
             grabCursor={true}
+            watchOverflow={true}
+            observer={true}
+            observeParents={true}
+            touchReleaseOnEdges={true}
+            resistance={true}
+            resistanceRatio={0.85}
+            updateOnWindowResize={true}
           >
             {stepsData.map((step, index) => (
               <SwiperSlide key={index}>
                 <div className="flex justify-center px-2">
                   {step.type === 'content' ? (
                     /* Content Card */
-                    <div className="w-full max-w-[350px] bg-white rounded-[20px] relative overflow-hidden transition-all duration-500">
+                    <div className="w-full max-w-[350px] bg-white rounded-[20px] relative overflow-hidden">
                       {/* Content */}
                       <div className="relative z-10 px-6 py-6 flex flex-col h-[320px]">
                         {/* Number Badge */}
-                        <div className="bg-[#000F19] text-white font-manrope-semibold text-base leading-6 w-fit px-[10px] py-[10px] rounded-[5px] mb-4 font-semibold transition-all duration-300">
+                        <div className="bg-[#000F19] text-white font-manrope-semibold text-base leading-6 w-fit px-[10px] py-[10px] rounded-[5px] mb-4 font-semibold">
                           {step.id}
                         </div>
                         <div className='flex flex-col justify-center flex-1'>
                           {/* Title */}
-                          <h3 className="font-manrope-bold text-xl leading-tight text-[#000F19] mb-3 font-semibold max-w-full transition-all duration-300">
+                          <h3 className="font-manrope-bold text-xl leading-tight text-[#000F19] mb-3 font-semibold max-w-full">
                             {step.title}
                           </h3>
 
                           {/* Description */}
-                          <p className="font-manrope-normal text-base leading-6 text-[#000F19] max-w-full transition-all duration-300">
+                          <p className="font-manrope-normal text-base leading-6 text-[#000F19] max-w-full">
                             {step.description}
                           </p>
                         </div>
@@ -318,11 +380,12 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
                     </div>
                   ) : (
                     /* Image Card */
-                    <div className="w-full max-w-[350px] h-[320px] rounded-[20px] relative overflow-hidden transition-all duration-500">
+                    <div className="w-full max-w-[350px] h-[320px] rounded-[20px] relative overflow-hidden">
                       <img
                         src={step.bgImage}
                         alt={`Step ${Math.floor(index / 2) + 1} illustration`}
-                        className="w-full h-full object-cover transition-all duration-700"
+                        className="w-full h-full object-cover"
+                        loading="lazy"
                       />
                     </div>
                   )}
@@ -332,8 +395,8 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
           </Swiper>
         </div>
 
-        {/* Desktop: Horizontal Scrollable Content */}
-        <div className="hidden lg:block overflow-x-auto overflow-y-hidden -mx-4 md:-mx-6 px-4 md:px-16 scrollbar-hide" ref={scrollContainerRef}>
+        {/* Tablet/Desktop: Horizontal Scrollable Content */}
+        <div className="hidden md:block overflow-x-auto overflow-y-hidden -mx-4 md:-mx-6 px-4 md:px-16 scrollbar-hide" ref={scrollContainerRef}>
           <div className="flex flex-col min-w-max">
             {/* Cards Row */}
             <div className="flex flex-row gap-4 md:gap-6 lg:gap-[25px] pb-6">
