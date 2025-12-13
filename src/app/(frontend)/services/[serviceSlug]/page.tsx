@@ -102,15 +102,18 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
         )}
         <div className="absolute inset-0 bg-blend-multiply bg-gradient-to-l from-slate-900/0 to-slate-900"></div>
 
-        <div className="relative containersection min-h-[863px] px-4 md:px-6 lg:px-24 flex items-center py-8 md:py-12 lg:py-0 ">
-          <div className="w-full max-w-full md:max-w-[100%]! lg:max-w-[80%]! lg:absolute lg:top-[120px] lg:left-[107px]">
-            <p className="text-white font-manrope-bold text-sm md:text-base lg:text-[17px] tracking-widest uppercase leading-5 md:leading-6 lg:leading-[30px] mb-2 md:mb-[10px] mt-0 md:mt-[30px] lg:mt-[70px]">
+        <div className="relative containersection min-h-[100vh] px-4 md:px-8 lg:px-24 flex items-center py-8 md:py-16 lg:py-0 ">
+          <div className="w-full max-w-full md:max-w-[85%] md:mx-auto lg:max-w-[80%]! lg:absolute lg:top-[120px] lg:left-[107px]">
+            {/* Tagline - Left aligned on all screens */}
+            <p className="text-white font-manrope-bold text-sm md:text-base lg:text-[17px] tracking-widest uppercase leading-5 md:leading-6 lg:leading-[30px] mb-3 md:mb-5 lg:mb-[10px] mt-0 md:mt-[50px] lg:mt-[70px] text-left">
               {heroTagline}
             </p>
-            <h1 className="text-white font-manrope-semibold text-3xl md:text-4xl lg:text-[70px] leading-tight md:leading-[45px] lg:leading-[75px] mb-4 md:mb-6 lg:mb-[37px]">
+            {/* Heading - Centered on tablet, left aligned on mobile/desktop */}
+            <h1 className="text-white font-manrope-semibold text-3xl md:text-5xl md:leading-[60px] lg:text-[70px] leading-tight lg:leading-[75px] mb-5 md:mb-8 lg:mb-[37px] text-left lg:text-left">
               {heroTitle}
             </h1>
-            <p className="text-white font-manrope-medium text-base md:text-lg lg:text-[21px] leading-6 md:leading-7 lg:leading-[30px]">
+            {/* Subtitle - Left aligned on all screens, centered container on tablet */}
+            <p className="text-white font-manrope-medium text-base md:text-lg lg:text-[21px] leading-6 md:leading-7 lg:leading-[30px] text-left md:text-left md:mx-auto lg:mx-0 lg:max-w-full">
               {heroSubtitle}
             </p>
           </div>

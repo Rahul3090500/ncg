@@ -120,8 +120,8 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
           {subServices.map((subService, index) => (
             <motion.div
               key={subService.id || index}
-              initial="default"
-              whileHover={isMobileOrTablet ? "default" : "hover"}
+              initial={isMobileOrTablet ? "hover" : "default"}
+              whileHover={isMobileOrTablet ? "hover" : "hover"}
               variants={{
                 default: {},
                 hover: {},
@@ -154,51 +154,60 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
 
                 {/* CONTENT SECTION — grows to fill space, ensuring equal card heights */}
                 <div className="flex-1 flex flex-col px-4 md:px-6 lg:px-8 pt-4 md:pt-5 lg:pt-6 pb-4 md:pb-6 lg:pb-0 relative">
-                  {/* TITLE — animates upward, mobile/tablet shows hovered state */}
+                  {/* TITLE — mobile/tablet shows hovered state by default */}
                   <motion.h3
                     className="text-[#000F19] font-manrope-bold text-lg md:text-xl leading-5 md:leading-6 mb-2 md:mb-3 flex-shrink-0"
                     variants={{
                       default: { marginTop: 0 },
                       hover: { marginTop: -4 },
                     }}
+                    initial={isMobileOrTablet ? "hover" : "default"}
                     animate={isMobileOrTablet ? "hover" : undefined}
                     transition={{ duration: 0.35, ease: "easeInOut" }}
                   >
                     {subService.title}
                   </motion.h3>
 
-                  {/* DESCRIPTION — grows to fill available space */}
+                  {/* DESCRIPTION — mobile/tablet shows hovered state by default */}
                   <motion.p
                     className="text-[#000F19]/60 text-sm md:text-base font-manrope-medium leading-5 mb-3 md:mb-4 flex-1 min-h-0"
                     variants={{
                       default: { marginTop: 0 },
                       hover: { marginTop: -4 },
                     }}
+                    initial={isMobileOrTablet ? "hover" : "default"}
                     animate={isMobileOrTablet ? "hover" : undefined}
                     transition={{ duration: 0.35, ease: "easeInOut" }}
                   >
                     {subService.description}
                   </motion.p>
 
-                  {/* BUTTON — fades in + slides up on desktop, always visible on mobile/tablet */}
-                  <motion.div
-                    className={isMobileOrTablet ? "mb-2 mt-auto" : "mb-8 md:mb-12 lg:mb-16 mt-auto"}
-                    variants={{
-                      default: { 
-                        opacity: 0, 
-                        marginBottom: 90 
-                      },
-                      hover: { 
-                        opacity: 1, 
-                        marginBottom: isMobileOrTablet ? 8 : 90 ,
-                        marginTop: isMobileOrTablet ? 30 : 0
-                      },
-                    }}
-                    animate={isMobileOrTablet ? "hover" : undefined}
-                    transition={{ duration: 0.35, ease: "easeInOut" }}
-                  >
-                    <AnimatedButton link={`/services/${serviceSlug}/${subService.slug}`} text="Learn More" width='w-36' />
-                  </motion.div>
+                  {/* BUTTON — always visible on mobile/tablet, fades in on desktop hover */}
+                  {isMobileOrTablet ? (
+                    <div className="mb-2 mt-auto opacity-100">
+                      <AnimatedButton link={`/services/${serviceSlug}/${subService.slug}`} text="Learn More" width='w-36' />
+                    </div>
+                  ) : (
+                    <motion.div
+                      className="mb-8 md:mb-12 lg:mb-16 mt-auto"
+                      variants={{
+                        default: { 
+                          opacity: 0, 
+                          marginBottom: 90,
+                          marginTop: 0
+                        },
+                        hover: { 
+                          opacity: 1, 
+                          marginBottom: 90,
+                          marginTop: 0
+                        },
+                      }}
+                      initial="default"
+                      transition={{ duration: 0.35, ease: "easeInOut" }}
+                    >
+                      <AnimatedButton link={`/services/${serviceSlug}/${subService.slug}`} text="Learn More" width='w-36' />
+                    </motion.div>
+                  )}
                 </div>
             </motion.div>
           ))}
