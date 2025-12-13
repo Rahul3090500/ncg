@@ -4,6 +4,8 @@ import React, { useRef, useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import AnimatedButton from './AnimatedButton'
 import ArrowButton from './ArrowButton'
+import Link from 'next/link'
+import ArrowIcon from './ArrowIcon'
 
 interface SubService {
   id?: string | number
@@ -126,17 +128,17 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
                 default: {},
                 hover: {},
               }}
-              className="w-full md:w-[calc(50%-4px)] lg:w-[505px] bg-white border-[0.5px] border-[#DDE9F1] flex flex-col overflow-hidden group shrink-0 self-stretch"
+              className="w-full md:w-[calc(50%-4px)] lg:w-[505px] bg-white border-[0.5px] border-[#DDE9F1] flex flex-col overflow-hidden group shrink-0"
             >
-                {/* TOP IMAGE CONTAINER — fixed height for consistency, all images same height */}
+                {/* TOP IMAGE CONTAINER — fixed height for consistency, animates on desktop hover */}
                 <motion.div
                   className="relative w-full overflow-hidden flex-shrink-0"
                   style={{
-                    height: isMobileOrTablet ? '90px' : '137px'
+                    height: isMobileOrTablet ? '90px' : undefined
                   }}
                   variants={{
                     default: { height: isMobileOrTablet ? 90 : 137 },
-                    hover: { height: isMobileOrTablet ? 90 : 137 },
+                    hover: { height: 90 },
                   }}
                   animate={isMobileOrTablet ? "hover" : undefined}
                   transition={{ duration: 0.35, ease: "easeInOut" }}
@@ -169,7 +171,7 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
                 </motion.div>
 
                 {/* CONTENT SECTION — grows to fill space, ensuring equal card heights */}
-                <div className="flex-1 flex flex-col px-4 md:px-6 lg:px-8 pt-4 md:pt-5 lg:pt-6 pb-4 md:pb-6 lg:pb-0 relative min-h-0">
+                <div className="flex-1 flex flex-col px-4 md:px-6 lg:px-8 pt-4 md:pt-5 lg:pt-6 pb-4 md:pb-6 lg:pb-0 relative">
                   {/* TITLE — animates upward, mobile/tablet shows hovered state */}
                   <motion.h3
                     className="text-[#000F19] font-manrope-bold text-lg md:text-xl leading-5 md:leading-6 mb-2 md:mb-3 flex-shrink-0"
@@ -210,10 +212,15 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
                         marginTop: isMobileOrTablet ? 30 : 0
                       },
                     }}
+                    style={{
+                      display:"flex",justifyContent:"flex-end"
+                    }}
                     animate={isMobileOrTablet ? "hover" : undefined}
                     transition={{ duration: 0.35, ease: "easeInOut" }}
                   >
-                    <AnimatedButton link={`/services/${serviceSlug}/${subService.slug}`} text="Learn More" width='w-36' />
+                    <Link href={`/services/${serviceSlug}/${subService.slug}`}>
+                    <ArrowIcon hoverOnParent={true} />
+                    </Link>
                   </motion.div>
                 </div>
             </motion.div>
@@ -229,9 +236,9 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
             onClick={scrollLeft}
             disabled={!canScrollLeft}
             ariaLabel="Scroll left"
-            bgColor='bg-white'
-            hoverBgColor='hover:bg-white'
-            arrowColor='black'
+            bgColor="bg-white"
+            hoverBgColor="hover:bg-white"
+            arrowColor="black"
           />
 
           <ArrowButton
@@ -239,9 +246,9 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
             onClick={scrollRight}
             disabled={!canScrollRight}
             ariaLabel="Scroll right"
-            bgColor='bg-white'
-            hoverBgColor='hover:bg-white'
-            arrowColor='black'
+            bgColor="bg-white"
+            hoverBgColor="hover:bg-white"
+            arrowColor="black"
           />
         </div>
       )}
