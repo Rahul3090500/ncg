@@ -332,15 +332,22 @@ const ClientHomepage = ({ heroData, servicesData }: ClientHomepageProps) => {
                   <p className="text-white group-hover:text-gray-900 transition-colors duration-300 font-manrope-medium text-sm md:text-base leading-relaxed">
                     {heroData.callToAction.description}
                   </p> 
-                  <div className="w-full flex justify-between items-end">
+                  <div className="w-full flex justify-between items-center md:items-end">
                     <h2 className="text-white group-hover:text-gray-900 transition-colors duration-300 font-manrope-medium text-2xl md:text-3xl leading-tight">
-                      {heroData.callToAction.ctaHeading.split('\n').map((line: string, index: number) => (
-                        <span key={index} className="block">
-                          {line}
-                        </span>
-                      ))}
+                      {/* Mobile: Single line, no line breaks */}
+                      <span className="md:hidden whitespace-nowrap">
+                        {heroData.callToAction.ctaHeading.replace(/\n/g, ' ')}
+                      </span>
+                      {/* Desktop: Multiple lines with line breaks */}
+                      <span className="hidden md:block">
+                        {heroData.callToAction.ctaHeading.split('\n').map((line: string, index: number) => (
+                          <span key={index} className="block">
+                            {line}
+                          </span>
+                        ))}
+                      </span>
                     </h2>
-                    <div className="flex-shrink-0 mt-2"> 
+                    <div className="flex-shrink-0 md:mt-2"> 
                       <motion.svg 
                         width="32" 
                         height="20" 
