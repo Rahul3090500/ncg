@@ -2,13 +2,15 @@
 
 import React, { useState, useEffect } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
+import { Pagination } from 'swiper/modules'
 import type { Swiper as SwiperType } from 'swiper'
-import BlogsGridDark from '../blogs/BlogsGridDark'
-import BlogsGridLight from '../blogs/BlogsGridLight'
+import BlogsGridDarkMobile from '../blogs/BlogsGridDarkMobile'
+import BlogsGridLightMobile from '../blogs/BlogsGridLightMobile'
 import ArrowButton from './ArrowButton'
 
 // Import Swiper styles
 import 'swiper/css'
+import 'swiper/css/pagination'
 
 interface BlogItem {
   imageUrl: string
@@ -79,11 +81,12 @@ const RelatedInsightsSwiper: React.FC<RelatedInsightsSwiperProps> = ({
     }
   }
 
-  const showNavigation = blogs.length > slidesPerView
+  const showNavigation = blogs.length > 1
 
   return (
     <div className="relative w-full">
       <Swiper
+        modules={[Pagination]}
         spaceBetween={slidesPerView > 1 ? 24 : 0}
         slidesPerView={slidesPerView}
         onSwiper={handleSwiper}
@@ -91,14 +94,28 @@ const RelatedInsightsSwiper: React.FC<RelatedInsightsSwiperProps> = ({
         className="related-insights-swiper"
         grabCursor={true}
         watchSlidesProgress={true}
+        allowTouchMove={true}
+        touchRatio={1}
+        pagination={{
+          clickable: true,
+          bulletClass: 'swiper-pagination-bullet related-insights-bullet',
+          bulletActiveClass: 'swiper-pagination-bullet-active related-insights-bullet-active',
+          enabled: true,
+        }}
         breakpoints={{
           0: {
             slidesPerView: 1,
             spaceBetween: 0,
+            pagination: {
+              enabled: true,
+            },
           },
           768: {
             slidesPerView: 2,
             spaceBetween: 24,
+            pagination: {
+              enabled: false,
+            },
           },
         }}
         style={{
@@ -106,48 +123,52 @@ const RelatedInsightsSwiper: React.FC<RelatedInsightsSwiperProps> = ({
         }}
       >
         {blogs.map((blog, index) => (
-          <SwiperSlide key={blog.slug || index}>
-            {theme === 'dark' ? (
-              <BlogsGridDark
-                imageUrl={blog.imageUrl}
-                date={blog.date}
-                title={blog.title}
-                description={blog.description}
-                href={blog.slug ? `/blogs/${blog.slug}` : (blog.href && blog.href !== '#' ? blog.href : '#')}
-                slug={blog.slug}
-              />
-            ) : (
-              <BlogsGridLight
-                imageUrl={blog.imageUrl}
-                date={blog.date}
-                title={blog.title}
-                description={blog.description}
-                href={blog.slug ? `/blogs/${blog.slug}` : (blog.href && blog.href !== '#' ? blog.href : '#')}
-                slug={blog.slug}
-              />
-            )}
+          <SwiperSlide key={blog.slug || index} className="!flex">
+            <div className="w-full">
+              {theme === 'dark' ? (
+                <BlogsGridDarkMobile
+                  imageUrl={blog.imageUrl}
+                  date={blog.date}
+                  title={blog.title}
+                  description={blog.description}
+                  href={blog.slug ? `/blogs/${blog.slug}` : (blog.href && blog.href !== '#' ? blog.href : '#')}
+                  slug={blog.slug}
+                />
+              ) : (
+                <BlogsGridLightMobile
+                  imageUrl={blog.imageUrl}
+                  date={blog.date}
+                  title={blog.title}
+                  description={blog.description}
+                  href={blog.slug ? `/blogs/${blog.slug}` : (blog.href && blog.href !== '#' ? blog.href : '#')}
+                  slug={blog.slug}
+                />
+              )}
+            </div>
           </SwiperSlide>
         ))}
       </Swiper>
 
-      {/* Navigation arrows at bottom */}
+      {/* Navigation arrows at bottom - Hidden on mobile, visible on tablet/desktop */}
       {showNavigation && (
-        <div className="flex gap-4 justify-center mt-6 md:mt-8">
+        <div className="hidden md:flex gap-4 justify-center mt-6 md:mt-8 z-10 relative pb-2">
           <ArrowButton
             direction="left"
             onClick={handlePrevious}
-            disabled={isBeginning || blogs.length <= slidesPerView}
+            disabled={isBeginning}
             ariaLabel="Previous insight"
             bgColor="bg-[#488BF3]"
             hoverBgColor="hover:bg-[#3a7bd5]"
+            arrowColor="white"
           />
           <ArrowButton
             direction="right"
             onClick={handleNext}
-            disabled={isEnd || blogs.length <= slidesPerView}
+            disabled={isEnd}
             ariaLabel="Next insight"
             bgColor="bg-[#488BF3]"
             hoverBgColor="hover:bg-[#3a7bd5]"
+            arrowColor="white"
           />
         </div>
       )}

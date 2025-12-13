@@ -115,7 +115,7 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
         ref={scrollContainerRef}
         onScroll={checkScrollability}
       >
-        <div className="flex -ml-px px-4 md:px-6 lg:px-0 gap-0 md:gap-2 lg:gap-0">
+        <div className="flex lg:px-0 gap-0">
           {subServices.map((subService, index) => (
             <motion.div
               key={subService.id || index}
@@ -125,15 +125,16 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
                 default: {},
                 hover: {},
               }}
-              className="w-full md:w-[calc(50%-4px)] lg:w-[505px] h-auto md:h-[542px] lg:h-[542px] min-h-[400px] md:min-h-[542px] bg-white border-[0.5px] border-[#DDE9F1] flex flex-col overflow-hidden group shrink-0"
+              className="w-full md:w-[calc(50%-4px)] lg:w-[505px] h-auto md:h-[502px] lg:h-[502px] min-h-[320px] md:min-h-[504px] bg-white border-[0.5px] border-[#DDE9F1] flex flex-col overflow-hidden group shrink-0"
             >
-                {/* TOP IMAGE CONTAINER — animates height */}
+                {/* TOP IMAGE CONTAINER — animates height, mobile shows hovered state */}
                 <motion.div
                   className="relative w-full overflow-hidden"
                   variants={{
-                    default: { height: isMobile ? 200 : 137 },
-                    hover: { height: isMobile ? 200 : 90 },
+                    default: { height: isMobile ? 90 : 137 },
+                    hover: { height: 90 },
                   }}
+                  animate={isMobile ? "hover" : undefined}
                   transition={{ duration: 0.35, ease: "easeInOut" }}
                 >
                   {subService.heroImage?.url ? (
@@ -149,13 +150,14 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
                   ) : (
                     <div className="absolute inset-0 w-full h-full bg-gray-200" />
                   )}
-                  {/* NUMBER — animates upward */}
+                  {/* NUMBER — animates upward, mobile shows hovered state */}
                   <motion.div
                     className="absolute text-white font-manrope-medium text-lg md:text-xl lg:text-[21px] leading-tight md:leading-[23px] left-4 md:left-6 lg:left-[29px] z-10"
                     variants={{
-                      default: { top: isMobile ? 20 : 57 },
-                      hover: { top: isMobile ? 20 : 34 },
+                      default: { top: 57 },
+                      hover: { top: 34 },
                     }}
+                    animate={isMobile ? "hover" : undefined}
                     transition={{ duration: 0.35, ease: "easeInOut" }}
                   >
                     {String(index + 1).padStart(2, "0")}
@@ -164,25 +166,27 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
 
                 {/* CONTENT SECTION — relative positioning */}
                 <div className="flex-1 flex flex-col px-4 md:px-6 lg:px-8 pt-4 md:pt-5 lg:pt-6 pb-4 md:pb-6 lg:pb-0 relative">
-                  {/* TITLE — animates upward */}
+                  {/* TITLE — animates upward, mobile shows hovered state */}
                   <motion.h3
                     className="text-[#000F19] font-manrope-bold text-lg md:text-xl leading-5 md:leading-6 mb-2 md:mb-3"
                     variants={{
                       default: { marginTop: 0 },
-                      hover: { marginTop: isMobile ? 0 : -4 },
+                      hover: { marginTop: -4 },
                     }}
+                    animate={isMobile ? "hover" : undefined}
                     transition={{ duration: 0.35, ease: "easeInOut" }}
                   >
                     {subService.title}
                   </motion.h3>
 
-                  {/* DESCRIPTION — animates upward */}
+                  {/* DESCRIPTION — animates upward, mobile shows hovered state */}
                   <motion.p
                     className="text-[#000F19]/60 text-sm md:text-base font-manrope-medium leading-5 mb-3 md:mb-4 flex-1"
                     variants={{
                       default: { marginTop: 0 },
-                      hover: { marginTop: isMobile ? 0 : -4 },
+                      hover: { marginTop: -4 },
                     }}
+                    animate={isMobile ? "hover" : undefined}
                     transition={{ duration: 0.35, ease: "easeInOut" }}
                   >
                     {subService.description}
@@ -190,20 +194,22 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
 
                   {/* BUTTON — fades in + slides up on desktop, always visible on mobile/tablet */}
                   <motion.div
-                    className={isMobile ? "mb-4" : "mb-8 md:mb-12 lg:mb-16"}
+                    className={isMobile ? "mb-2" : "mb-8 md:mb-12 lg:mb-16"}
                     variants={{
                       default: { 
-                        opacity: isMobile ? 1 : 0, 
-                        marginBottom: isMobile ? 16 : 90 
+                        opacity: 0, 
+                        marginBottom: 90 
                       },
                       hover: { 
                         opacity: 1, 
-                        marginBottom: isMobile ? 16 : 90 
+                        marginBottom: isMobile ? 8 : 90 ,
+                        marginTop: isMobile ? 30 : 0
                       },
                     }}
+                    animate={isMobile ? "hover" : undefined}
                     transition={{ duration: 0.35, ease: "easeInOut" }}
                   >
-                    <AnimatedButton link={`/services/${serviceSlug}/${subService.slug}`} text="Learn More" width='w-32 md:w-36' />
+                    <AnimatedButton link={`/services/${serviceSlug}/${subService.slug}`} text="Learn More" width='w-36' />
                   </motion.div>
                 </div>
             </motion.div>

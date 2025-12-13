@@ -436,17 +436,50 @@ body {
   }
 }
 
-/* Hide Swiper default pagination and navigation for Related Insights */
-.related-insights-swiper .swiper-pagination,
+/* Hide Swiper default navigation for Related Insights */
 .related-insights-swiper .swiper-button-next,
 .related-insights-swiper .swiper-button-prev {
   display: none;
+}
+
+/* Show pagination on mobile only for Related Insights */
+.related-insights-swiper .swiper-pagination {
+  position: relative;
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+@media (min-width: 768px) {
+  .related-insights-swiper .swiper-pagination {
+    display: none;
+  }
+}
+
+.related-insights-swiper .related-insights-bullet {
+  width: 8px;
+  height: 8px;
+  background: #488BF3;
+  opacity: 0.3;
+  transition: width 0.2s ease, opacity 0.2s ease, border-radius 0.2s ease;
+  border-radius: 50%;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: width, opacity, border-radius;
+}
+
+.related-insights-swiper .related-insights-bullet-active {
+  opacity: 1;
+  width: 32px;
+  border-radius: 4px;
 }
 
 /* Ensure related insights swiper slides maintain proper width */
 .related-insights-swiper {
   width: 100%;
   overflow: visible;
+  touch-action: pan-y;
 }
 
 .related-insights-swiper .swiper-wrapper {
@@ -460,6 +493,7 @@ body {
   flex-shrink: 0;
   box-sizing: border-box;
   width: 100% !important;
+  touch-action: pan-y;
 }
 
 /* For tablet with 2 cards */

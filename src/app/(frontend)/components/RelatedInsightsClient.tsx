@@ -40,7 +40,7 @@ const RelatedInsightsClient: React.FC<RelatedInsightsClientProps> = ({
 }) => {
   return (
     <section 
-      className="py-8 md:py-12 lg:py-[82px]"
+      className="py-14 md:py-12 lg:py-[82px] lg:h-[788px] overflow-visible"
       style={{ backgroundColor }}
     >
       <div className="containersection mx-auto px-4 md:px-6 lg:px-6">
@@ -64,7 +64,7 @@ const RelatedInsightsClient: React.FC<RelatedInsightsClientProps> = ({
         </div>
 
         {/* Blog Cards - Swiper for Mobile/Tablet, Grid for Desktop */}
-        <div className="lg:hidden">
+        <div className="lg:hidden relative">
           <RelatedInsightsSwiper
             blogs={displayBlogs}
             theme={theme}

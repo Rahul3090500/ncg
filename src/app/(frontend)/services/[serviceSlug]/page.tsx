@@ -88,7 +88,7 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative min-h-[863px] overflow-hidden">
+      <section className="relative  min-h-[100vh] overflow-hidden">
         {heroImage?.url ? (
           <div
             className="absolute inset-0 bg-cover bg-center"
@@ -102,8 +102,8 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
         )}
         <div className="absolute inset-0 bg-blend-multiply bg-gradient-to-l from-slate-900/0 to-slate-900"></div>
 
-        <div className="relative containersection min-h-[863px] px-4 md:px-6 lg:px-24 flex items-center py-8 md:py-12 lg:py-0">
-          <div className="w-full max-w-full md:max-w-[600px] lg:max-w-[855px] lg:absolute lg:top-[120px] lg:left-[107px]">
+        <div className="relative containersection min-h-[863px] px-4 md:px-6 lg:px-24 flex items-center py-8 md:py-12 lg:py-0 ">
+          <div className="w-full max-w-full md:max-w-[100%]! lg:max-w-[80%]! lg:absolute lg:top-[120px] lg:left-[107px]">
             <p className="text-white font-manrope-bold text-sm md:text-base lg:text-[17px] tracking-widest uppercase leading-5 md:leading-6 lg:leading-[30px] mb-2 md:mb-[10px] mt-0 md:mt-[30px] lg:mt-[70px]">
               {heroTagline}
             </p>
@@ -120,11 +120,11 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
       {/* Sub-Services Section */}
       <section className="pt-8 md:pt-12 lg:pt-[50px] bg-[#FFFFFF]">
         <div className="mx-auto">
-          <div className="text-center mb-6 md:mb-8 lg:mb-[40px] containersection px-4 md:px-6 lg:px-72">
+          <div className="text-center mb-6 md:mb-8 lg:mb-[43px] containersection px-4 md:px-6 lg:px-42">
             <h2 className="text-[#000F19] font-manrope-semibold text-2xl md:text-3xl lg:text-5xl leading-tight md:leading-[40px] lg:leading-[50px] mb-3 md:mb-4 lg:mb-[13px]">
               {subServiceTitle}
             </h2>
-            <p className="text-[#000F19] mb-[20px] font-manrope-normal text-base md:text-lg lg:text-xl leading-6 md:leading-7 lg:leading-8">
+            <p className="text-[#000F19] mb-[20px] font-manrope-normal text-base md:text-lg lg:text-xl leading-6 md:leading-7 lg:leading-7">
               {subServiceDescription}
             </p>
           </div>
@@ -154,7 +154,7 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
         <section className="pt-8 md:pt-12 lg:pt-[65px] pb-8 md:pb-10 lg:pb-[37px] relative">
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #000F19 50%, #F4F7FF 50%)' }}></div>
           <div className="relative containersection px-4 md:px-6 lg:px-14">
-            <div className="text-center px-0 md:px-8 lg:px-[234px]">
+            <div className="text-center px-0 md:px-8 pb-6 lg:pb-0 lg:px-[234px]">
               <h2 className="text-[#000F19] font-manrope-semibold text-2xl md:text-3xl lg:text-4xl leading-tight md:leading-9 lg:leading-10 mb-3 md:mb-4 lg:mb-[12px]">
                 {advantagesTitle}
               </h2>
@@ -227,7 +227,7 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
               </div>
             </section>
           )}
-          <CaseStudiesGridSection data={caseStudiesGridData} showButton={false} />
+          <CaseStudiesGridSection data={caseStudiesGridData}/>
         </div>
       )}
       <RelatedInsights hoverColor='#000F19'/>
