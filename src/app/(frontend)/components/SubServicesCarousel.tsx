@@ -106,6 +106,7 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
   }
 
   const showNavigation = subServices.length > (isMobile ? 1 : isTablet ? 2 : 3)
+  const isMobileOrTablet = isMobile || isTablet
 
   return (
     <div className="relative bg-[#F4F7FF] pb-12 md:pb-16 lg:pb-[100px]">
@@ -115,28 +116,20 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
         ref={scrollContainerRef}
         onScroll={checkScrollability}
       >
-        <div className="flex lg:px-0 gap-0">
+        <div className="flex lg:px-0 gap-0 items-stretch">
           {subServices.map((subService, index) => (
             <motion.div
               key={subService.id || index}
               initial="default"
-              whileHover={isMobile ? "default" : "hover"}
+              whileHover={isMobileOrTablet ? "default" : "hover"}
               variants={{
                 default: {},
                 hover: {},
               }}
-              className="w-full md:w-[calc(50%-4px)] lg:w-[505px] h-auto md:h-[502px] lg:h-[502px] min-h-[320px] md:min-h-[504px] bg-white border-[0.5px] border-[#DDE9F1] flex flex-col overflow-hidden group shrink-0"
+              className="w-full md:w-[calc(50%-4px)] lg:w-[505px] bg-white border-[0.5px] border-[#DDE9F1] flex flex-col overflow-hidden group shrink-0"
             >
-                {/* TOP IMAGE CONTAINER — animates height, mobile shows hovered state */}
-                <motion.div
-                  className="relative w-full overflow-hidden"
-                  variants={{
-                    default: { height: isMobile ? 90 : 137 },
-                    hover: { height: 90 },
-                  }}
-                  animate={isMobile ? "hover" : undefined}
-                  transition={{ duration: 0.35, ease: "easeInOut" }}
-                >
+                {/* TOP IMAGE CONTAINER — fixed height for consistency across all cards */}
+                <div className="relative w-full overflow-hidden flex-shrink-0" style={{ height: isMobileOrTablet ? '90px' : '137px' }}>
                   {subService.heroImage?.url ? (
                     <img
                       src={subService.heroImage.url}
@@ -150,43 +143,38 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
                   ) : (
                     <div className="absolute inset-0 w-full h-full bg-gray-200" />
                   )}
-                  {/* NUMBER — animates upward, mobile shows hovered state */}
-                  <motion.div
+                  {/* NUMBER — fixed position, mobile/tablet shows hovered state */}
+                  <div 
                     className="absolute text-white font-manrope-medium text-lg md:text-xl lg:text-[21px] leading-tight md:leading-[23px] left-4 md:left-6 lg:left-[29px] z-10"
-                    variants={{
-                      default: { top: 57 },
-                      hover: { top: 34 },
-                    }}
-                    animate={isMobile ? "hover" : undefined}
-                    transition={{ duration: 0.35, ease: "easeInOut" }}
+                    style={{ top: isMobileOrTablet ? '34px' : '57px' }}
                   >
                     {String(index + 1).padStart(2, "0")}
-                  </motion.div>
-                </motion.div>
+                  </div>
+                </div>
 
-                {/* CONTENT SECTION — relative positioning */}
+                {/* CONTENT SECTION — grows to fill space, ensuring equal card heights */}
                 <div className="flex-1 flex flex-col px-4 md:px-6 lg:px-8 pt-4 md:pt-5 lg:pt-6 pb-4 md:pb-6 lg:pb-0 relative">
-                  {/* TITLE — animates upward, mobile shows hovered state */}
+                  {/* TITLE — animates upward, mobile/tablet shows hovered state */}
                   <motion.h3
-                    className="text-[#000F19] font-manrope-bold text-lg md:text-xl leading-5 md:leading-6 mb-2 md:mb-3"
+                    className="text-[#000F19] font-manrope-bold text-lg md:text-xl leading-5 md:leading-6 mb-2 md:mb-3 flex-shrink-0"
                     variants={{
                       default: { marginTop: 0 },
                       hover: { marginTop: -4 },
                     }}
-                    animate={isMobile ? "hover" : undefined}
+                    animate={isMobileOrTablet ? "hover" : undefined}
                     transition={{ duration: 0.35, ease: "easeInOut" }}
                   >
                     {subService.title}
                   </motion.h3>
 
-                  {/* DESCRIPTION — animates upward, mobile shows hovered state */}
+                  {/* DESCRIPTION — grows to fill available space */}
                   <motion.p
-                    className="text-[#000F19]/60 text-sm md:text-base font-manrope-medium leading-5 mb-3 md:mb-4 flex-1"
+                    className="text-[#000F19]/60 text-sm md:text-base font-manrope-medium leading-5 mb-3 md:mb-4 flex-1 min-h-0"
                     variants={{
                       default: { marginTop: 0 },
                       hover: { marginTop: -4 },
                     }}
-                    animate={isMobile ? "hover" : undefined}
+                    animate={isMobileOrTablet ? "hover" : undefined}
                     transition={{ duration: 0.35, ease: "easeInOut" }}
                   >
                     {subService.description}
@@ -194,7 +182,7 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
 
                   {/* BUTTON — fades in + slides up on desktop, always visible on mobile/tablet */}
                   <motion.div
-                    className={isMobile ? "mb-2" : "mb-8 md:mb-12 lg:mb-16"}
+                    className={isMobileOrTablet ? "mb-2 mt-auto" : "mb-8 md:mb-12 lg:mb-16 mt-auto"}
                     variants={{
                       default: { 
                         opacity: 0, 
@@ -202,11 +190,11 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
                       },
                       hover: { 
                         opacity: 1, 
-                        marginBottom: isMobile ? 8 : 90 ,
-                        marginTop: isMobile ? 30 : 0
+                        marginBottom: isMobileOrTablet ? 8 : 90 ,
+                        marginTop: isMobileOrTablet ? 30 : 0
                       },
                     }}
-                    animate={isMobile ? "hover" : undefined}
+                    animate={isMobileOrTablet ? "hover" : undefined}
                     transition={{ duration: 0.35, ease: "easeInOut" }}
                   >
                     <AnimatedButton link={`/services/${serviceSlug}/${subService.slug}`} text="Learn More" width='w-36' />
