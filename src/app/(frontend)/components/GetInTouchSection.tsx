@@ -117,7 +117,7 @@ const GetInTouchSection = ({ data }: GetInTouchSectionProps) => {
       </div>
 
       {/* Right Column - Contact Form */}
-      <div className="w-full lg:w-2/3 bg-[#e6f5ff] pt-8 md:pt-10 lg:pt-[43px] flex flex-col justify-center px-4 md:px-6 lg:px-12 xl:px-[133px] pb-8 md:pb-12 lg:pb-0">
+      <div className="w-full lg:w-2/3 bg-[#e6f5ff] pt-8 md:pt-10 lg:pt-[43px] flex flex-col justify-center px-4 md:px-6 lg:px-12 xl:px-[30px] pb-8 md:pb-12 lg:pb-0">
         <h2 className="w-full max-w-full lg:max-w-[670px] text-slate-950 text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-manrope-normal leading-tight md:leading-[40px] lg:leading-[50px] xl:leading-[65px]">
           {finalData.rightTitle}
         </h2>

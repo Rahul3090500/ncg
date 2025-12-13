@@ -1,9 +1,16 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination } from 'swiper/modules';
+import type { Swiper as SwiperType } from 'swiper';
 import { Step as StepType } from '@/types';
 import AnimatedButton from './AnimatedButton';
 import ArrowButton from './ArrowButton';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
 
 interface OurApproachSectionProps {
   data: {
@@ -270,8 +277,63 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
           </div>
         </div>
 
-        {/* Horizontal Scrollable Content - Both Mobile and Desktop */}
-        <div className="overflow-x-auto overflow-y-hidden -mx-4 md:-mx-6 px-4 md:px-16 scrollbar-hide" ref={scrollContainerRef}>
+        {/* Mobile: Swiper with Pagination */}
+        <div className="lg:hidden">
+          <Swiper
+            modules={[Pagination]}
+            spaceBetween={16}
+            slidesPerView={1}
+            pagination={{
+              clickable: true,
+              bulletClass: 'swiper-pagination-bullet our-approach-bullet',
+              bulletActiveClass: 'swiper-pagination-bullet-active our-approach-bullet-active',
+            }}
+            className="our-approach-swiper"
+            grabCursor={true}
+          >
+            {stepsData.map((step, index) => (
+              <SwiperSlide key={index}>
+                <div className="flex justify-center px-2">
+                  {step.type === 'content' ? (
+                    /* Content Card */
+                    <div className="w-full max-w-[350px] bg-white rounded-[20px] relative overflow-hidden transition-all duration-500">
+                      {/* Content */}
+                      <div className="relative z-10 px-6 py-6 flex flex-col h-[320px]">
+                        {/* Number Badge */}
+                        <div className="bg-[#000F19] text-white font-manrope-semibold text-base leading-6 w-fit px-[10px] py-[10px] rounded-[5px] mb-4 font-semibold transition-all duration-300">
+                          {step.id}
+                        </div>
+                        <div className='flex flex-col justify-center flex-1'>
+                          {/* Title */}
+                          <h3 className="font-manrope-bold text-xl leading-tight text-[#000F19] mb-3 font-semibold max-w-full transition-all duration-300">
+                            {step.title}
+                          </h3>
+
+                          {/* Description */}
+                          <p className="font-manrope-normal text-base leading-6 text-[#000F19] max-w-full transition-all duration-300">
+                            {step.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Image Card */
+                    <div className="w-full max-w-[350px] h-[320px] rounded-[20px] relative overflow-hidden transition-all duration-500">
+                      <img
+                        src={step.bgImage}
+                        alt={`Step ${Math.floor(index / 2) + 1} illustration`}
+                        className="w-full h-full object-cover transition-all duration-700"
+                      />
+                    </div>
+                  )}
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        {/* Desktop: Horizontal Scrollable Content */}
+        <div className="hidden lg:block overflow-x-auto overflow-y-hidden -mx-4 md:-mx-6 px-4 md:px-16 scrollbar-hide" ref={scrollContainerRef}>
           <div className="flex flex-col min-w-max">
             {/* Cards Row */}
             <div className="flex flex-row gap-4 md:gap-6 lg:gap-[25px] pb-6">

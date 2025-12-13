@@ -639,6 +639,48 @@ body {
   border-radius: 4px;
 }
 
+/* Our Approach Swiper Styles - Mobile Only */
+.our-approach-swiper {
+  width: 100%;
+  overflow: visible;
+}
+
+.our-approach-swiper .swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.our-approach-swiper .swiper-slide {
+  height: auto;
+  display: flex;
+  width: 100% !important;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.our-approach-swiper .swiper-pagination {
+  position: relative;
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.our-approach-swiper .our-approach-bullet {
+  width: 8px;
+  height: 8px;
+  background: #488BF3;
+  opacity: 0.3;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+}
+
+.our-approach-swiper .our-approach-bullet-active {
+  opacity: 1;
+  width: 32px;
+  border-radius: 4px;
+}
+
 /* Job Openings Swiper Styles */
 .job-openings-swiper {
   width: 100%;

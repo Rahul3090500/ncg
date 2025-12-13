@@ -18,8 +18,9 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   // Get pathname from headers to conditionally render footer
   const headersList = await headers()
   const pathname = headersList.get('x-pathname') || ''
-  const isContactPage = pathname === '/contact'
-  const isFreeConsultationPage = pathname === '/free-consultation'
+  // Hide footer on contact and free-consultation pages
+  const isContactPage = pathname === '/contact' || pathname.startsWith('/contact/')
+  const isFreeConsultationPage = pathname === '/free-consultation' || pathname.startsWith('/free-consultation/')
   const shouldHideFooter = isContactPage || isFreeConsultationPage
 
   return (

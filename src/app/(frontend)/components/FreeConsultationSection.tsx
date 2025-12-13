@@ -111,15 +111,23 @@ const FreeConsultationSection = ({ data }: FreeConsultationSectionProps) => {
         </p>
 
         {/* Calendly/MS Teams Booking Calendar */}
-        <div className="w-full h-[400px] md:h-[450px] lg:h-[518px]">
-          <iframe
-            src={"https://calendly.com/joshua-ekaathedesigncollective/ekaa-the-design-collective-1?embed_type=Inline&embed_domain=1"}
-            className="w-full h-full border-0"
-            title="Booking Calendar - Calendly or MS Teams"
-            allow="camera; microphone; fullscreen; autoplay"
-            allowFullScreen
-            loading="lazy"
-          />
+        <div className="w-full relative overflow-hidden rounded-lg bg-white shadow-sm">
+          <div 
+            className="w-full relative"
+            style={{ 
+              height: 'clamp(400px, 50vh, 800px)',
+              minHeight: '400px'
+            }}
+          >
+            <iframe
+              src={"https://calendly.com/joshua-ekaathedesigncollective/ekaa-the-design-collective-1?embed_type=Inline&embed_domain=1"}
+              className="absolute top-0 left-0 w-full h-full border-0"
+              title="Booking Calendar - Calendly or MS Teams"
+              allow="camera; microphone; fullscreen; autoplay"
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
         </div>
       </div>
     </section>
