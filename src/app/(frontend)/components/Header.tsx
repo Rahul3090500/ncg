@@ -48,6 +48,7 @@ const Header: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null)
   const servicesDropdownRef = useRef<HTMLDivElement>(null)
   const mobileMenuRef = useRef<HTMLDivElement>(null)
+  const isScrolledRef = useRef(false)
 
   useEffect(() => {
     const checkBackgroundColor = () => {
@@ -95,16 +96,26 @@ const Header: React.FC = () => {
     const handleScroll = () => {
       // Disable scroll logic on special pages (contact/free-consultation)
       if (isSpecialPage) {
-        setIsScrolled(true)
+        if (!isScrolledRef.current) {
+          isScrolledRef.current = true
+          setIsScrolled(true)
+        }
         return
       }
       
+      let newScrolledValue: boolean
       if (window.scrollY > 0.1) {
-        setIsScrolled(true)
+        newScrolledValue = true
       } else {
         // Check if page has white background even at top
         const hasWhiteBg = checkBackgroundColor()
-        setIsScrolled(hasWhiteBg)
+        newScrolledValue = hasWhiteBg
+      }
+      
+      // Only update state if the value actually changed
+      if (isScrolledRef.current !== newScrolledValue) {
+        isScrolledRef.current = newScrolledValue
+        setIsScrolled(newScrolledValue)
       }
     }
 
@@ -113,12 +124,21 @@ const Header: React.FC = () => {
     const checkInitialState = () => {
       // Always set scrolled on special pages
       if (isSpecialPage) {
-        setIsScrolled(true)
+        if (!isScrolledRef.current) {
+          isScrolledRef.current = true
+          setIsScrolled(true)
+        }
         return
       }
       
       const hasWhiteBg = checkBackgroundColor()
-      setIsScrolled(hasWhiteBg || window.scrollY > 0.1)
+      const newScrolledValue = hasWhiteBg || window.scrollY > 0.1
+      
+      // Only update state if the value actually changed
+      if (isScrolledRef.current !== newScrolledValue) {
+        isScrolledRef.current = newScrolledValue
+        setIsScrolled(newScrolledValue)
+      }
     }
     
     // Check immediately

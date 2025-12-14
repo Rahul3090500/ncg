@@ -825,6 +825,31 @@ body {
   }
 }
 
+/* Advantages Swiper Styles */
+.advantages-swiper {
+  padding-bottom: 2rem;
+}
+
+.advantages-swiper .swiper-pagination {
+  position: relative;
+  margin-top: 1.5rem;
+  bottom: 0;
+}
+
+.advantages-swiper .advantages-bullet {
+  width: 8px;
+  height: 8px;
+  background: rgba(0, 15, 25, 0.3);
+  opacity: 1;
+  margin: 0 4px;
+}
+
+.advantages-swiper .advantages-bullet-active {
+  background: #000F19;
+  width: 24px;
+  border-radius: 4px;
+}
+
 /* Fade-in animation for success messages */
 @keyframes fade-in {
   from {

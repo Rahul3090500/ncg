@@ -30,6 +30,7 @@ const CaseStudiesParallaxHero = dynamic(() => import('../components/CaseStudiesP
   )
 })
 
+
 type PageProps = {
   params: Promise<{ serviceSlug: string }>
 }
