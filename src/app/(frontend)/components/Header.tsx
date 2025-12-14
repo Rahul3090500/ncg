@@ -37,6 +37,7 @@ const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isMobileServicesOpen, setIsMobileServicesOpen] = useState(false)
   const [isMobileInsightsOpen, setIsMobileInsightsOpen] = useState(false)
+  const [expandedServiceId, setExpandedServiceId] = useState<string | number | null>(null)
   const [services, setServices] = useState<Service[]>([])
   const [isServicesLoading, setIsServicesLoading] = useState(true)
   const [databaseError, setDatabaseError] = useState<string | null>(null)
@@ -614,11 +615,16 @@ const Header: React.FC = () => {
             {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              animate={{ opacity: 0.4 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
               className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => {
+                setIsMobileMenuOpen(false)
+                setIsMobileServicesOpen(false)
+                setIsMobileInsightsOpen(false)
+                setExpandedServiceId(null)
+              }}
             />
             
             {/* Mobile Menu Drawer */}
@@ -628,17 +634,19 @@ const Header: React.FC = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 bottom-0 w-[85%] max-w-sm bg-white z-50 shadow-2xl overflow-y-auto lg:hidden"
+              className="fixed top-0 right-0 bottom-0 w-[85%] max-w-sm bg-[#488BF3] z-50 shadow-2xl overflow-y-auto lg:hidden"
             >
               <div className="flex flex-col h-full">
-                {/* Mobile Menu Header */}
-                <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                  <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
-                    <NCGLogo strokeColor="#000F19" hoverColor="#488BF3" />
-                  </Link>
+                {/* Mobile Menu Header - Close Button Only */}
+                <div className="flex items-center justify-end p-6">
                   <button
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-2 text-ncg-dark hover:text-[#488bf3] transition-colors"
+                    onClick={() => {
+                      setIsMobileMenuOpen(false)
+                      setIsMobileServicesOpen(false)
+                      setIsMobileInsightsOpen(false)
+                      setExpandedServiceId(null)
+                    }}
+                    className="p-2 text-white hover:opacity-80 transition-opacity"
                     aria-label="Close mobile menu"
                   >
                     <svg
@@ -658,15 +666,29 @@ const Header: React.FC = () => {
                 </div>
 
                 {/* Mobile Menu Content */}
-                <nav className="flex-1 px-6 py-6">
-                  <div className="space-y-1">
+                <nav className="flex-1 px-6 pb-6">
+                  <div className="space-y-0">
+                    {/* Home */}
+                    <div className="border-b border-white/30">
+                      <Link
+                        href="/"
+                        className="block py-4 text-lg font-manrope-semibold text-white hover:opacity-80 transition-opacity"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Home
+                      </Link>
+                    </div>
+
                     {/* Services */}
-                    <div>
+                    <div className="border-b border-white/30">
                       <button
-                        onClick={() => setIsMobileServicesOpen(!isMobileServicesOpen)}
-                        className={`w-full flex items-center justify-between py-4 text-lg font-manrope-semibold text-ncg-dark transition-colors ${
-                          isMobileServicesOpen ? 'text-[#488bf3]' : ''
-                        }`}
+                        onClick={() => {
+                          setIsMobileServicesOpen(!isMobileServicesOpen)
+                          if (isMobileServicesOpen) {
+                            setExpandedServiceId(null)
+                          }
+                        }}
+                        className="w-full flex items-center justify-between py-4 text-lg font-manrope-semibold text-white hover:opacity-80 transition-opacity"
                       >
                         <span>Services</span>
                         <svg
@@ -694,59 +716,93 @@ const Header: React.FC = () => {
                             transition={{ duration: 0.3 }}
                             className="overflow-hidden"
                           >
-                            <div className="pl-4 pb-4 space-y-3">
+                            <div className="pl-4 pb-4 space-y-0">
                               {isServicesLoading ? (
-                                <div className="space-y-3">
+                                <div className="space-y-0">
                                   {[1, 2, 3].map((index) => (
-                                    <div key={index} className="space-y-2">
-                                      <div className="h-5 bg-gray-200 rounded w-3/4 animate-pulse"></div>
-                                      <div className="space-y-1 pl-4">
-                                        {[1, 2].map((subIndex) => (
-                                          <div
-                                            key={subIndex}
-                                            className="h-4 bg-gray-200 rounded w-full animate-pulse"
-                                          ></div>
-                                        ))}
-                                      </div>
+                                    <div key={index} className="border-b border-white/30">
+                                      <div className="h-5 bg-white/20 rounded w-3/4 animate-pulse my-4"></div>
                                     </div>
                                   ))}
                                 </div>
                               ) : (
-                                services.map((service) => (
-                                  <div key={service.id} className="space-y-2">
-                                    <Link
-                                      href={service.slug ? `/${service.slug}` : `/${generateSlug(service.title)}`}
-                                      className="block text-base font-manrope-semibold text-[#488bf3] hover:text-[#488bf3]/80 transition-colors"
-                                      onClick={() => {
-                                        setIsMobileServicesOpen(false)
-                                        setIsMobileMenuOpen(false)
-                                      }}
-                                    >
-                                      {service.title}
-                                    </Link>
-                                    {service.subServices && service.subServices.length > 0 && (
-                                      <div className="pl-4 space-y-2">
-                                        {service.subServices.map((subService) => {
-                                          const serviceSlug = service.slug || generateSlug(service.title)
-                                          const subServiceSlug = subService.slug || generateSlug(subService.title)
-                                          return (
-                                            <Link
-                                              key={subService.id}
-                                              href={`/${serviceSlug}/${subServiceSlug}`}
-                                              className="block text-sm font-manrope-medium text-ncg-dark hover:text-[#488bf3] transition-colors"
-                                              onClick={() => {
-                                                setIsMobileServicesOpen(false)
-                                                setIsMobileMenuOpen(false)
-                                              }}
+                                services.map((service, index) => {
+                                  const hasSubServices = service.subServices && service.subServices.length > 0
+                                  const isServiceExpanded = expandedServiceId === service.id
+                                  
+                                  return (
+                                    <div key={service.id} className={index < services.length - 1 ? 'border-b border-white/30' : ''}>
+                                      {hasSubServices ? (
+                                        <>
+                                          <button
+                                            onClick={() => setExpandedServiceId(isServiceExpanded ? null : service.id)}
+                                            className="w-full flex items-center justify-between py-3 text-base font-manrope-semibold text-white hover:opacity-80 transition-opacity"
+                                          >
+                                            <span>{service.title}</span>
+                                            <svg
+                                              className={`w-5 h-5 transition-transform duration-300 ${
+                                                isServiceExpanded ? 'rotate-180' : ''
+                                              }`}
+                                              fill="none"
+                                              stroke="currentColor"
+                                              viewBox="0 0 24 24"
                                             >
-                                              {subService.title}
-                                            </Link>
-                                          )
-                                        })}
-                                      </div>
-                                    )}
-                                  </div>
-                                ))
+                                              <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M19 9l-7 7-7-7"
+                                              />
+                                            </svg>
+                                          </button>
+                                          <AnimatePresence>
+                                            {isServiceExpanded && (
+                                              <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: 'auto', opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={{ duration: 0.3 }}
+                                                className="overflow-hidden"
+                                              >
+                                                <div className="pl-4 space-y-0">
+                                                  {service.subServices!.map((subService) => {
+                                                    const serviceSlug = service.slug || generateSlug(service.title)
+                                                    const subServiceSlug = subService.slug || generateSlug(subService.title)
+                                                    return (
+                                                      <Link
+                                                        key={subService.id}
+                                                        href={`/${serviceSlug}/${subServiceSlug}`}
+                                                        className="block py-2 text-sm font-manrope-medium text-white hover:opacity-80 transition-opacity"
+                                                        onClick={() => {
+                                                          setExpandedServiceId(null)
+                                                          setIsMobileServicesOpen(false)
+                                                          setIsMobileMenuOpen(false)
+                                                        }}
+                                                      >
+                                                        {subService.title}
+                                                      </Link>
+                                                    )
+                                                  })}
+                                                </div>
+                                              </motion.div>
+                                            )}
+                                          </AnimatePresence>
+                                        </>
+                                      ) : (
+                                        <Link
+                                          href={service.slug ? `/${service.slug}` : `/${generateSlug(service.title)}`}
+                                          className="block py-3 text-base font-manrope-semibold text-white hover:opacity-80 transition-opacity"
+                                          onClick={() => {
+                                            setIsMobileServicesOpen(false)
+                                            setIsMobileMenuOpen(false)
+                                          }}
+                                        >
+                                          {service.title}
+                                        </Link>
+                                      )}
+                                    </div>
+                                  )
+                                })
                               )}
                             </div>
                           </motion.div>
@@ -754,22 +810,33 @@ const Header: React.FC = () => {
                       </AnimatePresence>
                     </div>
 
+                    {/* Our Approach */}
+                    <div className="border-b border-white/30">
+                      <Link
+                        href="/our-approach"
+                        className="block py-4 text-lg font-manrope-semibold text-white hover:opacity-80 transition-opacity"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Our Approach
+                      </Link>
+                    </div>
+
                     {/* About Us */}
-                    <Link
-                      href="/about"
-                      className="block py-4 text-lg font-manrope-semibold text-ncg-dark hover:text-[#488bf3] transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      About Us
-                    </Link>
+                    <div className="border-b border-white/30">
+                      <Link
+                        href="/about"
+                        className="block py-4 text-lg font-manrope-semibold text-white hover:opacity-80 transition-opacity"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        About Us
+                      </Link>
+                    </div>
 
                     {/* Insights */}
-                    <div>
+                    <div className="border-b border-white/30">
                       <button
                         onClick={() => setIsMobileInsightsOpen(!isMobileInsightsOpen)}
-                        className={`w-full flex items-center justify-between py-4 text-lg font-manrope-semibold text-ncg-dark transition-colors ${
-                          isMobileInsightsOpen ? 'text-[#488bf3]' : ''
-                        }`}
+                        className="w-full flex items-center justify-between py-4 text-lg font-manrope-semibold text-white hover:opacity-80 transition-opacity"
                       >
                         <span>Insights</span>
                         <svg
@@ -797,14 +864,10 @@ const Header: React.FC = () => {
                             transition={{ duration: 0.3 }}
                             className="overflow-hidden"
                           >
-                            <div className="pl-4 pb-4 space-y-2">
+                            <div className="pl-4 pb-4 space-y-0">
                               <Link
                                 href="/case-studies"
-                                className={`block py-2 text-base font-manrope-semibold transition-colors ${
-                                  pathname === '/case-studies' || pathname?.startsWith('/case-studies/')
-                                    ? 'text-[#488bf3]'
-                                    : 'text-ncg-dark hover:text-[#488bf3]'
-                                }`}
+                                className="block py-2 text-base font-manrope-semibold text-white hover:opacity-80 transition-opacity"
                                 onClick={() => {
                                   setIsMobileInsightsOpen(false)
                                   setIsMobileMenuOpen(false)
@@ -814,11 +877,7 @@ const Header: React.FC = () => {
                               </Link>
                               <Link
                                 href="/blogs"
-                                className={`block py-2 text-base font-manrope-semibold transition-colors ${
-                                  pathname === '/blogs' || pathname?.startsWith('/blogs/')
-                                    ? 'text-[#488bf3]'
-                                    : 'text-ncg-dark hover:text-[#488bf3]'
-                                }`}
+                                className="block py-2 text-base font-manrope-semibold text-white hover:opacity-80 transition-opacity"
                                 onClick={() => {
                                   setIsMobileInsightsOpen(false)
                                   setIsMobileMenuOpen(false)
@@ -833,20 +892,22 @@ const Header: React.FC = () => {
                     </div>
 
                     {/* Career */}
-                    <Link
-                      href="/career"
-                      className="block py-4 text-lg font-manrope-semibold text-ncg-dark hover:text-[#488bf3] transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Career
-                    </Link>
+                    <div className="border-b border-white/30">
+                      <Link
+                        href="/career"
+                        className="block py-4 text-lg font-manrope-semibold text-white hover:opacity-80 transition-opacity"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Career
+                      </Link>
+                    </div>
 
-                    {/* Contact Us Button - Mobile */}
-                    <div className="pt-4 border-t border-gray-200 mt-4">
+                    {/* Contact Us */}
+                    <div>
                       <Link
                         href="/contact"
+                        className="block py-4 text-lg font-manrope-semibold text-white hover:opacity-80 transition-opacity"
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="block w-full bg-[#000F19] hover:bg-[#488BF3] text-white text-center py-3 px-6 rounded-[10px] font-manrope-semibold transition-colors duration-300"
                       >
                         Contact Us
                       </Link>
