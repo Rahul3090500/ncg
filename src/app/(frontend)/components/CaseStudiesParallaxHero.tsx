@@ -116,7 +116,7 @@ const CaseStudiesParallaxHero: React.FC<CaseStudiesParallaxHeroProps> = ({
           {caseStudiesLabel}
         </h3>
         <h2
-          className="text-white text-4xl sm:text-5xl md:text-6xl lg:text-[100px] font-manrope-semibold leading-tight md:leading-[60px] lg:leading-[90px] mb-0 md:mb-4 w-full"
+          className="text-white text-4xl sm:text-5xl md:text-6xl lg:text-[100px] font-manrope-semibold leading-tight md:leading-[60px] lg:leading-[103px] mb-0 md:mb-4 w-full"
           style={{
             transform: `translate3d(0, ${parallaxData.scrollY * -0.08}px, 0)`,
             willChange: 'transform',
