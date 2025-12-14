@@ -162,7 +162,20 @@ export const Blogs: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
       required: false,
-      label: 'Hero Background Image',
+      label: 'Hero Background Image (Desktop)',
+      admin: {
+        description: 'Hero background image for desktop view',
+      },
+    },
+    {
+      name: 'heroBackgroundImageMobile',
+      type: 'upload',
+      relationTo: 'media',
+      required: false,
+      label: 'Hero Background Image (Mobile/Tablet)',
+      admin: {
+        description: 'Hero background image for mobile and tablet view',
+      },
     },
     {
       name: 'readTime',

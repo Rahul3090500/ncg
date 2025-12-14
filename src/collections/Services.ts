@@ -336,6 +336,18 @@ export const Services: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
       required: false,
+      admin: {
+        description: 'Hero image for desktop view',
+      },
+    },
+    {
+      name: 'heroImageMobile',
+      type: 'upload',
+      relationTo: 'media',
+      required: false,
+      admin: {
+        description: 'Hero image for mobile and tablet view',
+      },
     },
     {
       name: 'heroAlt',
@@ -464,7 +476,16 @@ export const Services: CollectionConfig = {
       relationTo: 'media',
       required: false,
       admin: {
-        description: 'Background image for the case studies parallax hero section',
+        description: 'Background image for the case studies parallax hero section (desktop)',
+      },
+    },
+    {
+      name: 'caseStudiesHeroImageMobile',
+      type: 'upload',
+      relationTo: 'media',
+      required: false,
+      admin: {
+        description: 'Background image for the case studies parallax hero section (mobile and tablet)',
       },
     },
     {

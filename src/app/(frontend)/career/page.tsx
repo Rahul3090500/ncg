@@ -88,13 +88,28 @@ const Career = async () => {
         <section className="relative h-screen overflow-hidden">
           {/* Background Image */}
           <div className="absolute inset-0">
+            {/* Desktop Image */}
             {hero.backgroundImage?.url && (
               <img
                 src={hero.backgroundImage.url}
                 alt="Hero Background"
-                className="w-full h-full object-cover"
+                className="hidden lg:block w-full h-full object-cover"
               />
             )}
+            {/* Mobile/Tablet Image */}
+            {hero.backgroundImageMobile?.url ? (
+              <img
+                src={hero.backgroundImageMobile.url}
+                alt="Hero Background"
+                className="block lg:hidden w-full h-full object-cover"
+              />
+            ) : hero.backgroundImage?.url ? (
+              <img
+                src={hero.backgroundImage.url}
+                alt="Hero Background"
+                className="block lg:hidden w-full h-full object-cover"
+              />
+            ) : null}
           </div>
 
           {/* Gradient Overlays */}

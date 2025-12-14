@@ -605,7 +605,16 @@ export const SubServices: CollectionConfig = {
       relationTo: 'media',
       required: false,
       admin: {
-        description: 'Background image for success stories section',
+        description: 'Background image for success stories section (desktop)',
+      },
+    },
+    {
+      name: 'successStoriesBackgroundImageMobile',
+      type: 'upload',
+      relationTo: 'media',
+      required: false,
+      admin: {
+        description: 'Background image for success stories section (mobile and tablet)',
       },
     },
   ],

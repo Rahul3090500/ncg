@@ -10,6 +10,7 @@ const Blogs = async () => {
   const { blogsPageHeroSection, blogsAll } = await getBlogsPageData()
   const heroHeading = blogsPageHeroSection?.heading || 'Knowledge Hub'
   const heroBg = blogsPageHeroSection?.backgroundImage?.url || "/assets/b1ff6240c2e18c94f5723fd22ff80b4174782915%20(1).png"
+  const heroBgMobile = blogsPageHeroSection?.backgroundImageMobile?.url || heroBg
   const items = Array.isArray(blogsAll?.docs)
     ? blogsAll.docs.map((doc: any) => ({
       imageUrl: doc?.image?.url,
@@ -23,9 +24,17 @@ const Blogs = async () => {
   return (
     <div className="min-h-screen bg-white">
       <section className="relative h-[250px] md:h-[300px] lg:h-[330px] flex items-end pb-[8%] justify-center overflow-hidden">
+        {/* Desktop Background Image */}
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="hidden lg:block absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url('${heroBg}')` }}
+        >
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
+        {/* Mobile/Tablet Background Image */}
+        <div
+          className="block lg:hidden absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url('${heroBgMobile}')` }}
         >
           <div className="absolute inset-0 bg-black/40" />
         </div>

@@ -26,7 +26,22 @@ export const AboutCTASection: GlobalConfig = {
     },
     { name: 'buttonText', type: 'text', required: true, defaultValue: 'Contact Us' },
     { name: 'buttonLink', type: 'text', required: true, defaultValue: '/contact' },
-    { name: 'backgroundImage', type: 'upload', relationTo: 'media' },
+    { 
+      name: 'backgroundImage', 
+      type: 'upload', 
+      relationTo: 'media',
+      admin: {
+        description: 'Background image for desktop view',
+      },
+    },
+    { 
+      name: 'backgroundImageMobile', 
+      type: 'upload', 
+      relationTo: 'media',
+      admin: {
+        description: 'Background image for mobile and tablet view',
+      },
+    },
     { name: 'overlayOpacity', type: 'number', required: true, defaultValue: 0.5 },
   ],
 }

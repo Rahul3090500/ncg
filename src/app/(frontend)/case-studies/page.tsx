@@ -11,14 +11,28 @@ const CaseStudies = async () => {
   const { caseStudiesPageHeroSection, caseStudiesPageGridSection } = await getCaseStudiesPageData()
 
   const bgImage = caseStudiesPageHeroSection?.backgroundImage?.url || '/home-images/case-studies-bg.png'
+  const bgImageMobile = caseStudiesPageHeroSection?.backgroundImageMobile?.url || bgImage
 
   return (
     <div className="min-h-screen bg-white">
       <section className="relative h-[400px] md:h-[500px] lg:h-[770px] flex items-center justify-center overflow-hidden">
+        {/* Desktop Background Image */}
         <div 
-          className="absolute inset-0 bg-cover bg-center"
+          className="hidden lg:block absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: `url('${bgImage}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }}
+        >
+          <div className="absolute inset-0 bg-black/50"></div>
+        </div>
+        {/* Mobile/Tablet Background Image */}
+        <div 
+          className="block lg:hidden absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url('${bgImageMobile}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',

@@ -70,6 +70,7 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
   const heroTitle = service.heroTitle || service.title
   const heroSubtitle = service.heroSubtitle || service.description
   const heroImage = service.heroImage
+  const heroImageMobile = service.heroImageMobile
   const subServiceTitle = service.subServiceTitle || 'Our Sub Services'
   const subServiceDescription = service.subServiceDescription || service.description
   const ctaTitle = service.ctaTitle || 'Ready to Strengthen Your Identity Security?'
@@ -80,6 +81,7 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
   const caseStudiesLabel = service.caseStudiesLabel || 'case studies'
   const caseStudiesHeroTitle = service.caseStudiesHeroTitle || `${service.title} In Action`
   const caseStudiesHeroImage = service.caseStudiesHeroImage?.url || null
+  const caseStudiesHeroImageMobile = service.caseStudiesHeroImageMobile?.url || null
   const caseStudiesIntro = service.caseStudiesIntro || 'Discover how NCG has helped organizations protect digital identities, streamline access management, and build trust across their digital landscape. Our case studies highlight real-world challenges, tailored solutions, and measurable results—showing you what\'s possible when identity is secured the right way.'
   // Filter out any null or invalid case studies (broken relationships)
   const caseStudies = Array.isArray(service.caseStudies)
@@ -89,12 +91,30 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative  min-h-[100vh] overflow-hidden">
-        {heroImage?.url ? (
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url('${heroImage.url}')` }}
-          />
-        ) : (
+        {/* Desktop Image */}
+        {(heroImage?.url || heroImageMobile?.url) && (
+          <>
+            {heroImage?.url && (
+              <div
+                className="hidden lg:block absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url('${heroImage.url}')` }}
+              />
+            )}
+            {/* Mobile/Tablet Image */}
+            {heroImageMobile?.url ? (
+              <div
+                className="block lg:hidden absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url('${heroImageMobile.url}')` }}
+              />
+            ) : heroImage?.url ? (
+              <div
+                className="block lg:hidden absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url('${heroImage.url}')` }}
+              />
+            ) : null}
+          </>
+        )}
+        {!heroImage?.url && !heroImageMobile?.url && (
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: "url('/assets/2c635137081a2267e6ebfee54bd7a7d6302cff75.png')" }}
@@ -220,6 +240,7 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
             caseStudiesLabel={caseStudiesLabel}
             caseStudiesHeroTitle={caseStudiesHeroTitle}
             caseStudiesHeroImage={caseStudiesHeroImage}
+            caseStudiesHeroImageMobile={caseStudiesHeroImageMobile}
           />
           {caseStudiesIntro && (
             <section className="pt-8 md:pt-12 lg:pt-[51px] pb-6 md:pb-8 lg:pb-[35px] bg-white">

@@ -6,12 +6,14 @@ interface CaseStudiesParallaxHeroProps {
   caseStudiesLabel: string
   caseStudiesHeroTitle: string
   caseStudiesHeroImage?: string | null
+  caseStudiesHeroImageMobile?: string | null
 }
 
 const CaseStudiesParallaxHero: React.FC<CaseStudiesParallaxHeroProps> = ({
   caseStudiesLabel,
   caseStudiesHeroTitle,
   caseStudiesHeroImage,
+  caseStudiesHeroImageMobile,
 }) => {
   const sectionRef = useRef<HTMLElement>(null)
   const [parallaxData, setParallaxData] = useState({
@@ -81,20 +83,62 @@ const CaseStudiesParallaxHero: React.FC<CaseStudiesParallaxHeroProps> = ({
         willChange: 'transform',
       }}
     >
-      <div
-        className="absolute inset-0 scale-[1.3]"
-        style={{
-          backgroundImage: caseStudiesHeroImage 
-            ? `url('${caseStudiesHeroImage}')` 
-            : "url('/assets/8669139b5ad96631528dce4a3734eddb4b03dc40.jpg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          transform: backgroundTransform,
-          willChange: 'transform',
-          transition: 'transform 0.1s ease-out',
-        }}
-      />
+      {/* Desktop Image */}
+      {caseStudiesHeroImage && (
+        <div
+          className="hidden lg:block absolute inset-0 scale-[1.3]"
+          style={{
+            backgroundImage: `url('${caseStudiesHeroImage}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            transform: backgroundTransform,
+            willChange: 'transform',
+            transition: 'transform 0.1s ease-out',
+          }}
+        />
+      )}
+      {/* Mobile/Tablet Image */}
+      {caseStudiesHeroImageMobile ? (
+        <div
+          className="block lg:hidden absolute inset-0 scale-[1.3]"
+          style={{
+            backgroundImage: `url('${caseStudiesHeroImageMobile}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            transform: backgroundTransform,
+            willChange: 'transform',
+            transition: 'transform 0.1s ease-out',
+          }}
+        />
+      ) : caseStudiesHeroImage ? (
+        <div
+          className="block lg:hidden absolute inset-0 scale-[1.3]"
+          style={{
+            backgroundImage: `url('${caseStudiesHeroImage}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            transform: backgroundTransform,
+            willChange: 'transform',
+            transition: 'transform 0.1s ease-out',
+          }}
+        />
+      ) : (
+        <div
+          className="absolute inset-0 scale-[1.3]"
+          style={{
+            backgroundImage: "url('/assets/8669139b5ad96631528dce4a3734eddb4b03dc40.jpg')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            transform: backgroundTransform,
+            willChange: 'transform',
+            transition: 'transform 0.1s ease-out',
+          }}
+        />
+      )}
       <div
         className="absolute inset-0 bg-black/30 scale-[1.3]"
         style={{

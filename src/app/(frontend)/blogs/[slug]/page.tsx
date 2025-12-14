@@ -48,15 +48,40 @@ const BlogDetailPage = async ({ params }: PageProps) => {
       {/* Hero Section */}
       <section className="relative min-h-[300px] md:min-h-[400px] lg:min-h-[500px] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
-        {blog.heroBackgroundImage?.url ? (
-          <div className="absolute inset-0">
-            <img
-              src={blog.heroBackgroundImage.url}
-              alt={blog.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black/60"></div>
-          </div>
+        {blog.heroBackgroundImage?.url || blog.heroBackgroundImageMobile?.url ? (
+          <>
+            {/* Desktop Hero Background Image */}
+            {blog.heroBackgroundImage?.url && (
+              <div className="hidden lg:block absolute inset-0">
+                <img
+                  src={blog.heroBackgroundImage.url}
+                  alt={blog.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/60"></div>
+              </div>
+            )}
+            {/* Mobile/Tablet Hero Background Image */}
+            {blog.heroBackgroundImageMobile?.url ? (
+              <div className="block lg:hidden absolute inset-0">
+                <img
+                  src={blog.heroBackgroundImageMobile.url}
+                  alt={blog.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/60"></div>
+              </div>
+            ) : blog.heroBackgroundImage?.url ? (
+              <div className="block lg:hidden absolute inset-0">
+                <img
+                  src={blog.heroBackgroundImage.url}
+                  alt={blog.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/60"></div>
+              </div>
+            ) : null}
+          </>
         ) : blog.image?.url ? (
           <div className="absolute inset-0">
             <img

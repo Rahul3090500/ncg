@@ -26,6 +26,17 @@ export const BlogsPageHeroSection: GlobalConfig = {
       name: 'backgroundImage',
       type: 'upload',
       relationTo: 'media',
+      admin: {
+        description: 'Background image for desktop view',
+      },
+    },
+    {
+      name: 'backgroundImageMobile',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        description: 'Background image for mobile and tablet view',
+      },
     },
   ],
 }

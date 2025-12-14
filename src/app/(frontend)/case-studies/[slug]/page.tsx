@@ -58,15 +58,40 @@ const CaseStudyDetailPage = async ({ params }: PageProps) => {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-end justify-center overflow-hidden">
         {/* Background Image */}
-        {caseStudy.heroBackgroundImage?.url && (
-          <div className="absolute inset-0">
-            <img
-              src={caseStudy.heroBackgroundImage.url}
-              alt={caseStudy.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-blend-multiply bg-gradient-to-b from-black/0 to-black/80"></div>
-          </div>
+        {(caseStudy.heroBackgroundImage?.url || caseStudy.heroBackgroundImageMobile?.url) && (
+          <>
+            {/* Desktop Background Image */}
+            {caseStudy.heroBackgroundImage?.url && (
+              <div className="hidden lg:block absolute inset-0">
+                <img
+                  src={caseStudy.heroBackgroundImage.url}
+                  alt={caseStudy.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-blend-multiply bg-gradient-to-b from-black/0 to-black/80"></div>
+              </div>
+            )}
+            {/* Mobile/Tablet Background Image */}
+            {caseStudy.heroBackgroundImageMobile?.url ? (
+              <div className="block lg:hidden absolute inset-0">
+                <img
+                  src={caseStudy.heroBackgroundImageMobile.url}
+                  alt={caseStudy.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-blend-multiply bg-gradient-to-b from-black/0 to-black/80"></div>
+              </div>
+            ) : caseStudy.heroBackgroundImage?.url ? (
+              <div className="block lg:hidden absolute inset-0">
+                <img
+                  src={caseStudy.heroBackgroundImage.url}
+                  alt={caseStudy.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-blend-multiply bg-gradient-to-b from-black/0 to-black/80"></div>
+              </div>
+            ) : null}
+          </>
         )}
 
         {/* Hero Logo */}

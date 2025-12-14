@@ -84,12 +84,31 @@ const PrivacyPolicyPage = async () => {
       <div className="relative w-full overflow-hidden">
         {/* Background Image */}
         <div className="fixed top-0 inset-0 h-full">
-          {hero?.backgroundImage?.url ? (
+          {/* Desktop Background Image */}
+          {hero?.backgroundImage?.url && (
             <Image
               src={hero.backgroundImage.url}
               alt="Privacy Policy Background"
               fill
-              className="object-cover"
+              className="hidden lg:block object-cover"
+              priority
+            />
+          )}
+          {/* Mobile/Tablet Background Image */}
+          {hero?.backgroundImageMobile?.url ? (
+            <Image
+              src={hero.backgroundImageMobile.url}
+              alt="Privacy Policy Background"
+              fill
+              className="block lg:hidden object-cover"
+              priority
+            />
+          ) : hero?.backgroundImage?.url ? (
+            <Image
+              src={hero.backgroundImage.url}
+              alt="Privacy Policy Background"
+              fill
+              className="block lg:hidden object-cover"
               priority
             />
           ) : (

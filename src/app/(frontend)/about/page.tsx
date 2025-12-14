@@ -75,6 +75,7 @@ const About = async () => {
   const hero = data?.aboutHeroSection || null
   const localVideoUrl = '/videos/about-video.mp4'
   const cmsVideoUrl = hero?.backgroundVideo?.url || null
+  const cmsVideoUrlMobile = hero?.backgroundVideoMobile?.url || null
   const thumbnailUrl = '/videos/thumbnail-about.png'
   const heroOverlay = typeof hero?.overlayOpacity === 'number' ? hero.overlayOpacity : undefined
   const heroQuote = hero?.quote
@@ -110,6 +111,7 @@ const About = async () => {
 
   const cta = data?.aboutCTASection || null
   const ctaBg = cta?.backgroundImage?.url
+  const ctaBgMobile = cta?.backgroundImageMobile?.url
   const ctaOverlay = typeof cta?.overlayOpacity === 'number' ? cta.overlayOpacity : undefined
   const ctaTitle = cta?.title
   const ctaDesc = cta?.description
@@ -122,6 +124,7 @@ const About = async () => {
         <VideoHero
           localVideoUrl={localVideoUrl}
           cmsVideoUrl={cmsVideoUrl}
+          cmsVideoUrlMobile={cmsVideoUrlMobile}
           thumbnailUrl={thumbnailUrl}
           overlayOpacity={heroOverlay}
         >
@@ -273,11 +276,18 @@ const About = async () => {
         </section>
       )}
 
-      {(ctaBg || ctaTitle || ctaDesc) && (
+      {(ctaBg || ctaBgMobile || ctaTitle || ctaDesc) && (
         <section className="relative py-12 md:py-16 lg:py-20 text-white overflow-hidden">
+          {/* Desktop Background Image */}
           {ctaBg && (
-            <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url('${ctaBg}')` }}></div>
+            <div className="hidden lg:block absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url('${ctaBg}')` }}></div>
           )}
+          {/* Mobile/Tablet Background Image */}
+          {ctaBgMobile ? (
+            <div className="block lg:hidden absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url('${ctaBgMobile}')` }}></div>
+          ) : ctaBg ? (
+            <div className="block lg:hidden absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url('${ctaBg}')` }}></div>
+          ) : null}
           {typeof ctaOverlay === 'number' && (
             <div className="absolute inset-0" style={{ backgroundColor: `rgba(0,0,0,${ctaOverlay})` }}></div>
           )}

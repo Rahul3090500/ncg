@@ -20,8 +20,21 @@ export const CareerHeroSection: GlobalConfig = {
       name: 'backgroundImage',
       type: 'upload',
       relationTo: 'media',
-      label: 'Background Image',
+      label: 'Background Image (Desktop)',
       required: true,
+      admin: {
+        description: 'Background image for desktop view',
+      },
+    },
+    {
+      name: 'backgroundImageMobile',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Background Image (Mobile/Tablet)',
+      required: false,
+      admin: {
+        description: 'Background image for mobile and tablet view',
+      },
     },
     {
       name: 'title',

@@ -248,7 +248,14 @@ export interface CaseStudy {
    * Old link field for backward compatibility
    */
   link?: string | null;
+  /**
+   * Hero background image for desktop view
+   */
   heroBackgroundImage?: (number | null) | Media;
+  /**
+   * Hero background image for mobile and tablet view
+   */
+  heroBackgroundImageMobile?: (number | null) | Media;
   heroLogo?: (number | null) | Media;
   /**
    * Description shown in hero section below title
@@ -350,7 +357,14 @@ export interface Blog {
    * Old link field for backward compatibility
    */
   link?: string | null;
+  /**
+   * Hero background image for desktop view
+   */
   heroBackgroundImage?: (number | null) | Media;
+  /**
+   * Hero background image for mobile and tablet view
+   */
+  heroBackgroundImageMobile?: (number | null) | Media;
   /**
    * Estimated reading time (e.g., "15 Min Read")
    */
@@ -504,7 +518,14 @@ export interface Service {
   slug?: string | null;
   title: string;
   description: string;
+  /**
+   * Hero image for desktop view
+   */
   heroImage?: (number | null) | Media;
+  /**
+   * Hero image for mobile and tablet view
+   */
+  heroImageMobile?: (number | null) | Media;
   heroAlt?: string | null;
   /**
    * Tagline above hero title (e.g., "YOUR TRUSTED IDENTITY SECURITY PARTNER")
@@ -562,9 +583,13 @@ export interface Service {
    */
   caseStudiesHeroTitle?: string | null;
   /**
-   * Background image for the case studies parallax hero section
+   * Background image for the case studies parallax hero section (desktop)
    */
   caseStudiesHeroImage?: (number | null) | Media;
+  /**
+   * Background image for the case studies parallax hero section (mobile and tablet)
+   */
+  caseStudiesHeroImageMobile?: (number | null) | Media;
   /**
    * Introductory text for case studies section
    */
@@ -767,9 +792,13 @@ export interface SubService {
    */
   successStoriesCtaLink?: string | null;
   /**
-   * Background image for success stories section
+   * Background image for success stories section (desktop)
    */
   successStoriesBackgroundImage?: (number | null) | Media;
+  /**
+   * Background image for success stories section (mobile and tablet)
+   */
+  successStoriesBackgroundImageMobile?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -912,6 +941,7 @@ export interface CaseStudiesSelect<T extends boolean = true> {
   description?: T;
   link?: T;
   heroBackgroundImage?: T;
+  heroBackgroundImageMobile?: T;
   heroLogo?: T;
   introDescription?: T;
   solutionTags?:
@@ -996,6 +1026,7 @@ export interface BlogsSelect<T extends boolean = true> {
   image?: T;
   link?: T;
   heroBackgroundImage?: T;
+  heroBackgroundImageMobile?: T;
   readTime?: T;
   contentSections?:
     | T
@@ -1122,6 +1153,7 @@ export interface ServicesSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   heroImage?: T;
+  heroImageMobile?: T;
   heroAlt?: T;
   heroTagline?: T;
   heroTitle?: T;
@@ -1143,6 +1175,7 @@ export interface ServicesSelect<T extends boolean = true> {
   caseStudiesLabel?: T;
   caseStudiesHeroTitle?: T;
   caseStudiesHeroImage?: T;
+  caseStudiesHeroImageMobile?: T;
   caseStudiesIntro?: T;
   caseStudies?: T;
   subServices?: T;
@@ -1222,6 +1255,7 @@ export interface SubServicesSelect<T extends boolean = true> {
   successStoriesCtaText?: T;
   successStoriesCtaLink?: T;
   successStoriesBackgroundImage?: T;
+  successStoriesBackgroundImageMobile?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1384,7 +1418,14 @@ export interface CaseStudiesHero {
    * Use \n for line breaks
    */
   heading: string;
+  /**
+   * Background image for desktop view
+   */
   backgroundImage?: (number | null) | Media;
+  /**
+   * Background image for mobile and tablet view
+   */
+  backgroundImageMobile?: (number | null) | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1554,7 +1595,14 @@ export interface AboutHero {
    */
   highlightWords?: string | null;
   attribution: string;
+  /**
+   * Background video for desktop view
+   */
   backgroundVideo?: (number | null) | Media;
+  /**
+   * Background video for mobile and tablet view
+   */
+  backgroundVideoMobile?: (number | null) | Media;
   overlayOpacity: number;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1665,7 +1713,14 @@ export interface AboutCtaSection {
   description: string;
   buttonText: string;
   buttonLink: string;
+  /**
+   * Background image for desktop view
+   */
   backgroundImage?: (number | null) | Media;
+  /**
+   * Background image for mobile and tablet view
+   */
+  backgroundImageMobile?: (number | null) | Media;
   overlayOpacity: number;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1679,7 +1734,14 @@ export interface AboutCtaSection {
 export interface BlogsPageHero {
   id: number;
   heading: string;
+  /**
+   * Background image for desktop view
+   */
   backgroundImage?: (number | null) | Media;
+  /**
+   * Background image for mobile and tablet view
+   */
+  backgroundImageMobile?: (number | null) | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1691,7 +1753,14 @@ export interface BlogsPageHero {
  */
 export interface CareerHero {
   id: number;
+  /**
+   * Background image for desktop view
+   */
   backgroundImage: number | Media;
+  /**
+   * Background image for mobile and tablet view
+   */
+  backgroundImageMobile?: (number | null) | Media;
   title: string;
   subtitle: string;
   description: string;
@@ -1843,7 +1912,14 @@ export interface JobsSection {
 export interface PrivacyPolicySection {
   id: number;
   hero: {
+    /**
+     * Background image for desktop view
+     */
     backgroundImage: number | Media;
+    /**
+     * Background image for mobile and tablet view
+     */
+    backgroundImageMobile?: (number | null) | Media;
     title: string;
     effectiveDate: string;
   };
@@ -1950,6 +2026,7 @@ export interface CaseStudiesHeroSelect<T extends boolean = true> {
   overline?: T;
   heading?: T;
   backgroundImage?: T;
+  backgroundImageMobile?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2115,6 +2192,7 @@ export interface AboutHeroSelect<T extends boolean = true> {
   highlightWords?: T;
   attribution?: T;
   backgroundVideo?: T;
+  backgroundVideoMobile?: T;
   overlayOpacity?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2214,6 +2292,7 @@ export interface AboutCtaSectionSelect<T extends boolean = true> {
   buttonText?: T;
   buttonLink?: T;
   backgroundImage?: T;
+  backgroundImageMobile?: T;
   overlayOpacity?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2226,6 +2305,7 @@ export interface AboutCtaSectionSelect<T extends boolean = true> {
 export interface BlogsPageHeroSelect<T extends boolean = true> {
   heading?: T;
   backgroundImage?: T;
+  backgroundImageMobile?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2236,6 +2316,7 @@ export interface BlogsPageHeroSelect<T extends boolean = true> {
  */
 export interface CareerHeroSelect<T extends boolean = true> {
   backgroundImage?: T;
+  backgroundImageMobile?: T;
   title?: T;
   subtitle?: T;
   description?: T;
@@ -2365,6 +2446,7 @@ export interface PrivacyPolicySectionSelect<T extends boolean = true> {
     | T
     | {
         backgroundImage?: T;
+        backgroundImageMobile?: T;
         title?: T;
         effectiveDate?: T;
       };

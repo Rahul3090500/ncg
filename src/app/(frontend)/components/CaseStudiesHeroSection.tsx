@@ -9,11 +9,15 @@ interface CaseStudiesHeroSectionProps {
     backgroundImage?: {
       url: string
     }
+    backgroundImageMobile?: {
+      url: string
+    }
   }
 }
 
 const CaseStudiesHeroSection = ({ data }: CaseStudiesHeroSectionProps) => {
   const bgImage = data.backgroundImage?.url || '/home-images/case-studies-bg.png'
+  const bgImageMobile = data.backgroundImageMobile?.url || bgImage
   const sectionRef = useRef<HTMLElement>(null)
   const [parallaxData, setParallaxData] = useState({
     scrollY: 0,
@@ -81,10 +85,26 @@ const CaseStudiesHeroSection = ({ data }: CaseStudiesHeroSectionProps) => {
       }}
     >
       {/* Background Layer - Moves slowest for depth */}
+      {/* Desktop Image */}
+      {bgImage && (
+        <div
+          className="hidden lg:block absolute inset-0"
+          style={{
+            backgroundImage: `url('${bgImage}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            transform: backgroundTransform,
+            willChange: 'transform',
+            transition: 'transform 0.1s ease-out',
+          }}
+        />
+      )}
+      {/* Mobile/Tablet Image */}
       <div
-        className="absolute inset-0"
+        className="block lg:hidden absolute inset-0"
         style={{
-          backgroundImage: `url('${bgImage}')`,
+          backgroundImage: `url('${bgImageMobile}')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',

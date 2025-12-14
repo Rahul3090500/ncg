@@ -11,6 +11,9 @@ interface SuccessStoriesParallaxProps {
   successStoriesBackgroundImage?: {
     url: string
   }
+  successStoriesBackgroundImageMobile?: {
+    url: string
+  }
 }
 
 const SuccessStoriesParallax: React.FC<SuccessStoriesParallaxProps> = ({
@@ -19,6 +22,7 @@ const SuccessStoriesParallax: React.FC<SuccessStoriesParallaxProps> = ({
   successStoriesCtaText,
   successStoriesCtaLink = '#',
   successStoriesBackgroundImage,
+  successStoriesBackgroundImageMobile,
 }) => {
   const sectionRef = useRef<HTMLElement>(null)
   const [parallaxData, setParallaxData] = useState({
@@ -90,20 +94,51 @@ const SuccessStoriesParallax: React.FC<SuccessStoriesParallaxProps> = ({
         willChange: 'transform',
       }}
     >
-      {successStoriesBackgroundImage?.url ? (
+      {successStoriesBackgroundImage?.url || successStoriesBackgroundImageMobile?.url ? (
         <>
-          <div
-            className="absolute inset-0 scale-[1.3] md:scale-[1.3] lg:scale-[1.3]"
-            style={{
-              backgroundImage: `url('${successStoriesBackgroundImage.url}')`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              transform: backgroundTransform,
-              willChange: 'transform',
-              transition: 'transform 0.1s ease-out',
-            }}
-          />
+          {/* Desktop Image */}
+          {successStoriesBackgroundImage?.url && (
+            <div
+              className="hidden lg:block absolute inset-0 scale-[1.3] md:scale-[1.3] lg:scale-[1.3]"
+              style={{
+                backgroundImage: `url('${successStoriesBackgroundImage.url}')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                transform: backgroundTransform,
+                willChange: 'transform',
+                transition: 'transform 0.1s ease-out',
+              }}
+            />
+          )}
+          {/* Mobile/Tablet Image */}
+          {successStoriesBackgroundImageMobile?.url ? (
+            <div
+              className="block lg:hidden absolute inset-0 scale-[1.3] md:scale-[1.3] lg:scale-[1.3]"
+              style={{
+                backgroundImage: `url('${successStoriesBackgroundImageMobile.url}')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                transform: backgroundTransform,
+                willChange: 'transform',
+                transition: 'transform 0.1s ease-out',
+              }}
+            />
+          ) : successStoriesBackgroundImage?.url ? (
+            <div
+              className="block lg:hidden absolute inset-0 scale-[1.3] md:scale-[1.3] lg:scale-[1.3]"
+              style={{
+                backgroundImage: `url('${successStoriesBackgroundImage.url}')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                transform: backgroundTransform,
+                willChange: 'transform',
+                transition: 'transform 0.1s ease-out',
+              }}
+            />
+          ) : null}
           <div
             className="absolute inset-0 bg-black/70 scale-[1.3] md:scale-[1.3] lg:scale-[1.3]"
             style={{

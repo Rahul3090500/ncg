@@ -43,7 +43,19 @@ export const AboutHeroSection: GlobalConfig = {
       name: 'backgroundVideo',
       type: 'upload',
       relationTo: 'media',
-      label: 'Background Video',
+      label: 'Background Video (Desktop)',
+      admin: {
+        description: 'Background video for desktop view',
+      },
+    },
+    {
+      name: 'backgroundVideoMobile',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Background Video (Mobile/Tablet)',
+      admin: {
+        description: 'Background video for mobile and tablet view',
+      },
     },
     {
       name: 'overlayOpacity',

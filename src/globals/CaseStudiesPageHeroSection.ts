@@ -33,6 +33,18 @@ export const CaseStudiesPageHeroSection: GlobalConfig = {
       type: 'upload',
       relationTo: 'media',
       required: false,
+      admin: {
+        description: 'Background image for desktop view',
+      },
+    },
+    {
+      name: 'backgroundImageMobile',
+      type: 'upload',
+      relationTo: 'media',
+      required: false,
+      admin: {
+        description: 'Background image for mobile and tablet view',
+      },
     },
   ],
 }
