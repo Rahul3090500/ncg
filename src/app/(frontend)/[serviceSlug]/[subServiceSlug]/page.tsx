@@ -2,8 +2,8 @@ import React from 'react'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { getSubServiceBySlug, getServiceBySlug } from '@/lib/payload'
-import AnimatedButton from '../../../components/AnimatedButton'
-import BenefitsCarousel from '../../../components/BenefitsCarousel'
+import AnimatedButton from '../../components/AnimatedButton'
+import BenefitsCarousel from '../../components/BenefitsCarousel'
 import dynamic from 'next/dynamic'
 
 // Dynamically import heavy components for better code splitting

@@ -84,7 +84,7 @@ const Footer = async () => {
                   return (
                     <li key={service.id}>
                       <Link
-                        href={`/services/${serviceSlug}`}
+                        href={`/${serviceSlug}`}
                         className="footer-link text-base"
                       >
                         {service.title}
@@ -92,35 +92,7 @@ const Footer = async () => {
                     </li>
                   )
                 })
-              ) : (
-                // Fallback to default services if none found
-                <>
-                  <li>
-                    <Link
-                      href="/services"
-                      className="footer-link text-base"
-                    >
-                      Digital Fraud & Fin Crime
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/services"
-                      className="footer-link text-base"
-                    >
-                      Identity Security
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/services"
-                      className="footer-link text-base"
-                    >
-                      Digital Compliance & Cybersecurity
-                    </Link>
-                  </li>
-                </>
-              )}
+              ) : null}
             </ul>
           </div>
           <div className="space-y-4 flex flex-col items-center">

@@ -218,7 +218,7 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
                     animate={isMobileOrTablet ? "hover" : undefined}
                     transition={{ duration: 0.35, ease: "easeInOut" }}
                   >
-                    <Link href={`/services/${serviceSlug}/${subService.slug}`}>
+                    <Link href={`/${serviceSlug}/${subService.slug}`}>
                     <ArrowIcon hoverOnParent={true} />
                     </Link>
                   </motion.div>

@@ -350,7 +350,7 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
                   {/* Call to Action */}
                   <div className="flex flex-col sm:flex-row gap-4">
                     <div className="mt-4">
-                      <AnimatedButton width="w-36" link={`/services/${getServiceSlug(currentService)}`} text="Learn More" />
+                      <AnimatedButton width="w-36" link={`/${getServiceSlug(currentService)}`} text="Learn More" />
                     </div>
                   </div>
 
@@ -359,7 +359,7 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
                   {currentService.subServices && 
                     currentService.subServices.length > 0 && 
                     (currentService.serviceImage?.url || currentService.subServices[0].heroImage?.url || currentService.heroImage?.url) ? (
-                      <Link href={`/services/${getServiceSlug(currentService)}/${getSubServiceSlug(currentService.subServices[0])}`}>
+                      <Link href={`/${getServiceSlug(currentService)}/${getSubServiceSlug(currentService.subServices[0])}`}>
                         <motion.div
                           className="flex flex-col md:flex-row bg-white h-full rounded-[10px] border-[1.50px] border-[#000f19]/10 hover:border-[#000f19] group relative mt-8 md:mt-12 cursor-pointer transition-all duration-300 ease-in-out min-h-64"
                           initial={{ opacity: 0, }}
@@ -417,7 +417,7 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
                           return (
                             <Link
                               key={subService.id || index}
-                              href={`/services/${serviceSlug}/${subServiceSlug}`}
+                              href={`/${serviceSlug}/${subServiceSlug}`}
                               className="h-full"
                             >
                               <motion.div

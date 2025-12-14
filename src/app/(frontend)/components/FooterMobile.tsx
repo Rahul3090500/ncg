@@ -79,7 +79,7 @@ const FooterMobile: React.FC<FooterMobileProps> = ({
                     return (
                       <li key={service.id} className="pl-5.5">
                         <Link
-                          href={`/services/${serviceSlug}`}
+                          href={`/${serviceSlug}`}
                           className="footer-link text-sm md:text-base"
                         >
                           {service.title}
@@ -87,34 +87,7 @@ const FooterMobile: React.FC<FooterMobileProps> = ({
                       </li>
                     )
                   })
-                ) : (
-                  <>
-                    <li className="pl-5.5">
-                      <Link
-                        href="/services"
-                        className="footer-link text-sm md:text-base"
-                      >
-                        Digital Fraud & Fin Crime
-                      </Link>
-                    </li>
-                    <li className="pl-5.5">
-                      <Link
-                        href="/services"
-                        className="footer-link text-sm md:text-base"
-                      >
-                        Identity Security
-                      </Link>
-                    </li>
-                    <li className="pl-5.5">
-                      <Link
-                        href="/services"
-                        className="footer-link text-sm md:text-base"
-                      >
-                        Digital Compliance & Cybersecurity
-                      </Link>
-                    </li>
-                  </>
-                )}
+                ) : null}
               </ul>
             </div>
        {/* The Company */}

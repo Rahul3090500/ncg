@@ -61,12 +61,12 @@ const ContactSection = async () => {
   const contactData = data || defaultData
   const teamImage = contactData.teamMember.image?.url || '/home-images/team-member.png'
   return (
-    <section className="py-12 md:py-44 bg-[#e6f5ff] z-10 relative">
+    <section className="py-4 md:py-20 bg-[#e6f5ff] z-10 relative">
       <div className="mx-auto containersection px-4 md:px-10">
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-8">
           {/* Team Member Card */}
           <div className="relative">
-            <div className="relative h-[400px] md:h-[685px] rounded-lg overflow-hidden">
+            <div className="relative h-[400px] md:h-[685px] md:w-[524px] md:mx-auto lg:w-full lg:mx-0 rounded-lg overflow-hidden">
               <img
                 src={teamImage}
                 alt={contactData.teamMember.name}

@@ -409,7 +409,7 @@ const Header: React.FC = () => {
                         >
                           {/* Service Title */}
                           <Link
-                            href={service.slug ? `/services/${service.slug}` : `/services/${generateSlug(service.title)}`}
+                            href={service.slug ? `/${service.slug}` : `/${generateSlug(service.title)}`}
                             className="header-link-blue font-bold text-lg mb-4 font-manrope-semibold block"
                             onClick={() => setIsServicesDropdownOpen(false)}
                           >
@@ -429,7 +429,7 @@ const Header: React.FC = () => {
                                     transition={{ delay: 0.4 + index * 0.1 + subIndex * 0.05 }}
                                   >
                                     <Link
-                                      href={`/services/${serviceSlug}/${subServiceSlug}`}
+                                      href={`/${serviceSlug}/${subServiceSlug}`}
                                       className="header-link-dark font-manrope-medium text-base flex items-start group"
                                       onClick={() => setIsServicesDropdownOpen(false)}
                                     >
@@ -715,7 +715,7 @@ const Header: React.FC = () => {
                                 services.map((service) => (
                                   <div key={service.id} className="space-y-2">
                                     <Link
-                                      href={service.slug ? `/services/${service.slug}` : `/services/${generateSlug(service.title)}`}
+                                      href={service.slug ? `/${service.slug}` : `/${generateSlug(service.title)}`}
                                       className="block text-base font-manrope-semibold text-[#488bf3] hover:text-[#488bf3]/80 transition-colors"
                                       onClick={() => {
                                         setIsMobileServicesOpen(false)
@@ -732,7 +732,7 @@ const Header: React.FC = () => {
                                           return (
                                             <Link
                                               key={subService.id}
-                                              href={`/services/${serviceSlug}/${subServiceSlug}`}
+                                              href={`/${serviceSlug}/${subServiceSlug}`}
                                               className="block text-sm font-manrope-medium text-ncg-dark hover:text-[#488bf3] transition-colors"
                                               onClick={() => {
                                                 setIsMobileServicesOpen(false)

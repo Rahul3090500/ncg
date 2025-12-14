@@ -2,26 +2,26 @@ import React from 'react'
 import { notFound } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { getServiceBySlug, getSubServicesForService, getHomepageData } from '@/lib/payload'
-import AnimatedButton from '../../components/AnimatedButton'
+import AnimatedButton from '../components/AnimatedButton'
 
 // Dynamically import heavy components for better code splitting
-const CaseStudiesGridSection = dynamic(() => import('../../components/CaseStudiesGridSection'), {
+const CaseStudiesGridSection = dynamic(() => import('../components/CaseStudiesGridSection'), {
   loading: () => <div className="h-[500px] w-full" />,
 })
 
-const SubServicesCarousel = dynamic(() => import('../../components/SubServicesCarousel'), {
+const SubServicesCarousel = dynamic(() => import('../components/SubServicesCarousel'), {
   loading: () => <div className="h-[400px] w-full" />,
 })
 
-const ContactSection = dynamic(() => import('../../components/ContactSection'), {
+const ContactSection = dynamic(() => import('../components/ContactSection'), {
   loading: () => <div className="h-[500px] w-full" />,
 })
 
-const RelatedInsights = dynamic(() => import('../../components/RelatedInsights'), {
+const RelatedInsights = dynamic(() => import('../components/RelatedInsights'), {
   loading: () => <div className="h-[400px] w-full" />,
 })
 
-const CaseStudiesParallaxHero = dynamic(() => import('../../components/CaseStudiesParallaxHero'), {
+const CaseStudiesParallaxHero = dynamic(() => import('../components/CaseStudiesParallaxHero'), {
   loading: () => (
     <section style={{ backgroundColor: "#000F19" }} className="h-[539px] text-white relative overflow-hidden bg-[#000F19]">
       <div className="absolute scale-[1.4] inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/assets/8669139b5ad96631528dce4a3734eddb4b03dc40.jpg')" }} />
@@ -241,4 +241,3 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
 }
 
 export default ServiceDetailPage
-
