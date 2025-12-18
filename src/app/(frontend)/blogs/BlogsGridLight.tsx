@@ -50,7 +50,7 @@ const BlogsGridDark: React.FC<BlogsGridDarkProps> = ({
           hover: { backgroundColor: '#ffffff' },
         }}
         transition={{ duration: 0.35, ease: 'easeInOut' }}
-        className=" overflow-hidden px-3"
+        className=" overflow-hidden"
       >
         {/* IMAGE */}
         <motion.img
@@ -59,13 +59,13 @@ const BlogsGridDark: React.FC<BlogsGridDarkProps> = ({
           className="w-full object-cover"
           variants={{
             default: { height: 275, y: 0 },
-            hover: { height: 199, y: 12 },
+            hover: { height: 250, y:0 },
           }}
           transition={{ duration: 0.35, ease: 'easeInOut' }}
         />
 
         {/* CONTENT */}
-        <div className="pb-[16px] pt-[20px] relative">
+        <div className="pb-[16px] pt-3 relative px-3">
           {/* Date */}
           <p 
             className={`group-hover:text-slate-950 text-[#000F19] text-xs leading-3 font-manrope-normal mt-2`}

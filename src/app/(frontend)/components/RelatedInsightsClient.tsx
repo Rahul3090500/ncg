@@ -72,7 +72,7 @@ const RelatedInsightsClient: React.FC<RelatedInsightsClientProps> = ({
         </div>
         
         {/* Desktop Grid */}
-        <div className="hidden lg:grid grid-cols-4 gap-0">
+        <div className="hidden lg:grid grid-cols-4 gap-3">
           {displayBlogs.map((blog, index) => (
             theme === 'dark' ? (
               <BlogsGridDark

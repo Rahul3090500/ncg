@@ -120,16 +120,20 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
       >
         <div className="flex lg:px-0 gap-0 items-stretch">
           {subServices.map((subService, index) => (
-            <motion.div
+            <Link 
               key={subService.id || index}
-              initial="default"
-              whileHover={isMobileOrTablet ? "default" : "hover"}
-              variants={{
-                default: {},
-                hover: {},
-              }}
-              className="w-full md:w-[calc(50%-4px)] lg:w-[505px] bg-white border-[0.5px] border-[#DDE9F1] flex flex-col overflow-hidden group shrink-0"
+              href={`/${serviceSlug}/${subService.slug}`}
+              className="w-full md:w-[calc(50%-4px)] lg:w-[505px] shrink-0"
             >
+              <motion.div
+                initial="default"
+                whileHover={isMobileOrTablet ? "default" : "hover"}
+                variants={{
+                  default: {},
+                  hover: {},
+                }}
+                className="w-full h-full bg-white border-[0.5px] border-[#DDE9F1] flex flex-col overflow-hidden group cursor-pointer"
+              >
                 {/* TOP IMAGE CONTAINER — fixed height for consistency, animates on desktop hover */}
                 <motion.div
                   className="relative w-full overflow-hidden flex-shrink-0"
@@ -213,17 +217,23 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
                       },
                     }}
                     style={{
-                      display:"flex",justifyContent:"flex-end"
+                      display:"flex",justifyContent:"flex-start"
                     }}
                     animate={isMobileOrTablet ? "hover" : undefined}
                     transition={{ duration: 0.35, ease: "easeInOut" }}
                   >
-                    <Link href={`/${serviceSlug}/${subService.slug}`}>
-                    <ArrowIcon hoverOnParent={true} />
-                    </Link>
+                    {/* Show ArrowIcon on mobile and tablet */}
+                    {isMobileOrTablet && (
+                      <ArrowIcon hoverOnParent={true} />
+                    )}
+                    {/* Show AnimatedButton on desktop and laptop */}
+                    {!isMobileOrTablet && (
+                      <AnimatedButton asDiv={true} link={`/${serviceSlug}/${subService.slug}`} text="Learn More" width='w-36' />
+                    )}
                   </motion.div>
                 </div>
-            </motion.div>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </div>
