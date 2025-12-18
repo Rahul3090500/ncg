@@ -1,6 +1,6 @@
 'use client'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import ArrowIcon from './components/ArrowIcon'
 import AnimatedButton from './components/AnimatedButton'
 import Link from 'next/link'
@@ -89,6 +89,7 @@ const generateSlug = (text: string): string => {
 
 const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
   const [activeServiceIndex, setActiveServiceIndex] = useState<number>(0)
+  const sectionRef = useRef<HTMLElement>(null)
   // Transform services data to handle relationships (could be IDs or objects)
   const transformServices = (): ServiceData[] => {
     if (!servicesData?.services) {
@@ -243,6 +244,11 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
 
   const handleServiceChange = (index: number) => {
     setActiveServiceIndex(index)
+    // Scroll to top of ServicesSection on desktop/laptop (lg breakpoint and above)
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024 && sectionRef.current) {
+      const sectionTop = sectionRef.current.offsetTop
+      window.scrollTo({ top: sectionTop, behavior: 'smooth' })
+    }
   }
 
   // Generate service slug for navigation
@@ -256,7 +262,7 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
   }
 
   return (
-    <section className="bg-white relative">
+    <section ref={sectionRef} className="bg-white relative">
       <div className="mx-auto relative">
         {/* Mobile/Tablet Header - Horizontal tabs */}
         <div className="lg:hidden bg-[#001D5C] text-white z-10">

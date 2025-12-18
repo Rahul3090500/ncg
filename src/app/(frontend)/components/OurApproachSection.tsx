@@ -46,7 +46,7 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
 
   // Ensure apiSteps is an array
   const safeSteps = Array.isArray(apiSteps) ? apiSteps : []
-  
+
   // Debug: Log data structure in production
   if (process.env.NODE_ENV === 'production') {
     console.log('OurApproachSection: Received data:', {
@@ -57,18 +57,18 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
       stepsLength: Array.isArray(apiSteps) ? apiSteps.length : 0,
       firstStep: Array.isArray(apiSteps) && apiSteps.length > 0
         ? {
-            hasImage: !!apiSteps[0].image,
-            imageType: typeof apiSteps[0].image,
-            imageIsObject: typeof apiSteps[0].image === 'object',
-            imageUrl: typeof apiSteps[0].image === 'object' ? apiSteps[0].image?.url : null
-          }
+          hasImage: !!apiSteps[0].image,
+          imageType: typeof apiSteps[0].image,
+          imageIsObject: typeof apiSteps[0].image === 'object',
+          imageUrl: typeof apiSteps[0].image === 'object' ? apiSteps[0].image?.url : null
+        }
         : null
     })
   }
 
   const stepsData: ProcessedStep[] = safeSteps.flatMap((step, index) => {
     const id = String(index + 1).padStart(2, '0');
-    
+
     // Debug: Log step image in production
     if (process.env.NODE_ENV === 'production' && !step.image?.url) {
       console.warn(`OurApproachSection: Step ${index + 1} missing image URL:`, {
@@ -79,7 +79,7 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
         imageValue: step.image
       })
     }
-    
+
     return [
       {
         id,
@@ -93,7 +93,7 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
       }
     ];
   });
-  
+
   // Debug: Log final stepsData in production
   if (process.env.NODE_ENV === 'production') {
     console.log('OurApproachSection: Processed stepsData:', {
@@ -109,7 +109,7 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
     const checkScreenSize = () => {
       setIsTablet(window.innerWidth >= 768);
     };
-    
+
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
@@ -118,10 +118,10 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
   // Check scroll position and update arrow states (desktop only)
   const checkScrollPosition = () => {
     if (!scrollContainerRef.current) return;
-    
+
     const container = scrollContainerRef.current;
     const { scrollLeft, scrollWidth, clientWidth } = container;
-    
+
     setCanScrollLeft(scrollLeft > 0);
     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10); // 10px threshold
   };
@@ -132,7 +132,7 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
     const cardWidth = 470;
     const gapWidth = 25;
     const scrollAmount = cardWidth + gapWidth;
-    
+
     scrollContainerRef.current.scrollBy({
       left: -scrollAmount,
       behavior: 'smooth'
@@ -144,7 +144,7 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
     const cardWidth = 470;
     const gapWidth = 25;
     const scrollAmount = cardWidth + gapWidth;
-    
+
     scrollContainerRef.current.scrollBy({
       left: scrollAmount,
       behavior: 'smooth'
@@ -203,7 +203,7 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
                   {title}
                 </h2>
               </div>
-              <div className="flex items-start justify-between gap-6 mb-4">
+              <div className="flex items-start justify-between gap-6">
                 <p className="text-white mb-[10px] text-2xl md:text-3xl lg:text-4xl font-manrope-semibold leading-tight md:leading-10 flex-1">
                   {heading}
                 </p>
@@ -211,7 +211,7 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
               <p className="max-w-5xl text-white text-sm md:text-base font-manrope-medium mb-6 md:mb-[40px] leading-5 md:leading-6 section-description">
                 {sectionDescription}
               </p>
-              <div className="section-link mb-8 md:mb-[35px] flex justify-between items-center gap-4">
+              <div className="section-link mb-4 md:mb-0 flex justify-between items-center gap-4">
                 <AnimatedButton
                   link={buttonLink}
                   text={buttonText}
@@ -222,8 +222,8 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
                   width='w-[146px]'
                   className="rounded-[10px]"
                 />
-                                {/* Arrow Navigation Controls - Desktop Only */}
-                                <div className="flex gap-4 flex-shrink-0">
+                {/* Arrow Navigation Controls - Desktop Only */}
+                <div className="flex gap-4 flex-shrink-0">
                   <ArrowButton
                     direction="left"
                     onClick={scrollLeft}
