@@ -18,6 +18,7 @@ import SuccessStoriesParallax from '@/app/(frontend)/components/SuccessStoriesPa
 import ChallengesSectionClient from '@/app/(frontend)/components/ChallengesSectionClient'
 import IGAServicesSection from '@/app/(frontend)/components/IGAServicesSection'
 import testimonialsData from '@/app/(frontend)/data/testimonials.json'
+import Link from 'next/link'
 
 type PageProps = {
   params: Promise<{ serviceSlug: string; subServiceSlug: string }>
@@ -101,14 +102,17 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
                 {subService.description}
               </p>
               <div className="ml-0 md:ml-8 lg:ml-36 mt-4 md:mt-6">
+                <Link href="/free-consultation">
                 <AnimatedButton
                   text="Schedule Free Consultation"
-                  link="#"
+                  link="/free-consultation"
+                  asDiv={true}
                   bgColor="#488BF3"
                   hoverBgColor="#3a7be0"
                   width="w-72"
                   className="px-6 md:px-8"
                 />
+                </Link>
               </div>
             </div>
           </div>
@@ -183,7 +187,7 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
       {/* Download Banner */}
       {downloadBannerTitle && (
         <section className="bg-[#488BF3]">
-          <div className="containersection px-4 md:px-6 h-full py-16 md:py-12 lg:py-12 lg:w-[70%]! lg:mx-auto">
+          <div className="containersection px-4 md:px-6 h-full py-16 md:py-12 lg:py-12 lg:w-[75%]! lg:mx-auto">
             <div className="flex flex-col md:flex-row justify-center md:justify-between items-start md:items-center h-full gap-6 md:gap-8 lg:gap-[123px]">
               {downloadBannerImage?.url && (
                 <div className="relative w-fit h-64 md:h-72 lg:h-96 flex-shrink-0 shadow-[12px_13px_12.899999618530273px_-1px_rgba(0,0,0,0.36)] flex items-center justify-center overflow-hidden order-1 md:order-1 mx-auto md:mx-0">
@@ -198,8 +202,8 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
                   />
                 </div>
               )}
-              <div className="text-white w-full md:flex-1 lg:w-[818px] -mt-0 md:-mt-[30px] lg:-mt-[50px] ml-0 text-left order-2 md:order-2">
-                <h2 className="text-white font-manrope-semibold text-2xl md:text-3xl lg:text-5xl leading-tight md:leading-[40px] lg:leading-[58px] mb-2 md:mb-3 lg:mb-1">
+              <div className="text-white w-full md:flex-1 lg:w-[918px] -mt-0 md:-mt-[30px] lg:-mt-[50px] ml-0 text-left order-2 md:order-2">
+                <h2 className="text-white font-manrope-semibold text-2xl md:text-3xl lg:text-3xl leading-tight md:leading-[40px] lg:leading-[38px] mb-2 md:mb-3 lg:mb-1">
                   {downloadBannerTitle}
                 </h2>
                 <p className="text-white/90 text-base md:text-lg lg:text-xl mb-6 md:mb-8 lg:mb-[67px] font-manrope-normal leading-6 md:leading-7 lg:leading-8">
@@ -275,7 +279,7 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
       {/* Core Features Section */}
       {coreFeaturesTitle && coreFeatures.length > 0 && (
         <section className="py-8 md:py-12 lg:py-24 bg-white">
-          <div className="containersection px-4 md:px-6 lg:px-28 mx-auto lg:w-[85%]!">
+          <div className="containersection px-4 md:px-6 lg:px-6 mx-auto lg:w-[85%]!">
             <div className="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-16 items-start">
               {coreFeaturesImage?.url && (
                 <div className="relative w-full lg:w-[559px] h-[300px] md:h-[400px] lg:h-[548px] flex-shrink-0 order-1 lg:order-1">
@@ -320,8 +324,8 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
 
       {/* IGA Services Section */}
       {igaServicesTitle && igaServices.length > 0 && (
-        <section className="pt-8 md:pt-12 lg:pt-24 pb-8 md:pb-12 lg:pb-24 bg-white">
-          <div className="containersection px-0 md:px-0 lg:px-10 mx-auto">
+        <section className="pt-8 md:pt-12 lg:pt-24 bg-white">
+          <div className="containersection px-0 md:px-0  mx-auto">
             <div className="text-center mb-6 md:mb-8 lg:mb-12">
               <h2 className="text-[#000F19] font-manrope-semibold text-2xl md:text-3xl lg:text-5xl leading-tight md:leading-[45px] lg:leading-[60px] mb-3 md:mb-4">
                 {igaServicesTitle}

@@ -103,7 +103,7 @@ const IGAServicesClient: React.FC<IGAServicesClientProps> = ({ igaServices }) =>
                   </div>
 
                   {/* CONTENT SECTION */}
-                  <div className="flex-1 flex flex-col px-6 md:px-8 pt-4 md:pt-6 pb-6">
+                  <div className="flex-1 flex flex-col px-6 md:px-8 pt-4 md:pt-6">
                     <h3 className="text-[#000F19] font-manrope-semibold text-lg md:text-xl leading-6 mb-2 md:mb-3">
                       {igaService.title}
                     </h3>
@@ -179,7 +179,7 @@ const IGAServicesClient: React.FC<IGAServicesClientProps> = ({ igaServices }) =>
         {igaServices.map((igaService: IGAService, index: number) => (
           <div
             key={index}
-            className="flex-1 w-full h-auto bg-white border-[0.5px] border-[#DDE9F1] flex flex-col overflow-hidden"
+            className="flex-1 w-full h-auto bg-white border-[0.5px] border-[#DDE9F1] flex flex-col overflow-hidden pb-8 md:pb-12 lg:pb-24"
           >
             {/* TOP IMAGE CONTAINER */}
             <div className="relative w-full overflow-hidden">

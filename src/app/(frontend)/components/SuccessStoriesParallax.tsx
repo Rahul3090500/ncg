@@ -153,7 +153,7 @@ const SuccessStoriesParallax: React.FC<SuccessStoriesParallaxProps> = ({
       )}
       <div className="relative z-10 containersection px-4 md:px-6 lg:px-52">
         <div className="mx-auto">
-          <h2 className="text-white font-manrope-medium text-3xl md:text-5xl lg:text-8xl leading-tight md:leading-[60px] lg:leading-[90px] mb-3 md:mb-4 lg:mb-5 mt-0 md:mt-8 lg:mt-[100px]">
+          <h2 className="text-white font-manrope-medium text-3xl md:text-5xl lg:text-8xl leading-tight md:leading-[60px] lg:leading-[90px] mb-3 md:mb-4 lg:mb-5 mt-0 md:mt-8 lg:mt-[70px]">
             {successStoriesTitle}
           </h2>
           <p className="text-white text-sm md:text-base lg:text-xl font-manrope-light leading-6 md:leading-7 lg:leading-8 w-full md:w-[90%] lg:w-[1181px] mb-4 md:mb-6 lg:mb-[37px]">
