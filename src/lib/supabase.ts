@@ -65,3 +65,4 @@ export function isSupabaseConfigured(): boolean {
     process.env.DATABASE_URL.includes('supabase.co')
   )
 }
+

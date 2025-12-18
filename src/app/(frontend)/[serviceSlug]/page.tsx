@@ -188,6 +188,7 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
                 </p>
               )}
             </div>
+            
             {/* Mobile/Tablet: Horizontal Scrollable */}
             <div className="lg:hidden mt-6 md:mt-8 lg:mt-[31px]">
               <div className="overflow-x-auto scrollbar-hide -mx-4 md:-mx-6 px-4 md:px-6">

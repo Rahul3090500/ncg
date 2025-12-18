@@ -54,3 +54,4 @@ export async function getComments() {
     return { success: false, error: error.message || 'Failed to fetch comments' }
   }
 }
+

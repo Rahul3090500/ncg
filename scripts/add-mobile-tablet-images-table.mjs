@@ -94,3 +94,4 @@ async function addMobileTabletImagesTable() {
 
 addMobileTabletImagesTable();
 
+

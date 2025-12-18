@@ -91,3 +91,4 @@ for (const globalFile of globals) {
 
 console.log(`\n✅ Updated ${updatedCount} global files`)
 console.log('🎉 All globals now have cache invalidation hooks!')
+

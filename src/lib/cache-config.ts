@@ -43,3 +43,4 @@ export function getCacheControlHeader(): string {
 export function shouldUseCache(): boolean {
   return process.env.NODE_ENV !== 'development'
 }
+
