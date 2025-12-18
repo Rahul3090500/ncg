@@ -14,46 +14,44 @@ export async function getHomepageData() {
     async () => {
       try {
         const cacheTTL = getCacheTTL()
-        // In production, use the custom API route with caching
+        // In production, use the custom API route - skip cache for instant updates
         if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
-          const serverCache = getCacheManager()
-          
-          // Try server cache first (skip cache in development for instant updates)
-          if (shouldUseCache()) {
-            const cached = await serverCache.get('homepage-data', { ttl: cacheTTL })
-            if (cached) {
-              return cached
-            }
-          }
+          // Skip server cache for instant updates
+          // const serverCache = getCacheManager()
+          // if (shouldUseCache()) {
+          //   const cached = await serverCache.get('homepage-data', { ttl: cacheTTL })
+          //   if (cached) {
+          //     return cached
+          //   }
+          // }
 
           const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/homepage-read`, {
             next: { revalidate: 0 }, // Always revalidate for instant updates
             headers: {
-              'Cache-Control': getCacheControlHeader(),
+              'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+              'Pragma': 'no-cache',
             },
           })
           
           if (response.ok) {
             const result = await response.json()
             if (result) {
-              // Store in server cache (skip cache in development)
-              if (shouldUseCache()) {
-                await serverCache.set('homepage-data', result, { ttl: cacheTTL })
-              }
+              // Skip server cache for instant updates
+              // if (shouldUseCache()) {
+              //   await serverCache.set('homepage-data', result, { ttl: cacheTTL })
+              // }
               return result
             }
           }
         } else {
-          // In development, fetch all globals separately with minimal/no caching
-          const serverCache = getCacheManager()
-          
-          // Skip cache in development for instant updates
-          if (shouldUseCache()) {
-            const cached = await serverCache.get('homepage-data-dev', { ttl: cacheTTL })
-            if (cached) {
-              return cached
-            }
-          }
+          // In development, fetch all globals separately - skip cache for instant updates
+          // const serverCache = getCacheManager()
+          // if (shouldUseCache()) {
+          //   const cached = await serverCache.get('homepage-data-dev', { ttl: cacheTTL })
+          //   if (cached) {
+          //     return cached
+          //   }
+          // }
 
           const payloadClient = await getPayloadClient()
           
@@ -90,10 +88,10 @@ export async function getHomepageData() {
             contactSection,
           }
 
-          // Store in server cache (skip cache in development)
-          if (shouldUseCache()) {
-            await serverCache.set('homepage-data-dev', result, { ttl: cacheTTL })
-          }
+          // Skip server cache for instant updates
+          // if (shouldUseCache()) {
+          //   await serverCache.set('homepage-data-dev', result, { ttl: cacheTTL })
+          // }
           return result
         }
 
@@ -105,9 +103,9 @@ export async function getHomepageData() {
       }
     },
     {
-      ttl: getCacheTTL(), // Instant updates in dev (0), 5 min in prod (300)
-      useLocalStorage: process.env.NODE_ENV === 'production', // Disable localStorage cache in dev
-      staleWhileRevalidate: process.env.NODE_ENV === 'production', // Disable stale-while-revalidate in dev
+      ttl: 0, // No cache for instant updates
+      useLocalStorage: false, // Disable localStorage cache for instant updates
+      staleWhileRevalidate: false, // Disable stale-while-revalidate for instant updates
     }
   )
 }

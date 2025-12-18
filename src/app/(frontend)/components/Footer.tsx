@@ -68,9 +68,9 @@ const Footer = async () => {
       />
 
       {/* Desktop Footer */}
-      <footer className="hidden lg:block bg-[#000F19] text-white py-14 z-30 relative">
+      <footer className="hidden lg:block bg-[#000F19] text-white pt-14 pb-8 z-30 relative">
         <div className="containersection px-10">
-        <div className="grid grid-cols-4 gap-8 mb-24">
+        <div className="grid grid-cols-4 gap-8 mb-14">
           {/* Services */}
           <div className="space-y-4 flex flex-col items-center">
             <ul className="space-y-2 ">
@@ -276,7 +276,7 @@ const Footer = async () => {
               {bottomBar?.privacyLabel || 'Privacy Policy'}
             </Link>
           </div>
-        <div className="border-t border-gray-600 pt-8 flex flex-col md:flex-row justify-between items-center"/>
+        <div className="border-t border-gray-600 pt-4 flex flex-col md:flex-row justify-between items-center"/>
         </div>
       </footer>
     </>

@@ -6,6 +6,7 @@ import { isBuildTime, isDatabaseConnectionError, getBuildTimeGlobalFallback } fr
 import { getCacheTTL, getCacheControlHeader, shouldUseCache } from '@/lib/cache-config'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 // Revalidate: 0 = always revalidate for instant updates
 export const revalidate = 0
 
@@ -15,19 +16,19 @@ export async function GET() {
     const cacheKey = 'api-homepage-read'
     const cacheTTL = getCacheTTL()
 
-    // Try cache first (skip cache in development for instant updates)
-    if (shouldUseCache()) {
-      const cached = await cache.get(cacheKey, { ttl: cacheTTL })
-      if (cached) {
-        const etag = `"${Date.now()}"` // Simple ETag
+    // Skip cache for instant updates - always fetch fresh data
+    // if (shouldUseCache()) {
+    //   const cached = await cache.get(cacheKey, { ttl: cacheTTL })
+    //   if (cached) {
+    //     const etag = `"${Date.now()}"` // Simple ETag
 
-        const response = NextResponse.json(cached)
-        response.headers.set('Cache-Control', getCacheControlHeader())
-        response.headers.set('ETag', etag)
-        response.headers.set('X-Cache', 'HIT')
-        return response
-      }
-    }
+    //     const response = NextResponse.json(cached)
+    //     response.headers.set('Cache-Control', getCacheControlHeader())
+    //     response.headers.set('ETag', etag)
+    //     response.headers.set('X-Cache', 'HIT')
+    //     return response
+    //   }
+    // }
 
     // Cache miss - fetch from database
     const payload = await getPayload({ config })
@@ -66,16 +67,19 @@ export async function GET() {
       contactSection,
     }
     
-    // Store in cache (skip cache in development for instant updates)
-    if (shouldUseCache()) {
-      await cache.set(cacheKey, result, { ttl: cacheTTL })
-    }
+    // Skip cache for instant updates - don't store in cache
+    // if (shouldUseCache()) {
+    //   await cache.set(cacheKey, result, { ttl: cacheTTL })
+    // }
     
     const etag = `"${Date.now()}"`
     const response = NextResponse.json(result)
-    response.headers.set('Cache-Control', getCacheControlHeader())
+    // Set no-cache headers for instant updates
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+    response.headers.set('Pragma', 'no-cache')
+    response.headers.set('Expires', '0')
     response.headers.set('ETag', etag)
-    response.headers.set('X-Cache', shouldUseCache() ? 'MISS' : 'NO-CACHE')
+    response.headers.set('X-Cache', 'NO-CACHE')
     return response
   } catch (error: any) {
     console.error('Error fetching homepage data:', error)

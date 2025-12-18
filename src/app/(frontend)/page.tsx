@@ -113,6 +113,7 @@ interface HomepageData {
 }
 
 // Revalidate: 0 = always revalidate for instant updates (works in both dev and prod)
+export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 const Home = async () => {
