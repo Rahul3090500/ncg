@@ -2,6 +2,9 @@ import React from 'react'
 import Image from 'next/image'
 import { getPrivacyPolicyPageData } from '@/lib/payload'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 // Helper function to parse and format text with bold styling
 // Use **text** for bold
 const parseFormattedText = (text: string) => {

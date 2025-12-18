@@ -373,6 +373,9 @@ export async function getPrivacyPolicyPageData() {
     if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SERVER_URL) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/privacy-policy-read`, {
         next: { revalidate: 0 }, // Always revalidate for instant updates
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        },
       })
       if (response.ok) {
         const result = await response.json()
