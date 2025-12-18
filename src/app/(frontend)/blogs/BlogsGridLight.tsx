@@ -6,7 +6,7 @@ import Link from 'next/link'
 import AnimatedButton from '../components/AnimatedButton'
 interface BlogsGridDarkProps {
   imageUrl: string
-  date: string
+  date?: string | null
   title: string
   description: string
   href?: string
@@ -22,17 +22,53 @@ const BlogsGridDark: React.FC<BlogsGridDarkProps> = ({
   slug, 
 }) => {
   // Format date to "17 August 2025" format
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString?: string | null) => {
+    // Check if dateString exists and is not empty
+    if (!dateString) {
+      return ''
+    }
+
     try {
-      const date = new Date(dateString)
+      let date: Date
+
+      // Handle different input types
+      if (typeof dateString === 'number') {
+        // If it's already a number (timestamp)
+        date = new Date(dateString)
+      } else if (typeof dateString === 'string') {
+        // If it's a string, try parsing it
+        const trimmed = dateString.trim()
+        if (trimmed === '') {
+          return ''
+        }
+        
+        // Try parsing as timestamp first if it's a numeric string
+        const timestamp = parseInt(trimmed, 10)
+        if (!isNaN(timestamp) && String(timestamp) === trimmed) {
+          date = new Date(timestamp)
+        } else {
+          // Try parsing as date string
+          date = new Date(trimmed)
+        }
+      } else {
+        return ''
+      }
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return ''
+      }
+
+      // Format valid date
       return date.toLocaleDateString('en-US', {
         day: 'numeric',
         month: 'long',
         year: 'numeric'
       })
     } catch (error) {
-      // If date parsing fails, return the original string
-      return dateString
+      // If date parsing fails, return empty string
+      console.error('Error formatting date:', dateString, error)
+      return ''
     }
   }
 

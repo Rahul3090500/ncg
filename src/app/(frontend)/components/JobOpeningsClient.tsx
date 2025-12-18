@@ -41,28 +41,47 @@ const JobOpeningsClient: React.FC<JobOpeningsClientProps> = ({ jobs }) => {
 
   return (
     <>
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .job-openings-swiper .swiper-pagination-bullet {
+            background-color: #488BF3 !important;
+            opacity: 0.3 !important;
+          }
+          .job-openings-swiper .swiper-pagination-bullet-active {
+            background-color: #488BF3 !important;
+            opacity: 1 !important;
+          }
+        `
+      }} />
       {/* Swiper for Mobile and Tablet */}
       <div className="lg:hidden">
-        <Swiper
-          onSwiper={handleSwiper}
-          modules={[Pagination]}
-          spaceBetween={16}
-          slidesPerView={1}
-          pagination={{
-            clickable: true,
-          }}
-          breakpoints={{
-            640: {
-              slidesPerView: 1,
-              spaceBetween: 16,
-            },
-            768: {
-              slidesPerView: 2,
-              spaceBetween: 20,
-            },
-          }}
-          className="job-openings-swiper"
-        >
+        <div className="relative w-full overflow-hidden pb-12 md:pb-0">
+          <Swiper
+            onSwiper={handleSwiper}
+            modules={[Pagination]}
+            spaceBetween={16}
+            slidesPerView={1}
+            pagination={{
+              clickable: true,
+            }}
+            breakpoints={{
+              640: {
+                slidesPerView: 1,
+                spaceBetween: 16,
+                pagination: {
+                  enabled: true,
+                },
+              },
+              768: {
+                slidesPerView: 2,
+                spaceBetween: 20,
+                pagination: {
+                  enabled: false,
+                },
+              },
+            }}
+            className="job-openings-swiper"
+          >
           {jobs.map((job, index) => (
             <SwiperSlide key={job?.id || index}>
               <JobCard
@@ -76,8 +95,9 @@ const JobOpeningsClient: React.FC<JobOpeningsClientProps> = ({ jobs }) => {
                 slug={job?.slug}
               />
             </SwiperSlide>
-          ))}
-        </Swiper>
+            ))}
+          </Swiper>
+        </div>
       </div>
 
       {/* Grid for Desktop */}

@@ -126,12 +126,12 @@ const Career = async () => {
                 </h1>
               )}
               {hero.subtitle && (
-                <p className="text-white font-manrope-semibold text-lg md:text-xl lg:text-2xl leading-6 md:leading-[24px] lg:leading-[26px] mb-3 md:mb-4 lg:mb-[20px]">
+                <p className="text-white font-manrope-semibold text-lg md:text-xl lg:text-2xl leading-6 md:leading-[24px] lg:leading-[26px] mb-3 md:mb-4 lg:mb-[10px]">
                   {hero.subtitle}
                 </p>
               )}
               {hero.description && (
-                <p className="text-white font-manrope-medium text-sm md:text-base lg:text-[19px] leading-5 md:leading-6 lg:leading-[23px] max-w-full md:max-w-2xl lg:max-w-[1268px]">
+                <p className="text-white font-manrope-medium text-sm md:text-base lg:text-[19px] leading-5 md:leading-6 lg:leading-tight max-w-full md:max-w-2xl lg:max-w-[1268px]">
                   {hero.description}
                 </p>
               )}
@@ -139,7 +139,7 @@ const Career = async () => {
 
             {/* View Job Openings Button */}
             {hero.buttonText && hero.buttonLink && (
-              <div className="mt-8 relative z-10">
+              <div className="mt-10 relative z-10">
                 <AnimatedButton text={hero.buttonText} width='w-52' link={hero.buttonLink} />
               </div>
             )}
@@ -203,14 +203,14 @@ const Career = async () => {
                   </h2>
                 )}
                 {findPlace.tagline && (
-                  <p className="text-[#000F19] font-manrope-semibold text-lg md:text-xl lg:text-2xl leading-6 md:leading-7 lg:leading-[30px] mb-3 md:mb-4 lg:mb-[10px]">
+                  <p className="text-[#000F19] font-manrope-semibold text-lg md:text-xl lg:text-2xl leading-6 md:leading-7 lg:leading-[30px] mb-3 md:mb-4 lg:mb-[5px]">
                     {findPlace.tagline}
                   </p>
                 )}
 
                 <div className="text-[#000F19]/60 font-manrope-normal text-sm md:text-base leading-6 md:leading-7 lg:leading-[27px] w-full lg:w-[85%]">
                   {Array.isArray(findPlace.paragraphs) && findPlace.paragraphs.map((p: any, i: number) => (
-                    <p key={i} className="mb-2 md:mb-3 last:mb-0">{p?.text || ''}</p>
+                    <p key={i} className="last:mb-0">{p?.text || ''}</p>
                   ))}
                 </div>
               </div>
@@ -235,7 +235,7 @@ const Career = async () => {
           {/* Work Here Cards Section */}
           <section className="bg-white">
             <div className="w-full bg-white">
-              <div className="containersection lg:px-12 bg-white">
+              <div className="containersection bg-white">
                 <WorkHereCardsSection cards={workHere.cards} />
               </div>
             </div>
@@ -311,9 +311,9 @@ const Career = async () => {
 
       {/* Job Openings Section */}
       {jobOpeningsSection?.selectedJobs && Array.isArray(jobOpeningsSection.selectedJobs) && jobOpeningsSection.selectedJobs.length > 0 && (
-        <section className="py-12 md:py-16 lg:py-[100px] bg-[#000F19]">
+        <section className="py-12 md:py-16 lg:py-[72px] bg-[#000F19]">
           <div className="containersection px-4 md:px-6 lg:px-12">
-            <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8 md:mb-12 lg:mb-[90px] gap-4 md:gap-0">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8 md:mb10 lg:mb-[40px] gap-4 md:gap-0">
               {jobOpeningsSection?.heading && (
                 <h2 className="text-[#FFFFFF] font-manrope-semibold text-2xl md:text-3xl lg:text-[50px] leading-tight md:leading-[40px] lg:leading-[50px] capitalize">
                   {jobOpeningsSection.heading}
@@ -355,10 +355,10 @@ const Career = async () => {
       {/* Discover the NCG Soundtrack Section */}
       {spotify && (
         <section className="bg-[#488BF3]">
-          <div className="max-w-[1512px] mx-auto px-4 md:px-6 lg:px-[242px] py-8 md:py-12 lg:py-[95px] text-center">
+          <div className="max-w-[1512px] mx-auto px-4 md:px-6 lg:px-[242px] py-8 md:py-12 lg:pb-[95px] lg:pt-[35px] text-center">
             {/* Lottie Animation */}
-            <div className="mb-4 flex justify-center">
-              <LottieAnimation width="w-36 h-24" />
+            <div className="flex justify-center">
+              <LottieAnimation width="w-36 h-24 md:w-48 md:h-32 lg:w-72 lg:h-48" />
             </div>
 
             {spotify.title && (
