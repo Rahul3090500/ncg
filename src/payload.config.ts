@@ -46,6 +46,7 @@ import { CareerSpotifySection } from './globals/CareerSpotifySection'
 import { CareerJobSection } from './globals/CareerJobSection'
 import { JobsSection } from './globals/JobsSection'
 import { PrivacyPolicySection } from './globals/PrivacyPolicySection'
+import { FreeConsultationSection } from './globals/FreeConsultationSection'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -169,6 +170,7 @@ export default buildConfig({
     CareerJobSection,
     JobsSection,
     PrivacyPolicySection,
+    FreeConsultationSection,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

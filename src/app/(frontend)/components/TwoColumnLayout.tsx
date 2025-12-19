@@ -18,6 +18,8 @@ interface TwoColumnLayoutProps {
   children: React.ReactNode
   // Swap button styles (which one is filled vs outlined)
   primaryButton?: 'consultation' | 'contact'
+  // Remove bottom padding on desktop/laptop
+  removeBottomPaddingOnDesktop?: boolean
 }
 
 const TwoColumnLayout = ({
@@ -30,6 +32,7 @@ const TwoColumnLayout = ({
   successDescription = "Your message has been successfully submitted. Our team will get back to you shortly.",
   children,
   primaryButton = 'contact',
+  removeBottomPaddingOnDesktop = false,
 }: TwoColumnLayoutProps) => {
   
   // Button components based on which is primary
@@ -83,7 +86,7 @@ const TwoColumnLayout = ({
       </div>
 
       {/* Right Column - Content Area (60%) */}
-      <div className="w-full bg-[#e6f5ff] flex flex-col h-full lg:h-[100dvh] px-4 md:px-6 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12">
+      <div className={`w-full bg-[#e6f5ff] flex flex-col h-full lg:h-[100dvh] px-4 md:px-6 lg:px-12 xl:px-16 py-8 md:py-10 lg:pt-12 ${removeBottomPaddingOnDesktop ? 'lg:pb-0' : 'lg:pb-12'}`}>
         {/* Header Section */}
         {(rightTitle || rightDescription) && (
           <div className="flex-shrink-0 mb-6 md:mb-8">
@@ -93,7 +96,7 @@ const TwoColumnLayout = ({
               </h2>
             )}
             {rightDescription && (
-              <p className="text-zinc-950 text-base md:text-lg lg:text-xl xl:text-2xl font-manrope-medium mt-2 md:mt-3 lg:mt-1 leading-6 md:leading-7 lg:leading-8">
+              <p className="text-zinc-950 text-base md:text-lg lg:text-lg xl:text-xl font-manrope-medium mt-2 md:mt-3 lg:mt-0 leading-6 md:leading-7 lg:leading-6">
                 {rightDescription}
               </p>
             )}

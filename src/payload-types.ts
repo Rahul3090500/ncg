@@ -126,6 +126,7 @@ export interface Config {
     'career-job-section': CareerJobSection;
     'jobs-section': JobsSection;
     'privacy-policy-section': PrivacyPolicySection;
+    'free-consultation-section': FreeConsultationSection;
   };
   globalsSelect: {
     'hero-section': HeroSectionSelect<false> | HeroSectionSelect<true>;
@@ -155,6 +156,7 @@ export interface Config {
     'career-job-section': CareerJobSectionSelect<false> | CareerJobSectionSelect<true>;
     'jobs-section': JobsSectionSelect<false> | JobsSectionSelect<true>;
     'privacy-policy-section': PrivacyPolicySectionSelect<false> | PrivacyPolicySectionSelect<true>;
+    'free-consultation-section': FreeConsultationSectionSelect<false> | FreeConsultationSectionSelect<true>;
   };
   locale: null;
   user: User & {
@@ -1945,6 +1947,25 @@ export interface PrivacyPolicySection {
   createdAt?: string | null;
 }
 /**
+ * Manage free consultation page content and Calendly URL
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "free-consultation-section".
+ */
+export interface FreeConsultationSection {
+  id: number;
+  leftTitle: string;
+  leftSubtitle: string;
+  rightTitle: string;
+  rightDescription: string;
+  /**
+   * The full Calendly URL for the consultation booking. If not provided, the default URL will be used.
+   */
+  calendlyUrl?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "hero-section_select".
  */
@@ -2470,6 +2491,20 @@ export interface PrivacyPolicySectionSelect<T extends boolean = true> {
               id?: T;
             };
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "free-consultation-section_select".
+ */
+export interface FreeConsultationSectionSelect<T extends boolean = true> {
+  leftTitle?: T;
+  leftSubtitle?: T;
+  rightTitle?: T;
+  rightDescription?: T;
+  calendlyUrl?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

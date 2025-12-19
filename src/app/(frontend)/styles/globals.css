@@ -866,4 +866,20 @@ body {
   animation: fade-in 0.3s ease-out;
 }
 
+/* Calendly Widget Margin Fix */
+.calendly-inline-widget {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.calendly-inline-widget iframe {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Target Calendly's internal container */
+.calendly-inline-widget > div {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
 
