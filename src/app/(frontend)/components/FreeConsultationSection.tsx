@@ -1,7 +1,8 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import TwoColumnLayout from './TwoColumnLayout'
+import { InlineWidget } from "react-calendly";
 
 interface FreeConsultationSectionProps {
   data?: {
@@ -16,6 +17,8 @@ interface FreeConsultationSectionProps {
 const FreeConsultationSection = ({ data }: FreeConsultationSectionProps) => {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isIframeLoaded, setIsIframeLoaded] = useState(false)
+  const [calendarHeight, setCalendarHeight] = useState(700)
+  const containerRef = React.useRef<HTMLDivElement>(null)
 
   // Default Calendly URL - replace with your actual Calendly link
   const defaultCalendlyUrl = 'https://calendly.com/joshua-ekaathedesigncollective/ekaa-the-design-collective-1'
@@ -34,6 +37,34 @@ const FreeConsultationSection = ({ data }: FreeConsultationSectionProps) => {
   const iframeUrl = finalData.calendlyUrl.includes('?') 
     ? `${finalData.calendlyUrl}&hide_gdpr_banner=1&hide_landing_page_details=1&text_color=0f172a&primary_color=488BF3` 
     : `${finalData.calendlyUrl}?hide_gdpr_banner=1&hide_landing_page_details=1&text_color=0f172a&primary_color=488BF3`
+
+  // Calculate responsive calendar height
+  useEffect(() => {
+    const calculateHeight = () => {
+      if (containerRef.current) {
+        const container = containerRef.current
+        const rect = container.getBoundingClientRect()
+        const availableHeight = rect.height
+        
+        // Use available height, with responsive minimums
+        const minHeight = window.innerWidth < 768 ? 500 : window.innerWidth < 1024 ? 600 : 650
+        const calculatedHeight = Math.max(availableHeight, minHeight)
+        setCalendarHeight(calculatedHeight)
+      }
+    }
+
+    // Calculate on mount and resize
+    calculateHeight()
+    window.addEventListener('resize', calculateHeight)
+    
+    // Recalculate after a short delay to ensure layout is complete
+    const timeoutId = setTimeout(calculateHeight, 100)
+
+    return () => {
+      window.removeEventListener('resize', calculateHeight)
+      clearTimeout(timeoutId)
+    }
+  }, [])
 
   // Listen for Calendly events
   useEffect(() => {
@@ -61,24 +92,14 @@ const FreeConsultationSection = ({ data }: FreeConsultationSectionProps) => {
       primaryButton="consultation"
     >
       {/* Calendly Iframe */}
-      <div className="w-full h-full overflow-hidden relative">
-        {/* Loading State */}
-        {!isIframeLoaded && (
-          <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-[#e6f5ff] z-10">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-12 h-12 border-4 border-[#488BF3] border-t-transparent rounded-full animate-spin" />
-              <p className="text-slate-600 font-manrope-medium">Loading calendar...</p>
-            </div>
-          </div>
-        )}
-        
-        <iframe
-          src={iframeUrl}
-          width="auto"
-          height="100%"
-          frameBorder="0"
-          title="Schedule a consultation"
-          onLoad={() => setIsIframeLoaded(true)}
+      <div ref={containerRef} className="w-full h-full overflow-hidden relative">
+        <InlineWidget
+          url={iframeUrl}
+          styles={{
+            height: `${calendarHeight}px`,
+            width: "100%",
+            borderRadius: "8px",
+          }}
         />
       </div>
     </TwoColumnLayout>
