@@ -96,10 +96,10 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
                 {service.title?.toUpperCase()} / {subService.title?.toUpperCase()}
               </p>
               <h1 className="text-[#000F19] font-manrope-bold text-2xl md:text-3xl lg:text-5xl leading-tight md:leading-[40px] lg:leading-[60px] w-full md:w-[90%] lg:w-[80%] mb-3 ml-0 md:ml-8 lg:ml-36">
-                {subService.title}
+                {subService.heroTitle}
               </h1>
               <p className="text-[#000F19] text-base md:text-lg lg:text-xl font-manrope-normal leading-6 md:leading-7 lg:leading-8 w-full md:w-[90%] lg:w-[80%] mb-6 md:mb-8 lg:mb-[39px] ml-0 md:ml-8 lg:ml-36">
-                {subService.description}
+                {subService.heroSubtitle}
               </p>
               <div className="ml-0 md:ml-8 lg:ml-36 mt-4 md:mt-6">
                 <Link href="/free-consultation">
@@ -163,10 +163,10 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
           <div className="hidden lg:block relative">
             <div className="containersection px-24 mx-auto mr-0 relative z-10">
               <div className="pt-20 pb-40 w-[619px]">
-                <h2 className="text-[#000F19] font-manrope-bold text-5xl leading-[60px] mb-[30px]">
+                <h2 className="text-[#000F19] font-manrope-bold text-5xl leading-[53px] mb-[20px]">
                   {importanceTitle}
                 </h2>
-                <p className="text-[#000F19]/60 text-xl font-manrope-normal leading-8">
+                <p className="text-[#000F19]/60 text-xl font-manrope-normal leading-6">
                   {importanceDescription}
                 </p>
               </div>

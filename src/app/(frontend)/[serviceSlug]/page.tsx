@@ -162,11 +162,11 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
       {/* CTA Section */}
       <section className="bg-[#488BF3] flex items-center py-8 md:py-12 lg:py-11">
         <div className="containersection px-4 md:px-6 lg:px-40 w-full">
-          <h2 className="text-white font-manrope-semibold text-2xl md:text-3xl lg:text-5xl leading-tight md:leading-9 lg:leading-10 text-left mb-3 md:mb-3 lg:mb-[9px]">
-            {ctaTitle}
+        <h2 className="text-white font-manrope-semibold text-2xl md:text-3xl lg:text-3xl leading-tight md:leading-[40px] lg:leading-[38px] mb-2 md:mb-3 lg:mb-1">
+        {ctaTitle}
           </h2>
-          <p className="text-white font-manrope-normal text-base md:text-lg lg:text-2xl leading-6 md:leading-7 lg:leading-8 text-left mt-4 md:mt-5 lg:mt-6 mb-6 md:mb-8 lg:mb-[56px] max-w-full lg:max-w-[1108px]">
-            {ctaDescription}
+          <p className="text-white/90 text-base md:text-lg lg:text-xl mb-6 md:mb-8 lg:mb-[67px] font-manrope-normal leading-6 md:leading-7 lg:leading-8">
+          {ctaDescription}
           </p>
           <AnimatedButton text="Contact Us" width='w-32 md:w-36' link='/contact' bgColor='#fff' textColor='#000F19' hoverBgColor='#fff' hoverTextColor='#000F19' />
         </div>
@@ -245,7 +245,7 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
           />
           {caseStudiesIntro && (
             <section className="pt-8 md:pt-12 lg:pt-[51px] pb-6 md:pb-8 lg:pb-[35px] bg-white">
-              <div className="containersection px-4 md:px-6 lg:px-52">
+              <div className="containersection px-4 md:px-6 lg:px-8">
                 <p className="text-[#000F19] font-manrope-medium text-base md:text-lg lg:text-xl leading-6 md:leading-7 lg:leading-[30px] text-left">
                   {caseStudiesIntro}
                 </p>
