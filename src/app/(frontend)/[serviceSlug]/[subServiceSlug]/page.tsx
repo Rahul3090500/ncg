@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { getSubServiceBySlug, getServiceBySlug } from '@/lib/payload'
 import AnimatedButton from '../../components/AnimatedButton'
-import BenefitsCarousel from '../../components/BenefitsCarousel'
+import BenefitsSectionClient from '../../components/BenefitsSectionClient'
 import dynamic from 'next/dynamic'
 
 // Dynamically import heavy components for better code splitting
@@ -14,6 +14,11 @@ const TestimonialsSection = dynamic(() => import('@/app/(frontend)/components/Te
 const ContactSection = dynamic(() => import('@/app/(frontend)/components/ContactSection'), {
   loading: () => <div className="h-[500px] w-full" />,
 })
+
+const HeroParallaxImage = dynamic(() => import('@/app/(frontend)/components/HeroParallaxImage'), {
+  loading: () => <div className="h-64 md:h-80 lg:h-[500px] w-full bg-gradient-to-r from-[#E3F2FD] to-[#F3E5F5]" />,
+})
+
 import SuccessStoriesParallax from '@/app/(frontend)/components/SuccessStoriesParallax'
 import ChallengesSectionClient from '@/app/(frontend)/components/ChallengesSectionClient'
 import IGAServicesSection from '@/app/(frontend)/components/IGAServicesSection'
@@ -58,8 +63,8 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
 
   const challengesTitle = subService.challengesTitle
   const challengesDescription = subService.challengesDescription
-  const challengesButtonText = subService.challengesButtonText || 'Start Assessment'
-  const challengesButtonLink = subService.challengesButtonLink || '#'
+  const challengesButtonText = subService.challengesButtonText 
+  const challengesButtonLink = subService.challengesButtonLink
   const challenges = Array.isArray(subService.challenges) ? subService.challenges : []
 
   const benefitsTitle = subService.benefitsTitle
@@ -117,21 +122,12 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
             </div>
           </div>
 
-          {/* Bottom image/gradient section */}
-          <div className="relative w-full h-48 md:h-64 lg:h-96">
-            {heroImage?.url ? (
-              <div className="absolute inset-0">
-                <img src={heroImage.url} alt={heroTitle} className="w-full h-full object-cover" />
-              </div>
-            ) : (
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: 'linear-gradient(to right, #E3F2FD 0%, #F3E5F5 100%)',
-                }}
-              />
-            )}
-          </div>
+          {/* Bottom image/gradient section with parallax */}
+          <HeroParallaxImage
+            imageUrl={heroImage?.url}
+            alt={heroTitle}
+            gradientFallback={true}
+          />
         </div>
       </section>
 
@@ -163,7 +159,7 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
           <div className="hidden lg:block relative">
             <div className="containersection px-24 mx-auto mr-0 relative z-10">
               <div className="pt-20 pb-40 w-[619px]">
-                <h2 className="text-[#000F19] font-manrope-bold text-5xl leading-[53px] mb-[20px]">
+                <h2 className="text-[#000F19] font-manrope-semibold text-4xl leading-[40px] mb-[20px]">
                   {importanceTitle}
                 </h2>
                 <p className="text-[#000F19]/60 text-xl font-manrope-normal leading-6">
@@ -240,40 +236,14 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
 
       {/* Benefits Section */}
       {benefitsTitle && advantages.length > 0 && (
-        <section className="pb-8 md:pb-12 lg:pb-[65px] pt-8 md:pt-12 lg:pt-[83px] bg-[#F4F7FF]">
-          <div className="mx-auto overflow-visible!">
-            <div className="text-left mb-6 md:mb-8 lg:mb-12 containersection px-4 md:px-6 lg:px-10">
-              <h2 className="text-[#000F19] font-manrope-semibold text-2xl md:text-3xl lg:text-5xl leading-tight md:leading-[45px] lg:leading-[60px] mb-3 md:mb-4">
-                {benefitsTitle}
-              </h2>
-              <p className="text-[#000F19] text-base md:text-lg lg:text-xl font-manrope-semibold leading-6 md:leading-7 ml-0 w-full md:w-[90%] lg:w-[1009px]">
-                {benefitsDescription}
-              </p>
-            </div>
-            <div className="mt-6 md:mt-8 lg:mt-12">
-              <BenefitsCarousel benefits={advantages} />
-            </div>
-            {benefitsConclusion && (
-              <div className="flex flex-col items-center justify-center mt-6 md:mt-8 lg:mt-[44px] px-4 md:px-6 lg:px-0">
-                <p className="text-[#000F19] font-manrope-semibold text-base md:text-lg lg:text-xl leading-6 md:leading-7 max-w-full md:max-w-[90%] lg:max-w-[1088px] text-center mb-4 md:mb-6 lg:mb-[25px]">
-                  {benefitsConclusion}
-                </p>
-                {benefitsButtonText && (
-                  <div className="flex justify-center">
-                    <AnimatedButton
-                      text={benefitsButtonText}
-                      link={benefitsButtonLink}
-                      bgColor="#488BF3"
-                      hoverBgColor="#3a7be0"
-                      width="w-35"
-                      className="px-6 md:px-8"
-                    />
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </section>
+        <BenefitsSectionClient
+          benefitsTitle={benefitsTitle}
+          benefitsDescription={benefitsDescription}
+          benefitsConclusion={benefitsConclusion}
+          benefitsButtonText={benefitsButtonText}
+          benefitsButtonLink={benefitsButtonLink}
+          advantages={advantages}
+        />
       )}
 
       {/* Core Features Section */}
@@ -326,15 +296,15 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
       {igaServicesTitle && igaServices.length > 0 && (
         <section className="pt-8 md:pt-12 lg:pt-24 bg-white">
           <div className="containersection px-0 md:px-0  mx-auto">
-            <div className="text-center mb-6 md:mb-8 lg:mb-12">
-              <h2 className="text-[#000F19] font-manrope-semibold text-2xl md:text-3xl lg:text-5xl leading-tight md:leading-[45px] lg:leading-[60px] mb-3 md:mb-4">
+            <div className="text-center mb-6 md:mb-8 lg:mb-8">
+              <h2 className="text-[#000F19] font-manrope-semibold text-2xl md:text-3xl lg:text-5xl leading-tight md:leading-[45px] lg:leading-[60px] mb-2 md:mb-1">
                 {igaServicesTitle}
               </h2>
-              <p className="text-[#000F19] text-base md:text-lg lg:text-xl font-manrope-normal leading-6 md:leading-7 lg:leading-8 max-w-full md:max-w-3xl lg:max-w-4xl mx-auto px-4 md:px-0">
+              <p className="text-[#000F19] text-base md:text-lg lg:text-xl font-manrope-normal leading-6 md:leading-7 lg:leading-6 max-w-full md:max-w-3xl lg:max-w-4xl mx-auto px-4 md:px-0">
                 {igaServicesDescription}
               </p>
             </div>
-            <div className="mt-6 md:mt-8 lg:mt-[55px]">
+            <div className="mt-6 md:mt-8 lg:mt-[20px]">
               <IGAServicesSection igaServices={igaServices} />
             </div>
           </div>

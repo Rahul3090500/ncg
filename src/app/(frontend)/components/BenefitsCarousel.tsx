@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useCallback } from 'react'
 
 interface Benefit {
     title: string
@@ -12,14 +12,68 @@ interface Benefit {
 
 interface BenefitsCarouselProps {
     benefits: Benefit[]
+    onScrollRef?: (scrollFunctions: { scrollLeft: () => void; scrollRight: () => void }) => void
 }
 
-const BenefitsCarousel: React.FC<BenefitsCarouselProps> = ({ benefits }) => {
+const BenefitsCarousel: React.FC<BenefitsCarouselProps> = ({ benefits, onScrollRef }) => {
     const scrollContainerRef = useRef<HTMLDivElement>(null)
     const [isDragging, setIsDragging] = useState(false)
     const [startX, setStartX] = useState(0)
     const [scrollLeft, setScrollLeft] = useState(0)
     const [currentIndex, setCurrentIndex] = useState(0)
+
+    // Scroll functions
+    const scrollLeftFunc = useCallback(() => {
+        if (!scrollContainerRef.current) return
+        const container = scrollContainerRef.current
+        const cards = container.querySelectorAll('.benefit-card')
+        if (cards.length === 0) return
+
+        const cardWidth = cards[0].clientWidth || 0
+        const gap = window.innerWidth >= 768 ? 24 : 16
+        const scrollAmount = cardWidth + gap
+        
+        container.scrollBy({
+            left: -scrollAmount,
+            behavior: 'smooth'
+        })
+    }, [])
+
+    const scrollRightFunc = useCallback(() => {
+        if (!scrollContainerRef.current) return
+        const container = scrollContainerRef.current
+        const cards = container.querySelectorAll('.benefit-card')
+        if (cards.length === 0) return
+
+        const cardWidth = cards[0].clientWidth || 0
+        const gap = window.innerWidth >= 768 ? 24 : 16
+        const scrollAmount = cardWidth + gap
+        
+        container.scrollBy({
+            left: scrollAmount,
+            behavior: 'smooth'
+        })
+    }, [])
+
+    // Expose scroll functions to parent - use ref and flag to avoid infinite loops
+    const onScrollRefRef = React.useRef(onScrollRef)
+    const hasCalledRef = React.useRef(false)
+    
+    React.useEffect(() => {
+        onScrollRefRef.current = onScrollRef
+    }, [onScrollRef])
+
+    // Only call once when functions are ready
+    React.useEffect(() => {
+        if (onScrollRefRef.current && !hasCalledRef.current) {
+            hasCalledRef.current = true
+            onScrollRefRef.current({
+                scrollLeft: scrollLeftFunc,
+                scrollRight: scrollRightFunc
+            })
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []) // Only run once on mount
 
     const handleMouseDown = (e: React.MouseEvent) => {
         if (!scrollContainerRef.current) return
@@ -117,7 +171,7 @@ const BenefitsCarousel: React.FC<BenefitsCarouselProps> = ({ benefits }) => {
         <div className="relative containersection px-4 md:px-6 lg:px-10" style={{ overflow: 'visible' }}>
             {/* Cards Container - breaks out to full width end-to-end */}
             <div
-                className="scrollbar-hide cursor-grab active:cursor-grabbing select-none"
+                className="scrollbar-hide select-none"
                 ref={scrollContainerRef}
                 onMouseDown={handleMouseDown}
                 onMouseLeave={handleMouseLeave}
@@ -140,9 +194,11 @@ const BenefitsCarousel: React.FC<BenefitsCarouselProps> = ({ benefits }) => {
                 }}
             >
                 <div className="flex gap-4 md:gap-6" style={{ overflow: 'visible' }}>
-                    {benefits.map((benefit, index) => (
+                    {benefits.map((benefit, index) => {
+                        const isLastCard = index === benefits.length - 1
+                        return (
                         <React.Fragment key={index}>
-                            <div className="benefit-card flex flex-col shrink-0 w-[280px] md:w-[320px] lg:w-[344px]">
+                            <div className={`benefit-card flex flex-col shrink-0 w-[280px] md:w-[320px] lg:w-[344px] ${isLastCard ? 'pr-[25px] lg:pr-[50px]' : ''}`}>
                                 <div className="flex-1 flex flex-col">
                                     <h3 className="text-[#000F19] font-manrope-semibold text-xl md:text-2xl leading-7 md:leading-8 mb-2 md:mb-1">
                                         {benefit.title}
@@ -164,7 +220,8 @@ const BenefitsCarousel: React.FC<BenefitsCarouselProps> = ({ benefits }) => {
                             </div>
                             <div className="w-0 h-96 outline outline-offset-[-0.20px] outline-black/10 shrink-0 hidden lg:block" />
                         </React.Fragment>
-                    ))}
+                        )
+                    })}
                 </div>
             </div>
 

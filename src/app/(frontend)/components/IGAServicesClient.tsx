@@ -179,7 +179,7 @@ const IGAServicesClient: React.FC<IGAServicesClientProps> = ({ igaServices }) =>
         {igaServices.map((igaService: IGAService, index: number) => (
           <div
             key={index}
-            className="flex-1 w-full h-auto bg-white border-[0.5px] border-[#DDE9F1] flex flex-col overflow-hidden pb-8 md:pb-12 lg:pb-24"
+            className="flex-1 w-full h-auto bg-white border-[0.5px] border-[#DDE9F1] flex flex-col overflow-hidden pb-8 md:pb-12 lg:pb-16"
           >
             {/* TOP IMAGE CONTAINER */}
             <div className="relative w-full overflow-hidden">

@@ -60,7 +60,7 @@ const FooterMobile: React.FC<FooterMobileProps> = ({
   bottomBar,
 }) => {
   return (
-    <footer className="bg-[#000F19] text-white pt-8 md:pt-10 lg:hidden">
+    <footer className="bg-[#000F19] text-white z-[99999] relative pt-8 md:pt-10 lg:hidden">
       <div className="containersection px-4 md:px-6">
         {/* Mobile: Single Column, Tablet: Two Columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-6 mb-8 md:mb-10">

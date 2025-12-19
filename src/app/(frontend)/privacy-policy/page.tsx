@@ -17,7 +17,7 @@ const parseFormattedText = (text: string) => {
 
   return lines.map((line, lineIndex) => {
     if (!line.trim()) {
-      return <br key={`line-${lineIndex}`} />
+      return <p key={`line-${lineIndex}`} />
     }
 
     const lineParts: React.ReactNode[] = []
@@ -59,7 +59,7 @@ const parseFormattedText = (text: string) => {
     }
 
     return (
-      <p key={`line-${lineIndex}`} className=" text-sm sm:text-base lg:text-[19px] leading-5 sm:leading-6 lg:leading-[28px] text-[#000F19] mt-3 sm:mt-4">
+      <p key={`line-${lineIndex}`} className=" text-sm sm:text-base lg:text-[19px] leading-5 sm:leading-6 lg:leading-[25px] text-[#000F19] mt-2 sm:mt-2">
         {lineParts.length > 0 ? lineParts : line}
       </p>
     )
@@ -120,8 +120,8 @@ const PrivacyPolicyPage = async () => {
         </div>
 
         {/* Content */}
-        <div className="relative z-10  flex h-full items-center container flex-col justify-center px-0 sm:px-8 lg:px-48 mx-auto">
-          <div className="text-center px-4 pt-20 sm:pt-24 lg:pt-28 pb-8 sm:pb-12 lg:pb-16">
+        <div className="relative z-10  flex h-full items-center container flex-col justify-center px-0 sm:px-8 lg:px-16 mx-auto">
+          <div className="text-center px-4 pt-20 sm:pt-24 lg:pt-28 pb-8 sm:pb-12 lg:pb-10">
             <h1 className="font-diagrammSemibold text-3xl sm:text-4xl md:text-5xl lg:text-[70px] leading-tight sm:leading-[50px] lg:leading-[75px] text-white mb-4">
               {hero?.title || 'Privacy Policy'}
             </h1>
@@ -129,7 +129,7 @@ const PrivacyPolicyPage = async () => {
               Effective Date: {hero?.effectiveDate || '25 August 2025'}
             </p>
           </div>
-          <div className="bg-white mx-auto pb-40">
+          <div className="bg-white mx-auto pb-40 lg:px-10 md:px-10 md:mb-16 lg:mb-40">
             {/* White Content Container */}
             <div className="px-4 sm:px-8 lg:px-16 pt-8 sm:pt-12 lg:pt-16">
               {/* Introduction */}
@@ -147,11 +147,11 @@ const PrivacyPolicyPage = async () => {
             <div className="mx-auto w-full">
               <div className="px-4 sm:px-8 lg:px-16">
                 {/* Policy Sections */}
-                <div className="space-y-6 sm:space-y-8 lg:space-y-10">
+                <div className="space-y-6 sm:space-y-6 lg:space-y-8">
                   {/* Privacy Policy Sections */}
                   {privacySections.map((section: any, index: number) => (
                     <section key={index}>
-                      <h2 className="Semibold text-xl sm:text-2xl lg:text-[26px] leading-6 sm:leading-7 lg:leading-[32px] text-[#000F19] mb-3 sm:mb-4">
+                      <h2 className="Semibold text-xl sm:text-2xl lg:text-[26px] leading-6 sm:leading-7 lg:leading-[32px] text-[#000F19] mb-2 sm:mb-2">
                         {section?.title || ''}
                       </h2>
                       <div className="pl-4 sm:pl-6 lg:pl-8">

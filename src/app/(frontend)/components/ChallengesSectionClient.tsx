@@ -44,7 +44,7 @@ const ChallengesSectionClient: React.FC<ChallengesSectionClientProps> = ({
           <p className="text-[#000F19] text-base md:text-lg lg:text-xl leading-6 md:leading-7 lg:leading-8 font-manrope-normal ml-0 mb-4 md:mb-6 lg:mb-[23px] w-full md:w-[90%] lg:w-[94%]">
             {challengesDescription}
           </p>
-          {challengesButtonText && (
+          {challengesButtonText && challengesButtonLink && (
             <AnimatedButton
               text={challengesButtonText}
               link={challengesButtonLink || '#'}
