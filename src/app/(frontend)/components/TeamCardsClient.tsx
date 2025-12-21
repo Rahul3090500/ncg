@@ -94,10 +94,10 @@ const TeamCardsClient: React.FC<TeamCardsClientProps> = ({ team }) => {
             </div>
             <div className="py-6">
               {member?.name && (
-                <h3 className="text-[#000F19] font-manrope-semibold text-xl mb-2">{member.name}</h3>
+                <h3 className="text-[#000F19] font-manrope-semibold text-xl mb-1">{member.name}</h3>
               )}
               {member?.role && (
-                <p className="text-[#000F19] text-xs uppercase font-manrope-bold leading-4 tracking-wide mb-4 border-b border-[#000F19] pb-4">{member.role}</p>
+                <p className="text-[#000F19] text-xs uppercase font-manrope-bold leading-4 tracking-wide mb-2 border-b border-[#000F19] pb-2">{member.role}</p>
               )}
               {member?.bio && (
                 <p className="text-slate-950/80 font-manrope-normal text-sm leading-relaxed">{member.bio}</p>

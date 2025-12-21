@@ -97,7 +97,7 @@ const ValuesSection: React.FC<ValuesSectionProps> = ({ values }) => {
               )}
             </div>
             {v?.title && (
-              <h3 className="text-[#000F19] text-lg md:text-xl font-manrope-semibold leading-6 md:leading-7 mb-3 md:mb-4">{v.title}</h3>
+              <h3 className="text-[#000F19] text-lg md:text-xl font-manrope-semibold leading-6 md:leading-7 mb-2">{v.title}</h3>
             )}
             {v?.description && (
               <p className="text-[#000F19] font-manrope-normal text-sm md:text-base leading-5">{v.description}</p>

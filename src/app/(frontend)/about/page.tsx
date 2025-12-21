@@ -243,7 +243,7 @@ const About = async () => {
       {team.length > 0 && (
         <section className="py-12 md:py-16 lg:py-20 bg-white">
           <div className="containersection px-4 md:px-6 lg:px-16">
-            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-8 md:mb-12 lg:mb-16 gap-4 md:gap-6">
+            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-8 md:mb-12 lg:mb-10 gap-4 md:gap-6">
               <div>
                 {teamTitle && (
                   <h2 className="text-[#000F19] font-manrope-semibold text-2xl md:text-3xl lg:text-5xl leading-tight">{teamTitle}</h2>
