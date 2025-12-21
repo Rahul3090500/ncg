@@ -4,6 +4,7 @@ import { getAboutPageData } from '@/lib/payload'
 import AnimatedButton from '../components/AnimatedButton'
 import AnimatedCounter from '../components/AnimatedCounter'
 import TeamCardsSection from '../components/TeamCardsSection'
+import ValuesSectionWrapper from '../components/ValuesSectionWrapper'
 
 const VideoHero = dynamicImport(() => import('../components/VideoHero'), {
   ssr: true,
@@ -147,19 +148,19 @@ const About = async () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-8 md:gap-10 lg:gap-12">
               <div className="relative order-1">
                 {aboutUsImage && (
-                  <img src={aboutUsImage} alt="NCG Team" className="w-full max-w-full md:max-w-[500px] lg:w-[623px] h-auto md:h-[400px] lg:h-[548px] object-cover mx-auto lg:mx-0" />
+                  <img src={aboutUsImage} alt="NCG Team" className="w-full max-w-full md:max-w-full lg:w-fullh-auto md:h-[400px] lg:h-[548px] object-cover mx-auto lg:mx-0" />
                 )}
               </div>
-              <div className="space-y-6 md:space-y-7 lg:space-y-8 order-2">
+              <div className="space-y-2 md:space-y-3 lg:space-y-3 order-2">
                 <div>
                   {aboutUsLabel && (
-                    <h3 className="text-[#000F19] text-xs md:text-sm uppercase font-manrope-bold leading-4 tracking-[2px] md:tracking-[3px] lg:tracking-[3.80px] mb-3 md:mb-4">{aboutUsLabel}</h3>
+                    <h3 className="text-[#000F19] text-xs md:text-sm uppercase font-manrope-bold leading-3 tracking-[2px] md:tracking-[3px] lg:tracking-[3.80px] mb-3 md:mb-4">{aboutUsLabel}</h3>
                   )}
                   {aboutUsHeading && (
-                    <h2 className="text-[#000F19] text-2xl md:text-3xl lg:text-4xl leading-tight md:leading-[40px] lg:leading-[50px] mb-4 md:mb-5 lg:mb-6 font-manrope-semibold">{aboutUsHeading}</h2>
+                    <h2 className="text-[#000F19] text-2xl md:text-3xl lg:text-4xl leading-tight md:leading-[40px] lg:leading-[50px] mb-4 md:mb-5 lg:mb-0 font-manrope-semibold">{aboutUsHeading}</h2>
                   )}
                 </div>
-                <div className="space-y-4 md:space-y-5">
+                <div className="space-y-0 md:space-y-0 lg:space-y-0">
                   {aboutUsParas.map((p: any, i: number) => (
                     <p key={i} className="text-slate-950/60 text-sm md:text-base font-manrope-light leading-6 md:leading-7">{p?.text || ''}</p>
                   ))}
@@ -171,7 +172,7 @@ const About = async () => {
                   hoverBgColor="#488BF3"
                   textColor="#fff"
                   hoverTextColor="#fff"
-                  className="w-[150px]! rounded-[10px]!"
+                  className="w-[150px]! rounded-[10px]! mt-[40px]"
                 />
               </div>
             </div>
@@ -182,22 +183,23 @@ const About = async () => {
       {stats.length > 0 && (
         <section className="py-16 bg-white">
           <div className="containersection px-[15px] md:px-[15px] lg:px-9">
-          <div className="grid grid-cols-2 lg:flex lg:flex-row gap-y-[39px] gap-x-[23px] md:gap-x-[84px] md:gap-y-[68px] justify-center relative">
-          {stats.slice(0, 4).map((s: any, i: number) => (
+            <div className="grid grid-cols-2 lg:flex lg:flex-row gap-y-[39px] gap-x-[23px] md:gap-x-[84px] md:gap-y-[68px] justify-center relative">
+              {stats.slice(0, 4).map((s: any, i: number) => (
                 <React.Fragment key={`stat-${i}`}>
                   <div className="flex-1 w-full text-left">
-                  <AnimatedCounter
+                    <AnimatedCounter
                       value={s?.value || '0'}
                       duration={2000}
                       className="text-[#488BF3] font-manrope-semibold text-5xl md:text-7xl lg:text-[90px] leading-tight md:leading-[50px] lg:leading-[90px] mb-2 md:mb-3 lg:mb-[14px]"
                     />
-                    <p className="text-[#000F19] font-manrope-normal text-xl leading-tight">{s?.label || ''}</p>
-                  </div>
+                    <p className="text-[#000F19] font-manrope-normal text-base md:text-xl lg:text-[21px] leading-5 md:leading-6 lg:leading-[27px]">
+                      {s?.label || ''}
+                    </p>                  </div>
                   {i < 3 && <div className="hidden lg:block w-[1px] h-[185px] bg-black/30 self-center"></div>}
                 </React.Fragment>
               ))}
-               <div className="lg:hidden absolute left-1/2 top-0 h-[calc(50%-19.5px)] w-[1px] bg-black/30 transform -translate-x-1/2"></div>
-               <div className="lg:hidden absolute left-1/2 bottom-0 h-[calc(50%-19.5px)] w-[1px] bg-black/30 transform -translate-x-1/2"></div>
+              <div className="lg:hidden absolute left-1/2 top-0 h-[calc(50%-19.5px)] w-[1px] bg-black/30 transform -translate-x-1/2"></div>
+              <div className="lg:hidden absolute left-1/2 bottom-0 h-[calc(50%-19.5px)] w-[1px] bg-black/30 transform -translate-x-1/2"></div>
             </div>
           </div>
         </section>
@@ -227,29 +229,13 @@ const About = async () => {
           <div className="containersection px-4 md:px-6">
             <div className="text-center mb-8 md:mb-12 lg:mb-16">
               {valuesTitle && (
-                <h2 className="text-[#000F19] text-2xl md:text-3xl lg:text-5xl font-manrope-semibold leading-tight md:leading-[40px] lg:leading-[50px] mb-3 md:mb-4">{valuesTitle}</h2>
+                <h2 className="text-[#000F19] text-3xl md:text-4xl lg:text-5xl font-manrope-semibold leading-tight md:leading-[40px] lg:leading-[50px] mb-0 md:mb-4">{valuesTitle}</h2>
               )}
               {valuesSubtitle && (
-                <p className="text-[#000F19] text-base md:text-xl lg:text-2xl leading-6 md:leading-7 font-manrope-medium">{valuesSubtitle}</p>
+                <p className="text-[#000F19] text-base md:text-lg lg:text-xl leading-6 md:leading-7 font-manrope-medium">{valuesSubtitle}</p>
               )}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
-              {values.slice(0, 4).map((v: any, i: number) => (
-                <div key={`value-${i}`} className="bg-white rounded-[5px] p-4 md:p-6 lg:p-8">
-                  <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-lg flex items-center justify-center mb-6 md:mb-8 lg:mb-10">
-                    {v?.icon?.url && (
-                      <img src={v.icon.url} alt={v?.title || ''} className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-lg object-contain" />
-                    )}
-                  </div>
-                  {v?.title && (
-                    <h3 className="text-[#000F19] text-lg md:text-xl font-manrope-semibold leading-6 md:leading-7 mb-3 md:mb-4">{v.title}</h3>
-                  )}
-                  {v?.description && (
-                    <p className="text-[#000F19] font-manrope-normal text-sm md:text-base leading-5">{v.description}</p>
-                  )}
-                </div>
-              ))}
-            </div>
+            <ValuesSectionWrapper values={values.slice(0, 4)} />
           </div>
         </section>
       )}
@@ -293,17 +279,17 @@ const About = async () => {
           )}
           <div className="relative z-10 containersection px-4 md:px-6 lg:px-20">
             {ctaTitle && (
-              <h2 className="text-white font-manrope-semibold text-3xl md:text-4xl lg:text-7xl leading-tight md:leading-[50px] lg:leading-[80px] mb-4 md:mb-5 lg:mb-6 w-full lg:w-[60%]">{ctaTitle}</h2>
+              <h2 className="text-white font-manrope-semibold text-3xl md:text-4xl lg:text-6xl leading-tight md:leading-[50px] lg:leading-[70px] mb-4 md:mb-5 lg:mb-6 w-full lg:w-[95%]">{ctaTitle}</h2>
             )}
             {ctaDesc && (
-              <p className="text-white font-manrope-normal text-base md:text-lg lg:text-xl leading-6 md:leading-7 lg:leading-8 mb-6 md:mb-8 lg:mb-10 max-w-full lg:max-w-4xl">{ctaDesc}</p>
+              <p className="text-white font-manrope-normal text-base md:text-lg lg:text-xl leading-6 md:leading-7 lg:leading-8 mb-6 md:mb-8 lg:mb-10 max-w-full lg:max-w-[90%]">{ctaDesc}</p>
             )}
             {ctaLink && ctaText && (
               <div className="flex">
                 <AnimatedButton
                   link="/contact"
                   text="Contact Us"
-                  bgColor="#488BF3" 
+                  bgColor="#488BF3"
                   hoverBgColor="#000F19"
                   textColor="#fff"
                   hoverTextColor="#fff"
