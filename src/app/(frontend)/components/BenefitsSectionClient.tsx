@@ -84,25 +84,27 @@ const BenefitsSectionClient: React.FC<BenefitsSectionClientProps> = ({
         <div className="mt-6 md:mt-8 lg:mt-12">
           <BenefitsCarousel benefits={advantages} onScrollRef={handleScrollRef} />
         </div>
-        {benefitsConclusion && (
-          <div className="flex flex-col items-center justify-center mt-6 md:mt-8 lg:mt-[44px] px-4 md:px-6 lg:px-0">
+        <div className="flex flex-col items-center justify-center mt-6 md:mt-8 lg:mt-[44px] px-4 md:px-6 lg:px-0">
+          {benefitsConclusion && (
             <p className="text-[#000F19] font-manrope-semibold text-base md:text-lg lg:text-xl leading-6 md:leading-7 max-w-full md:max-w-[90%] lg:max-w-[1088px] text-center mb-4 md:mb-6 lg:mb-[25px]">
               {benefitsConclusion}
             </p>
-            {benefitsButtonText && (
-              <div className="flex justify-center">
-                <AnimatedButton
-                  text={benefitsButtonText}
-                  link={benefitsButtonLink || '#'}
-                  bgColor="#488BF3"
-                  hoverBgColor="#3a7be0"
-                  width="w-35"
-                  className="px-6 md:px-8"
-                />
-              </div>
-            )}
-          </div>
-        )}
+          )}
+          
+          {benefitsButtonText && (
+            <div className="flex justify-center">
+              <AnimatedButton
+                text={benefitsButtonText}
+                link={benefitsButtonLink || '#'}
+                bgColor="#488BF3"
+                hoverBgColor="#3a7be0"
+                width="w-35"
+                className="px-6 md:px-8"
+              />
+            </div>
+          )}
+        </div>
+
       </div>
     </section>
   )

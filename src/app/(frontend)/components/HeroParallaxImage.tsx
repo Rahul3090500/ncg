@@ -35,7 +35,7 @@ const HeroParallaxImage: React.FC<HeroParallaxImageProps> = ({
         const sectionTop = rect.top
 
         // Calculate parallax offset
-        const parallaxOffset = sectionTop * 0.5
+        const parallaxOffset = sectionTop * 0.3
 
         setParallaxData({
           scrollY: parallaxOffset,

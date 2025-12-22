@@ -27,3 +27,5 @@ const ValuesSectionWrapper: React.FC<ValuesSectionWrapperProps> = ({ values }) =
 }
 
 export default ValuesSectionWrapper
+
+

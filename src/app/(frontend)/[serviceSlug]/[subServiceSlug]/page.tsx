@@ -158,7 +158,7 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
           {/* Desktop: Side-by-side Layout */}
           <div className="hidden lg:block relative">
             <div className="containersection px-24 mx-auto mr-0 relative z-10">
-              <div className="pt-20 pb-40 w-[619px]">
+              <div className="pt-20 pb-40 w-[689px]">
                 <h2 className="text-[#000F19] font-manrope-semibold text-4xl leading-[40px] mb-[20px]">
                   {importanceTitle}
                 </h2>
@@ -168,7 +168,7 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
               </div>
             </div>
             {importanceImage?.url && (
-              <div className="absolute right-0 top-0 bottom-0 w-[50vw] min-w-[400px]">
+              <div className="absolute right-0 top-0 bottom-0 w-[40vw] min-w-[400px]">
                 <img
                   src={importanceImage.url}
                   alt={importanceTitle}
