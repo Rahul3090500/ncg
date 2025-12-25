@@ -624,6 +624,17 @@ export const SubServices: CollectionConfig = {
         description: 'Background image for success stories section (mobile and tablet)',
       },
     },
+    {
+      name: 'successStoriesBackgroundOpacity',
+      type: 'number',
+      required: false,
+      admin: {
+        description: 'Background overlay opacity for success stories section. Accepts 0-100 (percentage) or 0-1 (decimal). Default is 70 (0.7). Example: 70 = 70% opacity, 0.7 = 70% opacity',
+        step: 0.1,
+      },
+      min: 0,
+      max: 100,
+    },
   ],
 }
 

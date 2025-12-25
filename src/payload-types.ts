@@ -806,6 +806,10 @@ export interface SubService {
    * Background image for success stories section (mobile and tablet)
    */
   successStoriesBackgroundImageMobile?: (number | null) | Media;
+  /**
+   * Background overlay opacity for success stories section. Accepts 0-100 (percentage) or 0-1 (decimal). Default is 70 (0.7). Example: 70 = 70% opacity, 0.7 = 70% opacity
+   */
+  successStoriesBackgroundOpacity?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1268,6 +1272,7 @@ export interface SubServicesSelect<T extends boolean = true> {
   successStoriesCtaLink?: T;
   successStoriesBackgroundImage?: T;
   successStoriesBackgroundImageMobile?: T;
+  successStoriesBackgroundOpacity?: T;
   updatedAt?: T;
   createdAt?: T;
 }
