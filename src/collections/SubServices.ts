@@ -577,11 +577,18 @@ export const SubServices: CollectionConfig = {
     },
     {
       name: 'successStoriesDescription',
-      type: 'textarea',
+      type: 'array',
       required: false,
       admin: {
-        description: 'Description for success stories section',
+        description: 'Description paragraphs for success stories section. Each item will be rendered as a separate paragraph.',
       },
+      fields: [
+        {
+          name: 'paragraph',
+          type: 'textarea',
+          required: true,
+        },
+      ],
     },
     {
       name: 'successStoriesCtaText',

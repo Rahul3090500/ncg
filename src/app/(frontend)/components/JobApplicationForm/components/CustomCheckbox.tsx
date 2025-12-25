@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 
 interface CustomCheckboxProps {
   checked: boolean
@@ -23,10 +23,37 @@ const CustomCheckbox: React.FC<CustomCheckboxProps> = ({
   labelClassName = '',
   children,
 }) => {
+  const labelRef = useRef<HTMLLabelElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const labelElement = labelRef.current
+    if (!labelElement) return
+
+    const handleMouseDown = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      // If clicking on a link, prevent the label from activating the input
+      if (target.tagName === 'A' || target.closest('a')) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+
+    // Use capture phase to intercept before label's default behavior
+    labelElement.addEventListener('mousedown', handleMouseDown, true)
+    return () => {
+      labelElement.removeEventListener('mousedown', handleMouseDown, true)
+    }
+  }, [])
+
   return (
-    <label className={`flex items-center cursor-pointer ${className}`}>
+    <label 
+      ref={labelRef}
+      className={`flex items-center cursor-pointer ${className}`}
+    >
       <div className="mr-3 relative flex-shrink-0">
         <input
+          ref={inputRef}
           type="checkbox"
           name={name}
           checked={checked}
@@ -35,12 +62,11 @@ const CustomCheckbox: React.FC<CustomCheckboxProps> = ({
           className="hidden"
         />
         <div
-          className={`w-5 h-5 rounded-sm border-2 flex items-center justify-center cursor-pointer ${
+          className={`w-5 h-5 rounded-sm border-2 flex items-center justify-center pointer-events-none ${
             checked
               ? 'bg-[#5799FF] border-[#5799FF]'
               : 'bg-white border-gray-300'
           }`}
-          onClick={() => onChange(!checked)}
         >
           {checked && (
             <svg className="w-3 h-3" fill="none" viewBox="0 0 16 16">

@@ -191,7 +191,7 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
   const gapWidth = isTablet ? 24 : 16;
 
   return (
-    <section className="bg-[#000F19] py-12 md:py-24">
+    <section id="our-approach" className="bg-[#000F19] py-12 md:py-24">
       <div className="containersection px-4 md:px-6">
         {/* Section Title */}
         <div className="text-left space-y-4 md:space-y-6 mb-8 md:mb-12">

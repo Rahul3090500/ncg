@@ -2,10 +2,11 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import AnimatedButton from './AnimatedButton'
 
 interface SuccessStoriesParallaxProps {
   successStoriesTitle: string
-  successStoriesDescription: string
+  successStoriesDescription?: string | Array<{ paragraph: string; id?: string | null }> | null
   successStoriesCtaText?: string
   successStoriesCtaLink?: string
   successStoriesBackgroundImage?: {
@@ -153,19 +154,32 @@ const SuccessStoriesParallax: React.FC<SuccessStoriesParallaxProps> = ({
       )}
       <div className="relative z-10 containersection px-4 md:px-6 lg:px-52">
         <div className="mx-auto">
-          <h2 className="text-white font-manrope-medium text-3xl md:text-5xl lg:text-8xl leading-tight md:leading-[60px] lg:leading-[90px] mb-3 md:mb-4 lg:mb-5 mt-0 md:mt-8 lg:mt-[70px]">
+          <h2 className="text-white font-manrope-medium text-3xl md:text-5xl lg:text-8xl leading-tight md:leading-[60px] lg:leading-[90px] mb-3 md:mb-4 lg:mb-5">
             {successStoriesTitle}
           </h2>
-          <p className="text-white text-sm md:text-base lg:text-xl font-manrope-light leading-6 md:leading-7 lg:leading-8 w-full md:w-[90%] lg:w-[1181px] mb-4 md:mb-6 lg:mb-[37px]">
-            {successStoriesDescription}
-          </p>
+          {successStoriesDescription && (
+            <div className="text-white text-sm md:text-base lg:text-xl font-manrope-light leading-6 md:leading-7 lg:leading-8 w-full md:w-[90%] lg:w-[1181px] mb-4 md:mb-6 lg:mb-[37px]">
+              {Array.isArray(successStoriesDescription) ? (
+                successStoriesDescription.map((item, index) => (
+                  <p key={item.id || index} className={index < successStoriesDescription.length - 1 ? 'mb-4 md:mb-6 lg:mb-6' : ''}>
+                    {item.paragraph}
+                  </p>
+                ))
+              ) : (
+                <p>{successStoriesDescription}</p>
+              )}
+            </div>
+          )}
           {successStoriesCtaText && (
-            <Link
-              href={successStoriesCtaLink}
-              className="text-blue-300 font-manrope-medium text-base md:text-lg lg:text-xl inline-block"
-            >
-              {successStoriesCtaText}
-            </Link>
+              <AnimatedButton
+                  text={successStoriesCtaText}
+                  link={successStoriesCtaLink || '#'}
+                  asDiv={true}
+                  bgColor="#488BF3"
+                  hoverBgColor="#3a7be0"
+                  width="w-40"
+                  className="px-6 md:px-8"
+                />
           )}
         </div>
       </div>

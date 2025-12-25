@@ -782,9 +782,14 @@ export interface SubService {
    */
   successStoriesTitle?: string | null;
   /**
-   * Description for success stories section
+   * Description paragraphs for success stories section. Each item will be rendered as a separate paragraph.
    */
-  successStoriesDescription?: string | null;
+  successStoriesDescription?:
+    | {
+        paragraph: string;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * CTA text (e.g., "Explore our resources section for more detailed case studies and insights.")
    */
@@ -1253,7 +1258,12 @@ export interface SubServicesSelect<T extends boolean = true> {
         id?: T;
       };
   successStoriesTitle?: T;
-  successStoriesDescription?: T;
+  successStoriesDescription?:
+    | T
+    | {
+        paragraph?: T;
+        id?: T;
+      };
   successStoriesCtaText?: T;
   successStoriesCtaLink?: T;
   successStoriesBackgroundImage?: T;

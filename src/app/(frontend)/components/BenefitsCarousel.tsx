@@ -190,7 +190,7 @@ const BenefitsCarousel: React.FC<BenefitsCarouselProps> = ({ benefits, onScrollR
                     marginRight: 'calc(-50vw + 50%)',
                     width: '100vw',
                     paddingLeft: 'max(1rem, calc((100vw - 100%) / 2))',
-                    paddingRight: 'max(1rem, calc((100vw - 100%) / 2))'
+                    paddingRight: 'max(2rem, calc((100vw - 100%) / 2 + 1rem))'
                 }}
             >
                 <div className="flex gap-4 md:gap-6" style={{ overflow: 'visible' }}>
@@ -198,7 +198,7 @@ const BenefitsCarousel: React.FC<BenefitsCarouselProps> = ({ benefits, onScrollR
                         const isLastCard = index === benefits.length - 1
                         return (
                         <React.Fragment key={index}>
-                            <div className={`benefit-card flex flex-col shrink-0 w-[280px] md:w-[320px] lg:w-[344px] ${isLastCard ? 'pr-[25px] lg:pr-[50px]' : ''}`}>
+                            <div className={`benefit-card flex flex-col shrink-0 w-[280px] md:w-[320px] lg:w-[344px] ${isLastCard ? '' : ''}`}>
                                 <div className="flex-1 flex flex-col">
                                     <h3 className="text-[#000F19] font-manrope-semibold text-xl md:text-2xl leading-7 md:leading-8 mb-2 md:mb-1">
                                         {benefit.title}

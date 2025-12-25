@@ -259,6 +259,21 @@ const Header: React.FC = () => {
     }
   }, [isMobileMenuOpen])
 
+  // Handle "Our Approach" link click - scroll if on homepage, navigate otherwise
+  const handleOurApproachClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname === '/') {
+      e.preventDefault()
+      const element = document.getElementById('our-approach')
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+      setIsMobileMenuOpen(false)
+    } else {
+      // Let the default navigation handle it
+      setIsMobileMenuOpen(false)
+    }
+  }
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -654,7 +669,7 @@ const Header: React.FC = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 bottom-0 w-[85%] max-w-sm bg-[#488BF3] z-50 shadow-2xl overflow-y-auto lg:hidden"
+              className="fixed top-0 right-0 bottom-0 w-full bg-[#488BF3] z-50 shadow-2xl overflow-y-auto lg:hidden"
             >
               <div className="flex flex-col h-full">
                 {/* Mobile Menu Header - Close Button Only */}
@@ -833,9 +848,9 @@ const Header: React.FC = () => {
                     {/* Our Approach */}
                     <div className="border-b border-white/30">
                       <Link
-                        href="/our-approach"
+                        href="/#our-approach"
                         className="block py-4 text-lg font-manrope-semibold text-white hover:opacity-80 transition-opacity"
-                        onClick={() => setIsMobileMenuOpen(false)}
+                        onClick={handleOurApproachClick}
                       >
                         Our Approach
                       </Link>

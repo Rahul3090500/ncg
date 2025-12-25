@@ -23,14 +23,14 @@ const CustomRadio: React.FC<CustomRadioProps> = ({
 }) => {
   return (
     <div className={`w-28 h-12 flex items-center justify-start bg-white rounded-[5px] border-2 ${className}`}>
-      <label className="flex items-center justify-center text-white cursor-pointer w-full">
+      <label className="flex items-center justify-start text-white cursor-pointer w-full">
         <input
           type="radio"
           name={name}
           value={value}
           checked={checked}
           onChange={(e) => onChange(e.target.value)}
-          className="mr-[12px] ml-[17px] w-4 h-4"
+          className="mr-[12px] ml-[17px] cursor-pointer w-4 h-4"
           required={required}
         />
         <span className="text-lg font-manrope-normal text-zinc-950 leading-7">{label}</span>
