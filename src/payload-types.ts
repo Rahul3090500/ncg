@@ -127,6 +127,7 @@ export interface Config {
     'jobs-section': JobsSection;
     'privacy-policy-section': PrivacyPolicySection;
     'free-consultation-section': FreeConsultationSection;
+    'project-settings': ProjectSetting;
   };
   globalsSelect: {
     'hero-section': HeroSectionSelect<false> | HeroSectionSelect<true>;
@@ -157,6 +158,7 @@ export interface Config {
     'jobs-section': JobsSectionSelect<false> | JobsSectionSelect<true>;
     'privacy-policy-section': PrivacyPolicySectionSelect<false> | PrivacyPolicySectionSelect<true>;
     'free-consultation-section': FreeConsultationSectionSelect<false> | FreeConsultationSectionSelect<true>;
+    'project-settings': ProjectSettingsSelect<false> | ProjectSettingsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -1981,6 +1983,207 @@ export interface FreeConsultationSection {
   createdAt?: string | null;
 }
 /**
+ * Manage global project settings including SEO, favicons, social media, and advanced metadata
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project-settings".
+ */
+export interface ProjectSetting {
+  id: number;
+  /**
+   * Default site title (used in <title> tag and as fallback for OG title)
+   */
+  siteTitle?: string | null;
+  /**
+   * Default site description (used in meta description and as fallback for OG description). Recommended: 150-160 characters
+   */
+  siteDescription?: string | null;
+  /**
+   * Comma-separated keywords for meta keywords tag
+   */
+  siteKeywords?: string | null;
+  /**
+   * Site author name
+   */
+  siteAuthor?: string | null;
+  /**
+   * Canonical site URL (e.g., https://www.example.com). Used for canonical URLs and Open Graph tags
+   */
+  siteUrl?: string | null;
+  /**
+   * Site language code (e.g., en, en-US). Default: en
+   */
+  siteLanguage?: string | null;
+  /**
+   * Favicon 16x16 pixels (.ico or .png format)
+   */
+  favicon16x16?: (number | null) | Media;
+  /**
+   * Favicon 32x32 pixels (.ico or .png format)
+   */
+  favicon32x32?: (number | null) | Media;
+  /**
+   * Apple Touch Icon 180x180 pixels (for iOS devices)
+   */
+  appleTouchIcon?: (number | null) | Media;
+  /**
+   * Android Chrome icon 192x192 pixels
+   */
+  androidChrome192x192?: (number | null) | Media;
+  /**
+   * Android Chrome icon 512x512 pixels
+   */
+  androidChrome512x512?: (number | null) | Media;
+  /**
+   * Theme color for browser UI (hex color, e.g., #488BF3)
+   */
+  faviconThemeColor?: string | null;
+  /**
+   * Default Open Graph image (recommended: 1200x630 pixels). Used when page-specific OG image is not set
+   */
+  ogImage?: (number | null) | Media;
+  /**
+   * Default Open Graph title (falls back to site title if not set)
+   */
+  ogTitle?: string | null;
+  /**
+   * Default Open Graph description (falls back to site description if not set). Recommended: 200 characters
+   */
+  ogDescription?: string | null;
+  /**
+   * Default Open Graph type
+   */
+  ogType?: ('website' | 'article' | 'profile' | 'business.business') | null;
+  /**
+   * Site name for Open Graph (falls back to site title if not set)
+   */
+  ogSiteName?: string | null;
+  /**
+   * Open Graph locale (e.g., en_US, en_GB). Default: en_US
+   */
+  ogLocale?: string | null;
+  /**
+   * Twitter Card type
+   */
+  twitterCardType?: ('summary' | 'summary_large_image' | 'app' | 'player') | null;
+  /**
+   * Twitter site handle (e.g., @yourcompany - without @ symbol)
+   */
+  twitterSite?: string | null;
+  /**
+   * Twitter creator handle (e.g., @yourname - without @ symbol)
+   */
+  twitterCreator?: string | null;
+  /**
+   * Default Twitter Card image (recommended: 1200x600 pixels). Falls back to OG image if not set
+   */
+  twitterImage?: (number | null) | Media;
+  /**
+   * Google Search Console verification code (content value from meta tag)
+   */
+  googleVerification?: string | null;
+  /**
+   * Bing Webmaster Tools verification code
+   */
+  bingVerification?: string | null;
+  /**
+   * Yandex Webmaster verification code
+   */
+  yandexVerification?: string | null;
+  /**
+   * Google Analytics ID (e.g., G-XXXXXXXXXX for GA4 or UA-XXXXXXXXX-X for Universal Analytics)
+   */
+  googleAnalyticsId?: string | null;
+  /**
+   * Google Tag Manager Container ID (e.g., GTM-XXXXXXX)
+   */
+  googleTagManagerId?: string | null;
+  /**
+   * Facebook Pixel ID
+   */
+  facebookPixelId?: string | null;
+  /**
+   * LinkedIn Insight Tag ID
+   */
+  linkedInInsightTag?: string | null;
+  /**
+   * robots.txt content. Default: Allow all crawlers to access all pages
+   */
+  robotsContent?: string | null;
+  /**
+   * Default robots meta tag for pages
+   */
+  defaultRobotsMeta?: ('index,follow' | 'index,nofollow' | 'noindex,follow' | 'noindex,nofollow') | null;
+  /**
+   * Sitemap URL (e.g., https://www.example.com/sitemap.xml)
+   */
+  sitemapUrl?: string | null;
+  /**
+   * Organization name for schema.org structured data
+   */
+  organizationName?: string | null;
+  /**
+   * Organization logo for schema.org structured data
+   */
+  organizationLogo?: (number | null) | Media;
+  /**
+   * Organization website URL for schema.org
+   */
+  organizationUrl?: string | null;
+  organizationContactPoint?: {
+    /**
+     * Contact type (e.g., customer service, technical support)
+     */
+    contactType?: string | null;
+    /**
+     * Contact telephone number
+     */
+    telephone?: string | null;
+    /**
+     * Contact email address
+     */
+    email?: string | null;
+  };
+  /**
+   * Add organization social media profiles for schema.org
+   */
+  organizationSocialLinks?:
+    | {
+        /**
+         * Platform name (e.g., Facebook, Twitter, LinkedIn)
+         */
+        platform: string;
+        /**
+         * Social media profile URL
+         */
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Add custom meta tags (e.g., viewport, theme-color, etc.)
+   */
+  additionalMetaTags?:
+    | {
+        /**
+         * Meta tag name or property
+         */
+        name: string;
+        /**
+         * Meta tag content value
+         */
+        content: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Base URL for canonical tags (if different from siteUrl)
+   */
+  canonicalUrlBase?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "hero-section_select".
  */
@@ -2520,6 +2723,72 @@ export interface FreeConsultationSectionSelect<T extends boolean = true> {
   rightTitle?: T;
   rightDescription?: T;
   calendlyUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project-settings_select".
+ */
+export interface ProjectSettingsSelect<T extends boolean = true> {
+  siteTitle?: T;
+  siteDescription?: T;
+  siteKeywords?: T;
+  siteAuthor?: T;
+  siteUrl?: T;
+  siteLanguage?: T;
+  favicon16x16?: T;
+  favicon32x32?: T;
+  appleTouchIcon?: T;
+  androidChrome192x192?: T;
+  androidChrome512x512?: T;
+  faviconThemeColor?: T;
+  ogImage?: T;
+  ogTitle?: T;
+  ogDescription?: T;
+  ogType?: T;
+  ogSiteName?: T;
+  ogLocale?: T;
+  twitterCardType?: T;
+  twitterSite?: T;
+  twitterCreator?: T;
+  twitterImage?: T;
+  googleVerification?: T;
+  bingVerification?: T;
+  yandexVerification?: T;
+  googleAnalyticsId?: T;
+  googleTagManagerId?: T;
+  facebookPixelId?: T;
+  linkedInInsightTag?: T;
+  robotsContent?: T;
+  defaultRobotsMeta?: T;
+  sitemapUrl?: T;
+  organizationName?: T;
+  organizationLogo?: T;
+  organizationUrl?: T;
+  organizationContactPoint?:
+    | T
+    | {
+        contactType?: T;
+        telephone?: T;
+        email?: T;
+      };
+  organizationSocialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  additionalMetaTags?:
+    | T
+    | {
+        name?: T;
+        content?: T;
+        id?: T;
+      };
+  canonicalUrlBase?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
