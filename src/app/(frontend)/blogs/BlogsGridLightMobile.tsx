@@ -70,7 +70,7 @@ const BlogsGridLightMobile: React.FC<BlogsGridLightMobileProps> = ({
           
           {/* Button - Always visible */}
           <div className="mt-[24px]">
-            <AnimatedButton width='w-36' height='h-10' text="Read More" asDiv={true} />
+            <AnimatedButton height='h-10' text="Read More" asDiv={true} />
           </div>
         </div>
       </div>

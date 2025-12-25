@@ -135,7 +135,7 @@ const BlogsGridDark: React.FC<BlogsGridDarkProps> = ({
             transition={{ duration: 0.35, ease: 'easeInOut' }}
             className="mt-[24px]"
           >
-            <AnimatedButton width='w-36' height='h-10' text="Read More" asDiv={true} />
+            <AnimatedButton height='h-10' text="Read More" asDiv={true} />
           </motion.div>
         </div>
       </motion.div>

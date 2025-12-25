@@ -140,7 +140,7 @@ const Career = async () => {
             {/* View Job Openings Button */}
             {hero.buttonText && hero.buttonLink && (
               <div className="mt-10 relative z-10">
-                <AnimatedButton text={hero.buttonText} width='w-52' link={hero.buttonLink} />
+                <AnimatedButton text={hero.buttonText} link={hero.buttonLink} />
               </div>
             )}
           </div>
@@ -324,7 +324,6 @@ const Career = async () => {
                 <div className="hidden md:block">
                   <AnimatedButton
                     text={jobOpeningsSection.buttonText}
-                    width='w-28'
                     link={jobOpeningsSection.buttonLink}
                   />
                 </div>
@@ -340,7 +339,6 @@ const Career = async () => {
                   <div className="mt-6 md:hidden flex justify-center">
                     <AnimatedButton
                       text={jobOpeningsSection.buttonText}
-                      width='w-29'
                       link={jobOpeningsSection.buttonLink}
                     />
                   </div>
@@ -382,7 +380,6 @@ const Career = async () => {
                   hoverTextColor='#000F19'
                   hoverBgColor='#FFFFFF'
                   text={spotify.buttonText}
-                  width='w-full md:w-auto lg:w-52'
                   link={spotify.spotifyLink}
                   openInNewTab={true}
                 />

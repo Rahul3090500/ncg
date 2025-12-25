@@ -91,7 +91,6 @@ const JobDetailPage = async ({ params }: PageProps) => {
               hoverBgColor="#3a7be0"
               textColor="#fff"
               hoverTextColor="#fff"
-              width="w-full sm:w-48"
               roundness="rounded-[5px]"
               centered={true}
               asDiv={true}

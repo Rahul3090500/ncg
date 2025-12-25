@@ -58,7 +58,6 @@ const RelatedInsightsClient: React.FC<RelatedInsightsClientProps> = ({
               textColor="#ffffff"
               hoverTextColor="#ffffff"
               link={viewAllLink}
-              width="w-30"
             />
           </div>
         </div>
@@ -107,7 +106,6 @@ const RelatedInsightsClient: React.FC<RelatedInsightsClientProps> = ({
             textColor="#ffffff"
             hoverTextColor="#ffffff"
             link={viewAllLink}
-            width="w-30"
           />
         </div>
       </div>

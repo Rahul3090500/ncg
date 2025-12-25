@@ -15,6 +15,7 @@ interface SuccessStoriesParallaxProps {
   successStoriesBackgroundImageMobile?: {
     url: string
   }
+  successStoriesBackgroundOpacity?: number | null
 }
 
 const SuccessStoriesParallax: React.FC<SuccessStoriesParallaxProps> = ({
@@ -24,7 +25,13 @@ const SuccessStoriesParallax: React.FC<SuccessStoriesParallaxProps> = ({
   successStoriesCtaLink = '#',
   successStoriesBackgroundImage,
   successStoriesBackgroundImageMobile,
+  successStoriesBackgroundOpacity,
 }) => {
+  // Normalize opacity: CMS might send 0-100 or 0-1, convert to 0-1
+  // Default to 0.7 (70%) if not provided
+  const normalizedOpacity = successStoriesBackgroundOpacity != null
+    ? (successStoriesBackgroundOpacity > 1 ? successStoriesBackgroundOpacity / 100 : successStoriesBackgroundOpacity)
+    : 0.7
   const sectionRef = useRef<HTMLElement>(null)
   const [parallaxData, setParallaxData] = useState({
     scrollY: 0,
@@ -90,7 +97,7 @@ const SuccessStoriesParallax: React.FC<SuccessStoriesParallaxProps> = ({
   return (
     <section
       ref={sectionRef}
-      className="relative py-12 md:py-16 lg:py-32 overflow-hidden h-[400px] md:h-[500px] lg:h-[664px] flex items-center"
+      className="relative py-12 bg-[#F4F7FF] md:py-16 lg:py-32 overflow-hidden flex items-center"
       style={{
         willChange: 'transform',
       }}
@@ -141,11 +148,12 @@ const SuccessStoriesParallax: React.FC<SuccessStoriesParallaxProps> = ({
             />
           ) : null}
           <div
-            className="absolute inset-0 bg-black/70 scale-[1.3] md:scale-[1.3] lg:scale-[1.3]"
+            className="absolute inset-0 bg-black scale-[1.3] md:scale-[1.3] lg:scale-[1.3]"
             style={{
               transform: backgroundTransform,
               willChange: 'transform',
               transition: 'transform 0.1s ease-out',
+              opacity: normalizedOpacity,
             }}
           />
         </>
@@ -154,7 +162,7 @@ const SuccessStoriesParallax: React.FC<SuccessStoriesParallaxProps> = ({
       )}
       <div className="relative z-10 containersection px-4 md:px-6 lg:px-52">
         <div className="mx-auto">
-          <h2 className="text-white font-manrope-medium text-3xl md:text-5xl lg:text-8xl leading-tight md:leading-[60px] lg:leading-[90px] mb-3 md:mb-4 lg:mb-5">
+          <h2 className="text-white font-manrope-medium text-3xl md:text-5xl lg:text-7xl leading-tight md:leading-[60px] lg:leading-[81px] mb-3 md:mb-4 lg:mb-5">
             {successStoriesTitle}
           </h2>
           {successStoriesDescription && (
@@ -177,7 +185,6 @@ const SuccessStoriesParallax: React.FC<SuccessStoriesParallaxProps> = ({
                   asDiv={true}
                   bgColor="#488BF3"
                   hoverBgColor="#3a7be0"
-                  width="w-40"
                   className="px-6 md:px-8"
                 />
           )}

@@ -98,7 +98,6 @@ const BenefitsSectionClient: React.FC<BenefitsSectionClientProps> = ({
                 link={benefitsButtonLink || '#'}
                 bgColor="#488BF3"
                 hoverBgColor="#3a7be0"
-                width="w-35"
                 className="px-6 md:px-8"
               />
             </div>

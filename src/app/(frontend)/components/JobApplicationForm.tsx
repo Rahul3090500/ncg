@@ -38,29 +38,164 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle')
   const [errorMessage, setErrorMessage] = useState('')
   const [isLinkedInLoading, setIsLinkedInLoading] = useState(false)
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
+  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({})
+
+  const validateField = (name: string, value: any): string => {
+    switch (name) {
+      case 'location':
+        if (!value || !value.trim()) return 'Location is required'
+        return ''
+      case 'languageSkills':
+        if (!value || value.length === 0) return 'Please select at least one language skill'
+        return ''
+      case 'securityCheckConsent':
+        if (!value) return 'Please select an option'
+        return ''
+      case 'yearsOfExperience':
+        if (!value || !value.trim()) return 'Years of experience is required'
+        const yearsNum = Number(value)
+        if (isNaN(yearsNum) || yearsNum < 0 || !Number.isInteger(yearsNum)) return 'Please enter a valid whole number'
+        return ''
+      case 'swedishTechIndustry':
+        if (!value) return 'Please select an option'
+        return ''
+      case 'strategicPlansExperience':
+        if (!value) return 'Please select an option'
+        return ''
+      case 'firstName':
+        if (!value || !value.trim()) return 'First name is required'
+        return ''
+      case 'lastName':
+        if (!value || !value.trim()) return 'Last name is required'
+        return ''
+      case 'email':
+        if (!value || !value.trim()) return 'Email is required'
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if (!emailRegex.test(value.trim())) return 'Please enter a valid email address'
+        return ''
+      case 'resume':
+        if (!value) return 'Resume is required'
+        return ''
+      case 'privacyPolicyConsent':
+        if (!value) return 'You must agree to the privacy policy'
+        return ''
+      default:
+        return ''
+    }
+  }
+
+  const validateForm = (): Record<string, string> => {
+    const errors: Record<string, string> = {}
+    
+    errors.location = validateField('location', formData.location)
+    errors.languageSkills = validateField('languageSkills', formData.languageSkills)
+    errors.securityCheckConsent = validateField('securityCheckConsent', formData.securityCheckConsent)
+    errors.yearsOfExperience = validateField('yearsOfExperience', formData.yearsOfExperience)
+    errors.swedishTechIndustry = validateField('swedishTechIndustry', formData.swedishTechIndustry)
+    errors.strategicPlansExperience = validateField('strategicPlansExperience', formData.strategicPlansExperience)
+    errors.firstName = validateField('firstName', formData.firstName)
+    errors.lastName = validateField('lastName', formData.lastName)
+    errors.email = validateField('email', formData.email)
+    errors.resume = validateField('resume', formData.resume)
+    errors.privacyPolicyConsent = validateField('privacyPolicyConsent', formData.privacyPolicyConsent)
+
+    // Remove empty errors
+    Object.keys(errors).forEach(key => {
+      if (!errors[key]) delete errors[key]
+    })
+
+    setValidationErrors(errors)
+    return errors
+  }
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked
       setFormData(prev => ({ ...prev, [name]: checked }))
+      // Validate checkbox fields if touched
+      if (touchedFields[name]) {
+        const error = validateField(name, checked)
+        setValidationErrors(prev => {
+          const newErrors = { ...prev }
+          if (error) {
+            newErrors[name] = error
+          } else {
+            delete newErrors[name]
+          }
+          return newErrors
+        })
+      }
     } else {
       setFormData(prev => ({ ...prev, [name]: value }))
+      // Validate on change if field has been touched
+      if (touchedFields[name]) {
+        const error = validateField(name, value)
+        setValidationErrors(prev => {
+          const newErrors = { ...prev }
+          if (error) {
+            newErrors[name] = error
+          } else {
+            delete newErrors[name]
+          }
+          return newErrors
+        })
+      }
     }
+  }
+
+  const handleBlur = (name: string, value: any) => {
+    setTouchedFields(prev => ({ ...prev, [name]: true }))
+    const error = validateField(name, value)
+    setValidationErrors(prev => {
+      const newErrors = { ...prev }
+      if (error) {
+        newErrors[name] = error
+      } else {
+        delete newErrors[name]
+      }
+      return newErrors
+    })
   }
 
   const handleRadioChange = (name: string, value: string) => {
     setFormData(prev => ({ ...prev, [name]: value }))
+    // Mark as touched and validate immediately
+    setTouchedFields(prev => ({ ...prev, [name]: true }))
+    const error = validateField(name, value)
+    setValidationErrors(prev => {
+      const newErrors = { ...prev }
+      if (error) {
+        newErrors[name] = error
+      } else {
+        delete newErrors[name]
+      }
+      return newErrors
+    })
   }
 
   const handleCheckboxChange = (name: string, value: string, checked: boolean) => {
     if (name === 'languageSkills') {
+      const updatedSkills = checked
+        ? [...formData.languageSkills, value]
+        : formData.languageSkills.filter(skill => skill !== value)
       setFormData(prev => ({
         ...prev,
-        languageSkills: checked
-          ? [...prev.languageSkills, value]
-          : prev.languageSkills.filter(skill => skill !== value)
+        languageSkills: updatedSkills
       }))
+      // Mark as touched and validate immediately
+      setTouchedFields(prev => ({ ...prev, [name]: true }))
+      const error = validateField(name, updatedSkills)
+      setValidationErrors(prev => {
+        const newErrors = { ...prev }
+        if (error) {
+          newErrors[name] = error
+        } else {
+          delete newErrors[name]
+        }
+        return newErrors
+      })
     }
   }
 
@@ -70,6 +205,17 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
 
     if (field === 'resume' && files.length > 0) {
       setFormData(prev => ({ ...prev, resume: files[0] }))
+      // Validate resume - always validate on file change
+      const error = validateField('resume', files[0])
+      setValidationErrors(prev => {
+        const newErrors = { ...prev }
+        if (error) {
+          newErrors['resume'] = error
+        } else {
+          delete newErrors['resume']
+        }
+        return newErrors
+      })
     } else if (field === 'additionalFiles') {
       setFormData(prev => ({ ...prev, additionalFiles: Array.from(files) }))
     }
@@ -185,6 +331,43 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
     setIsSubmitting(true)
     setSubmitStatus('idle')
     setErrorMessage('')
+
+    // Mark all fields as touched
+    setTouchedFields({
+      location: true,
+      languageSkills: true,
+      securityCheckConsent: true,
+      yearsOfExperience: true,
+      swedishTechIndustry: true,
+      strategicPlansExperience: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      resume: true,
+      privacyPolicyConsent: true,
+    })
+
+    // Validate form
+    const errors = validateForm()
+    if (Object.keys(errors).length > 0) {
+      setIsSubmitting(false)
+      // Scroll to first error after state update
+      setTimeout(() => {
+        const firstErrorField = Object.keys(errors)[0]
+        // Try to find the error message element first, then fall back to input element
+        const errorMessageElement = document.getElementById(`${firstErrorField}-error`)
+        const inputElement = document.querySelector(`[name="${firstErrorField}"]`) as HTMLElement
+        const elementToScroll = errorMessageElement || inputElement
+        if (elementToScroll) {
+          elementToScroll.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          // Focus the input if it exists and is focusable
+          if (inputElement && (inputElement.tagName === 'INPUT' || inputElement.tagName === 'TEXTAREA' || inputElement.tagName === 'SELECT')) {
+            inputElement.focus()
+          }
+        }
+      }, 100)
+      return
+    }
 
     try {
       // Upload resume
@@ -303,6 +486,8 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
         futureOpportunitiesConsent: false,
         linkedinUrl: '',
       })
+      setValidationErrors({})
+      setTouchedFields({})
     } catch (error: any) {
       setSubmitStatus('error')
       setErrorMessage(error.message || 'An error occurred while submitting your application')
@@ -325,7 +510,7 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
       </div>
 
       {/* Application Questions */}
-      <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8 mt-8 sm:mt-12 md:mt-16 lg:mt-[115px] pb-12 sm:pb-16 md:pb-24 lg:pb-[208px]">
+      <form onSubmit={handleSubmit} noValidate className="space-y-6 sm:space-y-8 mt-8 sm:mt-12 md:mt-16 lg:mt-[115px] pb-12 sm:pb-16 md:pb-24 lg:pb-[208px]">
         <div>
           <div className="space-y-6">
             {/* Location */}
@@ -340,10 +525,13 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                   name="location"
                   value={formData.location}
                   onChange={handleInputChange}
-                  required
+                  onBlur={() => handleBlur('location', formData.location)}
                   placeholder="Type your answer"
                   className="w-full sm:w-80 md:w-96 h-12 bg-white rounded-[5px] border-2 pl-[18px] pr-[18px] text-base sm:text-lg font-manrope-normal text-zinc-950 outline-none placeholder-zinc-950/40"
                 />
+                {validationErrors.location && (
+                  <p id="location-error" className="text-red-400 text-xs sm:text-sm mt-1 font-manrope-normal">{validationErrors.location}</p>
+                )}
               </div>
             </div>
 
@@ -370,6 +558,9 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                     </div>
                   ))}
                 </div>
+                {validationErrors.languageSkills && (
+                  <p id="languageSkills-error" className="text-red-400 text-xs sm:text-sm mt-1 font-manrope-normal">{validationErrors.languageSkills}</p>
+                )}
               </div>
             </div>
 
@@ -390,7 +581,6 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                     checked={formData.securityCheckConsent === 'yes'}
                     onChange={(value) => handleRadioChange('securityCheckConsent', value)}
                     label="Yes"
-                    required
                   />
                   <CustomRadio
                     name="securityCheckConsent"
@@ -398,9 +588,11 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                     checked={formData.securityCheckConsent === 'no'}
                     onChange={(value) => handleRadioChange('securityCheckConsent', value)}
                     label="No"
-                    required
                   />
                 </div>
+                {validationErrors.securityCheckConsent && (
+                  <p id="securityCheckConsent-error" className="text-red-400 text-xs sm:text-sm mt-1 font-manrope-normal">{validationErrors.securityCheckConsent}</p>
+                )}
               </div>
             </div>
 
@@ -416,10 +608,13 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                   name="yearsOfExperience"
                   value={formData.yearsOfExperience}
                   onChange={handleInputChange}
-                  required
+                  onBlur={() => handleBlur('yearsOfExperience', formData.yearsOfExperience)}
                   placeholder="Type your answer"
                   className="w-full sm:w-80 md:w-96 h-12 bg-white rounded-[5px] border-2 pl-[18px] pr-[18px] text-base sm:text-lg font-manrope-normal text-zinc-950 outline-none placeholder-zinc-950/40"
                 />
+                {validationErrors.yearsOfExperience && (
+                  <p id="yearsOfExperience-error" className="text-red-400 text-xs sm:text-sm mt-1 font-manrope-normal">{validationErrors.yearsOfExperience}</p>
+                )}
               </div>
             </div>
 
@@ -437,7 +632,6 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                     checked={formData.swedishTechIndustry === 'yes'}
                     onChange={(value) => handleRadioChange('swedishTechIndustry', value)}
                     label="Yes"
-                    required
                   />
                   <CustomRadio
                     name="swedishTechIndustry"
@@ -445,9 +639,11 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                     checked={formData.swedishTechIndustry === 'no'}
                     onChange={(value) => handleRadioChange('swedishTechIndustry', value)}
                     label="No"
-                    required
                   />
                 </div>
+                {validationErrors.swedishTechIndustry && (
+                  <p id="swedishTechIndustry-error" className="text-red-400 text-xs sm:text-sm mt-1 font-manrope-normal">{validationErrors.swedishTechIndustry}</p>
+                )}
               </div>
             </div>
 
@@ -465,7 +661,6 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                     checked={formData.strategicPlansExperience === 'yes'}
                     onChange={(value) => handleRadioChange('strategicPlansExperience', value)}
                     label="Yes"
-                    required
                   />
                   <CustomRadio
                     name="strategicPlansExperience"
@@ -473,9 +668,11 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                     checked={formData.strategicPlansExperience === 'no'}
                     onChange={(value) => handleRadioChange('strategicPlansExperience', value)}
                     label="No"
-                    required
                   />
                 </div>
+                {validationErrors.strategicPlansExperience && (
+                  <p id="strategicPlansExperience-error" className="text-red-400 text-xs sm:text-sm mt-1 font-manrope-normal">{validationErrors.strategicPlansExperience}</p>
+                )}
               </div>
             </div>
           </div>
@@ -499,10 +696,13 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleInputChange}
-                required
+                onBlur={() => handleBlur('firstName', formData.firstName)}
                 placeholder="Jonathan"
                 className="w-full h-12 bg-white rounded-[5px] border-2 pl-[18px] pr-[18px] text-base sm:text-lg font-manrope-normal text-zinc-950 outline-none placeholder-zinc-950/40"
               />
+              {validationErrors.firstName && (
+                <p id="firstName-error" className="text-red-400 text-xs sm:text-sm mt-1 font-manrope-normal">{validationErrors.firstName}</p>
+              )}
             </div>
             <div>
               <label className="block text-white font-manrope-medium mb-2 text-lg sm:text-xl md:text-2xl leading-6 sm:leading-7 md:leading-8">
@@ -513,10 +713,13 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleInputChange}
-                required
+                onBlur={() => handleBlur('lastName', formData.lastName)}
                 placeholder="Doe"
                 className="w-full h-12 bg-white rounded-[5px] border-2 pl-[18px] pr-[18px] text-base sm:text-lg font-manrope-normal text-zinc-950 outline-none placeholder-zinc-950/40"
               />
+              {validationErrors.lastName && (
+                <p id="lastName-error" className="text-red-400 text-xs sm:text-sm mt-1 font-manrope-normal">{validationErrors.lastName}</p>
+              )}
             </div>
           </div>
 
@@ -530,10 +733,13 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                required
+                onBlur={() => handleBlur('email', formData.email)}
                 placeholder="Jonathan@example.com"
                 className="w-full h-12 bg-white rounded-[5px] border-2 pl-[18px] pr-[18px] text-base sm:text-lg font-manrope-normal text-zinc-950 outline-none placeholder-zinc-950/40"
               />
+              {validationErrors.email && (
+                <p id="email-error" className="text-red-400 text-xs sm:text-sm mt-1 font-manrope-normal">{validationErrors.email}</p>
+              )}
             </div>
             <div>
               <label className="block text-white font-manrope-medium mb-2 text-lg sm:text-xl md:text-2xl leading-6 sm:leading-7 md:leading-8">
@@ -558,8 +764,10 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                 <input
                   type="file"
                   accept=".pdf,.doc,.docx"
-                  onChange={(e) => handleFileChange(e, 'resume')}
-                  required
+                  onChange={(e) => {
+                    handleFileChange(e, 'resume')
+                    setTouchedFields(prev => ({ ...prev, resume: true }))
+                  }}
                   className="hidden"
                   id="resume-upload"
                 />
@@ -574,6 +782,9 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                 )}
               </div>
             </div>
+            {validationErrors.resume && (
+              <p id="resume-error" className="text-red-400 text-xs sm:text-sm mt-1 font-manrope-normal">{validationErrors.resume}</p>
+            )}
           </div>
 
           {/* Additional Files */}
@@ -626,22 +837,39 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
 
         {/* Consent Checkboxes */}
         <div className="space-y-4">
-          <CustomCheckbox
-            checked={formData.privacyPolicyConsent}
-            onChange={(checked) => setFormData(prev => ({ ...prev, privacyPolicyConsent: checked }))}
-            name="privacyPolicyConsent"
-            required
-            labelClassName="text-sm sm:text-base font-manrope-medium leading-5"
-            className="flex items-start text-white"
-          >
-            <span className="text-sm sm:text-base font-manrope-medium leading-5">
-              By submitting this application, I agree that I have read the{' '}
-              <Link href="/privacy-policy" className="text-[#5799FF] font-manrope-bold">
-                Privacy Policy
-              </Link>{' '}
-              and confirm that NCG store my personal details to be able to process my job application.*
-            </span>
-          </CustomCheckbox>
+          <div>
+            <CustomCheckbox
+              checked={formData.privacyPolicyConsent}
+              onChange={(checked) => {
+                setFormData(prev => ({ ...prev, privacyPolicyConsent: checked }))
+                setTouchedFields(prev => ({ ...prev, privacyPolicyConsent: true }))
+                const error = validateField('privacyPolicyConsent', checked)
+                setValidationErrors(prev => {
+                  const newErrors = { ...prev }
+                  if (error) {
+                    newErrors.privacyPolicyConsent = error
+                  } else {
+                    delete newErrors.privacyPolicyConsent
+                  }
+                  return newErrors
+                })
+              }}
+              name="privacyPolicyConsent"
+              labelClassName="text-sm sm:text-base font-manrope-medium leading-5"
+              className="flex items-start text-white"
+            >
+              <span className="text-sm sm:text-base font-manrope-medium leading-5">
+                By submitting this application, I agree that I have read the{' '}
+                <Link href="/privacy-policy" className="text-[#5799FF] font-manrope-bold">
+                  Privacy Policy
+                </Link>{' '}
+                and confirm that NCG store my personal details to be able to process my job application.*
+              </span>
+            </CustomCheckbox>
+            {validationErrors.privacyPolicyConsent && (
+              <p id="privacyPolicyConsent-error" className="text-red-400 text-xs sm:text-sm mt-1 font-manrope-normal">{validationErrors.privacyPolicyConsent}</p>
+            )}
+          </div>
 
           <CustomCheckbox
             checked={formData.futureOpportunitiesConsent}

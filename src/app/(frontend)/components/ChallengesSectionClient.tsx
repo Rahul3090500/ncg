@@ -50,7 +50,6 @@ const ChallengesSectionClient: React.FC<ChallengesSectionClientProps> = ({
               link={challengesButtonLink || '#'}
               bgColor="#488BF3"
               hoverBgColor="#3a7be0"
-              width="w-48"
               className="px-6 md:px-8"
             />
           )}

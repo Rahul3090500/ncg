@@ -228,7 +228,7 @@ const SubServicesCarousel: React.FC<SubServicesCarouselProps> = ({
                     )}
                     {/* Show AnimatedButton on desktop and laptop */}
                     {!isMobileOrTablet && (
-                      <AnimatedButton asDiv={true} link={`/${serviceSlug}/${subService.slug}`} text="Learn More" width='w-36' />
+                      <AnimatedButton asDiv={true} link={`/${serviceSlug}/${subService.slug}`} text="Learn More" />
                     )}
                   </motion.div>
                 </div>

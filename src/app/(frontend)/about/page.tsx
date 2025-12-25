@@ -172,7 +172,7 @@ const About = async () => {
                   hoverBgColor="#488BF3"
                   textColor="#fff"
                   hoverTextColor="#fff"
-                  className="w-[150px]! rounded-[10px]! mt-[40px]"
+                  className="rounded-[10px]! mt-[40px]"
                 />
               </div>
             </div>
@@ -293,7 +293,7 @@ const About = async () => {
                   hoverBgColor="#000F19"
                   textColor="#fff"
                   hoverTextColor="#fff"
-                  className="w-[150px]! rounded-[10px]!"
+                  className="rounded-[10px]!"
                 />
               </div>
             )}

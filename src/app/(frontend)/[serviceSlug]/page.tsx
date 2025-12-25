@@ -168,7 +168,7 @@ const ServiceDetailPage = async ({ params }: PageProps) => {
           <p className="text-white/90 text-base md:text-lg lg:text-xl mb-6 md:mb-8 lg:mb-[67px] font-manrope-normal leading-6 md:leading-7 lg:leading-8">
           {ctaDescription}
           </p>
-          <AnimatedButton text="Contact Us" width='w-32 md:w-36' link='/contact' bgColor='#fff' textColor='#000F19' hoverBgColor='#fff' hoverTextColor='#000F19' />
+          <AnimatedButton text="Contact Us" link='/contact' bgColor='#fff' textColor='#000F19' hoverBgColor='#fff' hoverTextColor='#000F19' />
         </div>
       </section>
 

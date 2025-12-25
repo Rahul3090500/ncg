@@ -580,7 +580,7 @@ const Header: React.FC = () => {
             hoverBgColor="#488BF3"
             textColor="#fff"
             hoverTextColor="#fff"
-            className="w-[150px]! rounded-[10px]!"
+            className="rounded-[10px]!"
           />
         </nav>
 
@@ -595,7 +595,7 @@ const Header: React.FC = () => {
               hoverBgColor="#488BF3"
               textColor="#fff"
               hoverTextColor="#fff"
-              className="w-[150px]! rounded-[10px]!"
+              className="rounded-[10px]!"
             />
           </div>
           

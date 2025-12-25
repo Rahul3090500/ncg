@@ -89,6 +89,7 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
   const successStoriesCtaLink = subService.successStoriesCtaLink || '#'
   const successStoriesBackgroundImage = subService.successStoriesBackgroundImage
   const successStoriesBackgroundImageMobile = subService.successStoriesBackgroundImageMobile
+  const successStoriesBackgroundOpacity = subService.successStoriesBackgroundOpacity
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -320,6 +321,7 @@ const SubServiceDetailPage = async ({ params }: PageProps) => {
           successStoriesCtaLink={successStoriesCtaLink}
           successStoriesBackgroundImage={successStoriesBackgroundImage}
           successStoriesBackgroundImageMobile={successStoriesBackgroundImageMobile}
+          successStoriesBackgroundOpacity={successStoriesBackgroundOpacity}
         />
       )}
       <TestimonialsSection />

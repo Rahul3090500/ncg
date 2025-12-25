@@ -116,7 +116,6 @@ export default function OurApproachSectionMobile({ data }: OurApproachSectionMob
               hoverBgColor="#fff"
               textColor="#fff"
               hoverTextColor="#488BF3"
-              width='w-[146px]'
               className="rounded-[10px]"
             />
           </div>

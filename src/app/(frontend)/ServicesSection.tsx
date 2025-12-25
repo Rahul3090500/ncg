@@ -356,7 +356,7 @@ const ServicesSection = ({ servicesData }: ServicesSectionProps) => {
                   {/* Call to Action */}
                   <div className="flex flex-col sm:flex-row gap-4">
                     <div className="mt-4">
-                      <AnimatedButton width="w-36" link={`/${getServiceSlug(currentService)}`} text="Learn More" />
+                      <AnimatedButton link={`/${getServiceSlug(currentService)}`} text="Learn More" />
                     </div>
                   </div>
 

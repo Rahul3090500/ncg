@@ -219,7 +219,6 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
                   hoverBgColor="#fff"
                   textColor="#fff"
                   hoverTextColor="#488BF3"
-                  width='w-[146px]'
                   className="rounded-[10px]"
                 />
                 {/* Arrow Navigation Controls - Desktop Only */}
@@ -270,7 +269,6 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
                 hoverBgColor="#fff"
                 textColor="#fff"
                 hoverTextColor="#488BF3"
-                width='w-[146px]'
                 className="rounded-[10px]"
               />
             </div>
@@ -300,7 +298,6 @@ export default function OurApproachSection({ data }: OurApproachSectionProps) {
                   hoverBgColor="#fff"
                   textColor="#fff"
                   hoverTextColor="#488BF3"
-                  width='w-[146px]'
                   className="rounded-[10px]"
                 />
                 {/* Arrow Navigation Controls - Tablet/Desktop */}

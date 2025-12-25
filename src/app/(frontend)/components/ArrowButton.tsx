@@ -32,7 +32,7 @@ const ArrowButton: React.FC<ArrowButtonProps> = ({
     const finalHoverArrowColor = hoverArrowColor || arrowColor
     // Adjust base classes based on useChevron prop
     const sizeClasses = useChevron ? 'w-12 h-12' : 'w-28 h-12'
-    const baseClasses = `${sizeClasses} ${bgColor} rounded-[10px] ${hoverBgColor} flex items-center justify-center cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#488bf3] relative overflow-hidden`
+    const baseClasses = `${sizeClasses} ${bgColor} rounded-[10px] ${hoverBgColor} flex items-center justify-center cursor-pointer transition-all duration-300 disabled:bg-transparent disabled:cursor-not-allowed disabled:hover:bg-transparent relative overflow-hidden`
 
     // Determine animation directions based on arrow direction
     const firstArrowExitX = direction === 'left' ? '-100%' : '100%'

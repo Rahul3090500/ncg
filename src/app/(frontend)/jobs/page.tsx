@@ -6,9 +6,17 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 const Jobs = async () => {
-  const data: any = await getJobsPageData()
-  const jobsSection: any = data?.jobsSection || null
-  const selectedJobs = jobsSection?.selectedJobs || []
+  let jobsSection: any = null
+  let selectedJobs: any[] = []
+
+  try {
+    const data: any = await getJobsPageData()
+    jobsSection = data?.jobsSection || null
+    selectedJobs = Array.isArray(jobsSection?.selectedJobs) ? jobsSection.selectedJobs : []
+  } catch (error) {
+    console.error('Error loading jobs page data:', error)
+    // Continue with empty data - page will still render
+  }
 
   return (
     <div className="bg-white">
@@ -72,7 +80,7 @@ const Jobs = async () => {
       )}
 
       {/* Empty State */}
-      {/* {(!Array.isArray(selectedJobs) || selectedJobs.length === 0) && (
+      {(!Array.isArray(selectedJobs) || selectedJobs.length === 0) && (
         <section className="py-[100px] bg-[#F5F7FA]">
           <div className="max-w-[1512px] mx-auto px-[40px] text-center">
             <p className="text-[#000F19] text-xl font-manrope-medium">
@@ -80,7 +88,7 @@ const Jobs = async () => {
             </p>
           </div>
         </section>
-      )} */}
+      )}
     </div>
   )
 }

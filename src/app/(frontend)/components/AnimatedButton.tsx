@@ -27,7 +27,7 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
   hoverTextColor = '#ffffff',
   link = '#',
   className = '',
-  width = 'w-[184px]',
+  width,
   height = 'h-[49px]',
   roundness = 'rounded-[5px]',
   centered = false,
@@ -45,9 +45,16 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
     }
   }
 
+  const widthClass = width || 'w-auto'
+  const hasFixedWidth = !!width
+  const contentContainerClass = hasFixedWidth 
+    ? (centered ? 'absolute inset-0 flex items-center justify-center' : 'absolute inset-0 flex items-center pl-[20px]')
+    : (centered ? 'relative z-10 flex items-center justify-center' : 'relative z-10 flex items-center')
+  const paddingClass = hasFixedWidth ? '' : (centered ? 'px-5' : 'pl-5 pr-5')
+  
   const buttonContent = (
     <motion.div
-      className={`relative ${width} ${height} overflow-hidden ${roundness} cursor-pointer block ${className}`}
+      className={`relative ${widthClass} ${height} overflow-hidden ${roundness} cursor-pointer ${hasFixedWidth ? 'inline-block' : 'inline-flex items-center'} ${paddingClass} ${className}`}
       initial="default"
       whileHover="hover"
       animate="default"
@@ -63,7 +70,7 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
         className={`absolute inset-0 ${roundness}`}
       />
       {centered ? (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className={contentContainerClass}>
        <div className="relative w-[8px] h-[15px] overflow-visible mr-[5px]">
             <motion.div
               variants={{
@@ -148,7 +155,7 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
           </div>
         </div>
       ) : (
-        <div className="absolute inset-0 flex items-center pl-[20px]">
+        <div className={contentContainerClass}>
           <div className="relative w-[8px] h-[15px] overflow-visible">
             <motion.div
               variants={{

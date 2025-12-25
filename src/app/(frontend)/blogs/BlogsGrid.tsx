@@ -96,7 +96,7 @@ const BlogsGrid: React.FC<BlogsGridProps> = ({
             transition={{ duration: 0.35, ease: 'easeInOut' }}
             className="mt-4 md:mt-5 lg:mt-[24px]"
           >
-            <AnimatedButton width='w-full md:w-32 lg:w-36' height='h-9 md:h-10' text="Read More" asDiv={true} />
+            <AnimatedButton  height='h-9 md:h-10' text="Read More" asDiv={true} />
           </motion.div>
         </div>
       </motion.div>
