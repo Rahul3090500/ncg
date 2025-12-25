@@ -500,11 +500,11 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
     <div className="max-w-4xl mx-auto px-0 sm:px-6 lg:px-0">
       {/* Header */}
       <div className="mb-6 md:mb-8">
-        <p className="text-blue-400 text-sm sm:text-base md:text-lg lg:text-xl font-manrope-semibold text-center leading-4 mb-6 sm:mb-8 md:mb-[37px]">
+        <p className="text-blue-400 text-sm sm:text-base md:text-lg lg:text-xl font-manrope-semibold text-center leading-4 mb-4 sm:mb-4 md:mb-[37px]">
           Technology • Stockholm Office, Sweden • Full-Time (Hybrid)
         </p>
-        <h2 className="text-white font-manrope-medium text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-tight sm:leading-[40px] md:leading-[50px] lg:leading-[60px] mb-4 sm:mb-5 md:mb-[20px] text-center">{jobTitle}</h2>
-        <p className="text-white text-base sm:text-lg md:text-xl lg:text-2xl leading-6 sm:leading-7 md:leading-8 text-center font-manrope-medium px-2 sm:px-0">
+        <h2 className="text-white font-manrope-medium text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-tight sm:leading-[40px] md:leading-[50px] lg:leading-[60px] mb-2 sm:mb-2 md:mb-[20px] text-center">{jobTitle}</h2>
+        <p className="text-white text-sm sm:text-sm md:text-xl lg:text-2xl leading-5 sm:leading-6 md:leading-8 text-center font-manrope-medium px-2 sm:px-0">
           Ready to be part of shaping the future of cybersecurity? Join a team of experts in a forward-thinking company, tackling one of the most critical challenges in today&apos;s IT landscape. Welcome to NCG
         </p>
       </div>

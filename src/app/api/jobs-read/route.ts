@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getJobsPageData } from '@/lib/payload'
+import { getPayloadClient } from '@/lib/payload-retry'
 import { getCacheManager } from '@/lib/cache-manager'
 import { getCacheTTL, getCacheControlHeader, shouldUseCache } from '@/lib/cache-config'
 
@@ -27,15 +27,27 @@ export async function GET() {
       }
     }
 
-    // Cache miss - fetch fresh data
-    const data = await getJobsPageData()
+    // Cache miss - fetch fresh data directly from Payload (avoid circular dependency)
+    const payloadClient = await getPayloadClient()
+    const jobsSection = await payloadClient.findGlobal({ slug: 'jobs-section', depth: 2 }).catch((error) => {
+      console.error('Error fetching jobs-section global from Payload:', error)
+      return null
+    })
+    
+    if (!jobsSection) {
+      console.warn('jobs-section global not found or failed to fetch')
+    } else if (jobsSection.selectedJobs) {
+      console.log(`Found ${Array.isArray(jobsSection.selectedJobs) ? jobsSection.selectedJobs.length : 0} selected jobs`)
+    }
+    
+    // Ensure selectedJobs is always an array
+    if (jobsSection && !Array.isArray(jobsSection.selectedJobs)) {
+      jobsSection.selectedJobs = []
+    }
+    
     // Ensure data structure is always safe
     const safeData = {
-      jobsSection: data?.jobsSection || null
-    }
-    // Ensure selectedJobs is always an array
-    if (safeData.jobsSection && !Array.isArray(safeData.jobsSection.selectedJobs)) {
-      safeData.jobsSection.selectedJobs = []
+      jobsSection: jobsSection || null
     }
 
     // Store in cache (skip cache in development for instant updates)

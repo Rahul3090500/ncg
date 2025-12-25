@@ -143,9 +143,9 @@ const JobDetailPage = async ({ params }: PageProps) => {
                 <p className="text-[#000F19] text-base sm:text-lg md:text-xl font-manrope-medium leading-6 sm:leading-7 md:leading-8 mb-3 sm:mb-4 md:mb-[6px]">
                   In the role of {job.title}, you will:
                 </p>
-                <ul className="list-disc list-inside space-y-2 font-manrope-light text-[#000F19] text-base sm:text-lg md:text-xl pl-2 sm:pl-0">
+                <ul className="list-disc space-y-2 font-manrope-light text-[#000F19] text-base sm:text-lg md:text-xl pl-4 sm:pl-5 md:pl-6">
                   {job.responsibilities.map((item: any, index: number) => (
-                    <li key={index}>{item.responsibility}</li>
+                    <li key={index} className="pl-1.5 sm:pl-2">{item.responsibility}</li>
                   ))}
                 </ul>
               </div>
@@ -214,22 +214,22 @@ const JobDetailPage = async ({ params }: PageProps) => {
             <div className="bg-[#488BF3] py-6 sm:py-8 mb-8 sm:mb-12 md:mb-16 lg:mb-[75px] rounded-[10px]">
               <div className="containersection px-4 sm:px-6 md:px-12 lg:px-24">
                 <div className="flex text-white flex-col justify-center items-center">
-                  <div className="w-full flex flex-col gap-3 sm:gap-4">
-                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center">
-                      <p className="font-manrope-semibold text-base sm:text-lg md:text-xl lg:text-2xl leading-6 sm:leading-7 md:leading-8 lg:leading-[60px] text-left sm:text-right sm:w-[180px] md:w-[200px] lg:w-[240px] sm:whitespace-nowrap">Department:</p>
-                      <p className="font-manrope-semibold text-base sm:text-lg md:text-xl lg:text-2xl leading-6 sm:leading-7 md:leading-8 lg:leading-[60px] text-left flex-1">{department}</p>
+                  <div className="inline-flex flex-col gap-3 sm:gap-3 md:gap-4">
+                    <div className="flex flex-row gap-2 md:gap-4 items-center">
+                      <span className="font-manrope-semibold text-base sm:text-base md:text-xl lg:text-2xl leading-6 sm:leading-6 md:leading-8 lg:leading-[60px] text-right inline-block min-w-[160px] sm:min-w-[180px] md:min-w-[220px] lg:min-w-[260px] whitespace-nowrap">Department:</span>
+                      <span className="font-manrope-semibold text-base sm:text-base md:text-xl lg:text-2xl leading-6 sm:leading-6 md:leading-8 lg:leading-[60px] text-left">{department}</span>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center">
-                      <p className="font-manrope-semibold text-base sm:text-lg md:text-xl lg:text-2xl leading-6 sm:leading-7 md:leading-8 lg:leading-[60px] text-left sm:text-right sm:w-[180px] md:w-[200px] lg:w-[240px] sm:whitespace-nowrap">Location:</p>
-                      <p className="font-manrope-semibold text-base sm:text-lg md:text-xl lg:text-2xl leading-6 sm:leading-7 md:leading-8 lg:leading-[60px] text-left flex-1">{location}</p>
+                    <div className="flex flex-row gap-2 md:gap-4 items-center">
+                      <span className="font-manrope-semibold text-base sm:text-base md:text-xl lg:text-2xl leading-6 sm:leading-6 md:leading-8 lg:leading-[60px] text-right inline-block min-w-[160px] sm:min-w-[180px] md:min-w-[220px] lg:min-w-[260px] whitespace-nowrap">Location:</span>
+                      <span className="font-manrope-semibold text-base sm:text-base md:text-xl lg:text-2xl leading-6 sm:leading-6 md:leading-8 lg:leading-[60px] text-left">{location}</span>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center">
-                      <p className="font-manrope-semibold text-base sm:text-lg md:text-xl lg:text-2xl leading-6 sm:leading-7 md:leading-8 lg:leading-[60px] text-left sm:text-right sm:w-[180px] md:w-[200px] lg:w-[240px] sm:whitespace-nowrap">Remote Status:</p>
-                      <p className="font-manrope-semibold text-base sm:text-lg md:text-xl lg:text-2xl leading-6 sm:leading-7 md:leading-8 lg:leading-[60px] text-left flex-1 capitalize">{remoteStatus}</p>
+                    <div className="flex flex-row gap-2 md:gap-4 items-center">
+                      <span className="font-manrope-semibold text-base sm:text-base md:text-xl lg:text-2xl leading-6 sm:leading-6 md:leading-8 lg:leading-[60px] text-right inline-block min-w-[160px] sm:min-w-[180px] md:min-w-[220px] lg:min-w-[260px] whitespace-nowrap">Remote Status:</span>
+                      <span className="font-manrope-semibold text-base sm:text-base md:text-xl lg:text-2xl leading-6 sm:leading-6 md:leading-8 lg:leading-[60px] text-left capitalize">{remoteStatus}</span>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center">
-                      <p className="font-manrope-semibold text-base sm:text-lg md:text-xl lg:text-2xl leading-6 sm:leading-7 md:leading-8 lg:leading-[60px] text-left sm:text-right sm:w-[180px] md:w-[200px] lg:w-[240px] sm:whitespace-nowrap">Employment Type:</p>
-                      <p className="font-manrope-semibold text-base sm:text-lg md:text-xl lg:text-2xl leading-6 sm:leading-7 md:leading-8 lg:leading-[60px] text-left flex-1 capitalize">{type}</p>
+                    <div className="flex flex-row gap-2 md:gap-4 items-center">
+                      <span className="font-manrope-semibold text-base sm:text-base md:text-xl lg:text-2xl leading-6 sm:leading-6 md:leading-8 lg:leading-[60px] text-right inline-block min-w-[160px] sm:min-w-[180px] md:min-w-[220px] lg:min-w-[260px] whitespace-nowrap">Employment Type:</span>
+                      <span className="font-manrope-semibold text-base sm:text-base md:text-xl lg:text-2xl leading-6 sm:leading-6 md:leading-8 lg:leading-[60px] text-left capitalize">{type}</span>
                     </div>
                   </div>
                 </div>
