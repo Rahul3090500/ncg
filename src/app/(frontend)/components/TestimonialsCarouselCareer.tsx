@@ -209,31 +209,35 @@ const TestimonialsCarouselCareer: React.FC<TestimonialsCarouselCareerProps> = ({
               renderTestimonialCard(testimonial, index, index === 0)
             )}
           </div>
-          <div className="flex gap-4 justify-center mt-[30px]">
-            <button
-              onClick={scrollLeft}
-              disabled={!canScrollLeft}
-              className="w-28 h-12 bg-blue-500 rounded-[10px] hover:bg-[#3a7bd5] flex items-center justify-center cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#488bf3] "
-              aria-label="Previous testimonials"
-            >
-              <svg width="21" height="18" viewBox="0 0 21 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20.5039 8.9245L1.059 8.92456" stroke="white" strokeWidth="1.5" />
-                <path d="M9.45508 0.530273L1.06021 8.92514L9.45508 17.32" stroke="white" strokeWidth="1.5" />
-              </svg>
-            </button>
-            <button
-              onClick={scrollRight}
-              disabled={!canScrollRight}
-              className="w-28 h-12 bg-blue-500 rounded-[10px] hover:bg-[#3a7bd5] flex items-center justify-center cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#488bf3]"
-              aria-label="Next testimonials"
-            >
-              <svg width="115" height="50" viewBox="0 0 115 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="115" height="50" rx="10" fill="#488BF3" />
-                <path d="M47.5547 24.6005L66.9996 24.6006" stroke="white" strokeWidth="1.5" />
-                <path d="M58.6035 16.2063L66.9984 24.6012L58.6035 32.996" stroke="white" strokeWidth="1.5" />
-              </svg>
-            </button>
-          </div>
+          {(canScrollLeft || canScrollRight) && (
+            <div className="flex gap-4 justify-center mt-[30px]">
+              {canScrollLeft && (
+                <button
+                  onClick={scrollLeft}
+                  className="w-28 h-12 bg-blue-500 rounded-[10px] hover:bg-[#3a7bd5] flex items-center justify-center cursor-pointer transition-all duration-300"
+                  aria-label="Previous testimonials"
+                >
+                  <svg width="21" height="18" viewBox="0 0 21 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.5039 8.9245L1.059 8.92456" stroke="white" strokeWidth="1.5" />
+                    <path d="M9.45508 0.530273L1.06021 8.92514L9.45508 17.32" stroke="white" strokeWidth="1.5" />
+                  </svg>
+                </button>
+              )}
+              {canScrollRight && (
+                <button
+                  onClick={scrollRight}
+                  className="w-28 h-12 bg-blue-500 rounded-[10px] hover:bg-[#3a7bd5] flex items-center justify-center cursor-pointer transition-all duration-300"
+                  aria-label="Next testimonials"
+                >
+                  <svg width="115" height="50" viewBox="0 0 115 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="115" height="50" rx="10" fill="#488BF3" />
+                    <path d="M47.5547 24.6005L66.9996 24.6006" stroke="white" strokeWidth="1.5" />
+                    <path d="M58.6035 16.2063L66.9984 24.6012L58.6035 32.996" stroke="white" strokeWidth="1.5" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
