@@ -938,13 +938,24 @@ const Header: React.FC = () => {
                     </div>
 
                     {/* Contact Us */}
-                    <div>
+                    <div className="border-b border-white/30">
                       <Link
                         href="/contact"
                         className="block py-4 text-lg font-manrope-semibold text-white hover:opacity-80 transition-opacity"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         Contact Us
+                      </Link>
+                    </div>
+
+                    {/* Free Consultation */}
+                    <div>
+                      <Link
+                        href="/free-consultation"
+                        className="block py-4 text-lg font-manrope-semibold text-white hover:opacity-80 transition-opacity"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Free Consultation
                       </Link>
                     </div>
                   </div>

@@ -41,9 +41,9 @@ const TwoColumnLayout = ({
 
   if (isSubmitted) {
     return (
-      <section className="h-[100dvh] flex flex-col lg:flex-row overflow-hidden">
-        {/* Left Column - Blue Background (40%) */}
-        <div className="w-full lg:w-[40%] bg-[#488BF3] flex flex-col justify-center px-4 md:px-6 lg:px-10 xl:px-14 py-12 md:py-16 lg:py-24 flex-shrink-0">
+      <section className="h-[100vh] flex flex-col lg:flex-row overflow-hidden">
+        {/* Left Column - Blue Background (40%) - Hidden on mobile/tablet */}
+        <div className="hidden lg:flex lg:w-[40%] bg-[#488BF3] flex-col justify-center px-4 md:px-6 lg:px-10 xl:px-14 py-12 md:py-16 lg:py-24 flex-shrink-0">
           <h1 className="text-white text-4xl md:text-5xl lg:text-5xl xl:text-8xl font-manrope-normal leading-tight md:leading-[50px] lg:leading-[55px] xl:leading-[70px]">
             {leftTitle}
           </h1>
@@ -56,8 +56,8 @@ const TwoColumnLayout = ({
           </div>
         </div>
 
-        {/* Right Column - Success Message (60%) */}
-        <div className="w-full lg:w-[60%] bg-[#e6f5ff] flex flex-col justify-center px-4 md:px-6 lg:px-12 xl:px-16 py-12 md:py-16 lg:py-24">
+        {/* Right Column - Success Message - Full width on mobile/tablet, 60% on desktop */}
+        <div className="w-full lg:w-[60%] h-full bg-[#e6f5ff] flex flex-col justify-center px-4 md:px-6 lg:px-12 xl:px-16 py-12 md:py-16 lg:py-24">
           <h1 className="text-slate-950 text-2xl  md:text-3xl lg:text-4xl xl:text-5xl font-manrope-normal leading-tight md:leading-[40px] lg:leading-[50px] xl:leading-[65px]">
             {successTitle}
           </h1>
@@ -71,8 +71,8 @@ const TwoColumnLayout = ({
 
   return (
     <section className="min-h-screen lg:h-[100dvh] flex flex-col lg:flex-row overflow-hidden">
-      {/* Left Column - Blue Background (40%) */}
-      <div className="w-full lg:w-[40%] bg-[#488BF3] flex flex-col justify-center px-4 md:px-6 lg:px-10 xl:px-14 py-12 md:py-16 lg:py-24 flex-shrink-0">
+      {/* Left Column - Blue Background (40%) - Hidden on mobile/tablet */}
+      <div className="hidden lg:flex lg:w-[40%] bg-[#488BF3] flex-col justify-center px-4 md:px-6 lg:px-10 xl:px-14 py-12 md:py-16 lg:py-24 flex-shrink-0">
         <h1 className="text-white text-4xl md:text-5xl lg:text-5xl xl:text-8xl font-manrope-normal leading-tight md:leading-[50px] lg:leading-[55px] xl:leading-[80px]">
           {leftTitle}
         </h1>
@@ -85,8 +85,8 @@ const TwoColumnLayout = ({
         </div>
       </div>
 
-      {/* Right Column - Content Area (60%) */}
-      <div className={`w-full bg-[#e6f5ff] flex flex-col h-full lg:h-[100dvh] px-4 md:px-6 lg:px-12 xl:px-16 py-8 md:py-10 lg:pt-12 ${removeBottomPaddingOnDesktop ? 'lg:pb-0' : 'lg:pb-12'}`}>
+      {/* Right Column - Content Area - Full width on mobile/tablet, 60% on desktop */}
+      <div className={`w-full lg:w-[60%] bg-[#e6f5ff] flex flex-col h-full lg:h-[100dvh] px-4 md:px-6 lg:px-12 xl:px-16 py-16 md:py-18 lg:pt-12 ${removeBottomPaddingOnDesktop ? 'lg:pb-0' : 'lg:pb-12'}`}>
         {/* Header Section */}
         {(rightTitle || rightDescription) && (
           <div className="flex-shrink-0 mb-6 md:mb-8">

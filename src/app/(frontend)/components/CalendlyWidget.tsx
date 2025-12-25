@@ -14,7 +14,8 @@ const CalendlyWidget: React.FC<CalendlyWidgetProps> = ({
   onEventScheduled,
   className = '',
 }) => {
-  const [calendarHeight, setCalendarHeight] = useState(700)
+  const [calendarHeight, setCalendarHeight] = useState<number | string>(700)
+  const [isMobileOrTablet, setIsMobileOrTablet] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Default Calendly URL - fallback if not provided
@@ -33,9 +34,21 @@ const CalendlyWidget: React.FC<CalendlyWidgetProps> = ({
   // Calculate responsive calendar height to fit container
   useEffect(() => {
     const calculateHeight = () => {
+      const isMobile = window.innerWidth < 768
+      const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024
+      const mobileOrTablet = isMobile || isTablet
+      setIsMobileOrTablet(mobileOrTablet)
+
       if (containerRef.current) {
+        // For mobile and tablet, use full viewport height
+        if (mobileOrTablet) {
+          const viewportHeight = window.innerHeight
+          setCalendarHeight(viewportHeight)
+          return
+        }
+
+        // For desktop, use parent container height or 100%
         const container = containerRef.current
-        // Get the parent container (flex-1 div from TwoColumnLayout)
         const parent = container.parentElement
         if (parent) {
           const parentRect = parent.getBoundingClientRect()
@@ -48,18 +61,8 @@ const CalendlyWidget: React.FC<CalendlyWidgetProps> = ({
           }
         }
 
-        // Fallback: use viewport height minus estimated header/padding
-        const viewportHeight = window.innerHeight
-        const isMobile = window.innerWidth < 768
-        const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024
-
-        // More accurate calculation for right column
-        const headerSectionHeight = isMobile ? 120 : isTablet ? 140 : 160
-        const padding = isMobile ? 32 : isTablet ? 40 : 48
-        const calculatedHeight = viewportHeight - headerSectionHeight - padding
-
-        const minHeight = isMobile ? 400 : isTablet ? 500 : 600
-        setCalendarHeight(Math.max(calculatedHeight, minHeight))
+        // Desktop fallback - use 100% to fill parent
+        setCalendarHeight('100%')
       }
     }
 
@@ -107,12 +110,19 @@ const CalendlyWidget: React.FC<CalendlyWidgetProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`w-full h-full overflow-hidden  relative ${className}`}
+      className={`w-full h-full overflow-hidden relative ${className}`}
+      style={isMobileOrTablet && typeof calendarHeight === 'number' ? {
+        height: `${calendarHeight}px`
+      } : undefined}
     >
       <InlineWidget
         url={iframeUrl}
         styles={{
-          height: `100%`,
+          height: isMobileOrTablet && typeof calendarHeight === 'number'
+            ? `${calendarHeight}px`
+            : typeof calendarHeight === 'number'
+            ? `${calendarHeight}px`
+            : '100%',
           width: '100%',
           borderRadius: '8px',
           overflow: 'hidden',
