@@ -198,7 +198,7 @@ const BenefitsCarousel: React.FC<BenefitsCarouselProps> = ({ benefits, onScrollR
                         const isLastCard = index === benefits.length - 1
                         return (
                         <React.Fragment key={index}>
-                            <div className={`benefit-card flex flex-col shrink-0 w-[280px] md:w-[320px] lg:w-[344px] ${isLastCard ? '' : ''}`}>
+                            <div className={`benefit-card flex flex-col shrink-0 w-[280px] md:w-[320px] lg:w-[344px] ${isLastCard ? 'mr-8 md:mr-12 lg:mr-16' : ''}`}>
                                 <div className="flex-1 flex flex-col">
                                     <h3 className="text-[#000F19] font-manrope-semibold text-xl md:text-2xl leading-7 md:leading-8 mb-2 md:mb-1">
                                         {benefit.title}
@@ -218,10 +218,14 @@ const BenefitsCarousel: React.FC<BenefitsCarouselProps> = ({ benefits, onScrollR
                                     </div>
                                 )}
                             </div>
-                            <div className="w-0 h-96 outline outline-offset-[-0.20px] outline-black/10 shrink-0 hidden lg:block" />
+                            {!isLastCard && (
+                                <div className="w-0 h-96 outline outline-offset-[-0.20px] outline-black/10 shrink-0 hidden lg:block" />
+                            )}
                         </React.Fragment>
                         )
                     })}
+                    {/* Dummy card for spacing */}
+                    <div className="shrink-0 w-[15px] lg:w-20" />
                 </div>
             </div>
 

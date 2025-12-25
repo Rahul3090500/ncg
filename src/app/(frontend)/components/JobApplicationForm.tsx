@@ -261,7 +261,7 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
       if (!response.ok) {
         let errorMessage = 'Failed to submit application'
         try {
-          const errorData = await response.json()
+        const errorData = await response.json()
           errorMessage = errorData.error || errorMessage
         } catch (e) {
           // If response is not JSON, use status text
@@ -272,7 +272,7 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
 
       const result = await response.json()
       console.log('Application submitted successfully:', result)
-      
+
       setSubmitStatus('success')
       
       // Scroll to success message
